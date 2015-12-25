@@ -32,7 +32,7 @@ public class SortedList implements KDS<SortedEvent> {
     }
 
     @Override
-    public boolean audit(double t) {
+    public boolean audit(double t) throws Exception {
         ArrayList<KDSPoint> ps = new ArrayList<>();
         for (KDSPoint p : points) {
             p.updatePosition(t);
@@ -58,7 +58,7 @@ public class SortedList implements KDS<SortedEvent> {
             KDSPoint b = points.get(i+1);
             b.setIdx(i+1);
 
-            createCertificate(0.0, a, b);
+            createCertificate(0.0, a, b, false);
         }
     }
 
@@ -88,7 +88,7 @@ public class SortedList implements KDS<SortedEvent> {
     }
 
 
-    double computeFailureTime(double t, KDSPoint a, KDSPoint b) {
+    double computeFailureTime(double t, KDSPoint a, KDSPoint b, boolean inFailedEvent) {
         double[] aCoeffsX = a.getCoeffsX();
         double[] bCoeffsX = b.getCoeffsX();
 
@@ -101,24 +101,42 @@ public class SortedList implements KDS<SortedEvent> {
         ArrayList<Double> rootsXR = new ArrayList<>();
 
         for (Complex64F r : rootsX) {
-            if (r.isReal() && r.getReal() > t) {
+            if (r.isReal() && r.getReal() >= t) {
                 rootsXR.add(r.getReal());
             }
         }
 
-        Collections.sort(rootsXR);
+        if (inFailedEvent) {
+            Collections.sort(rootsXR);
 
+            for (double r : rootsXR) {
+                if (r != t) {
+                   return r;
+                }
+            }
+        } else {
+            try {
+                return Collections.min(rootsXR);
+            } catch (NoSuchElementException e) {
+                // do nothing
+            }
+        }
+
+        return -1; /*
         try {
             return Collections.min(rootsXR);
         } catch (NoSuchElementException e) {
             return -1;
-        }
+        }*/
     }
 
     @Override
     public void update(SortedEvent event, double t) {
         for (KDSPoint p : points) {
             p.updatePosition(t);
+        }
+        if (t > 0.14) {
+            System.out.println("weee");//weee
         }
         KDSPoint a = (KDSPoint) event.getA();
         KDSPoint b = (KDSPoint) event.getB();
@@ -127,30 +145,29 @@ public class SortedList implements KDS<SortedEvent> {
         b.removeCertificates();
 
         Collections.swap(points, a.getIdx(), b.getIdx());
-        int aidx = a.getIdx();
-        a.setIdx(b.getIdx());
-        b.setIdx(aidx);
+        a.setIdx(a.getIdx() + 1);
+        b.setIdx(b.getIdx() - 1);
 
         a.setInEvent(true);
         b.setInEvent(true);
         if (b.getIdx() > 0) {
             KDSPoint p = points.get(b.getIdx() - 1);
             p.removeCertificates();
-            createCertificate(t, p, b);
+            createCertificate(t, p, b, false);
         }
-        if (a.getIdx() < points.size() - 2) {
+        if (a.getIdx() < points.size() - 1) {
             KDSPoint p = points.get(a.getIdx() + 1);
-            createCertificate(t, a, p);
+            createCertificate(t, a, p, false);
         }
-        createCertificate(t, b, a);
+        createCertificate(t, b, a, true);
     }
 
-    private void createCertificate(double t, KDSPoint a, KDSPoint b) {
+    private void createCertificate(double t, KDSPoint a, KDSPoint b, boolean inFailedEvent) {
         Certificate<SortedEvent> cert = new Certificate<>();
-        cert.setFailureTime(computeFailureTime(t, a, b));
+        cert.setFailureTime(computeFailureTime(t, a, b, inFailedEvent));
         // if failure time is less than 0, then it will never fail in the future
-        if (cert.getFailureTime() > t) {
-            b.getCertificates().add(cert);
+        if (cert.getFailureTime() >= t) {
+            a.getCertificates().add(cert);
             SortedEvent<KDSPoint> e = new SortedEvent<>(cert, this, a, b);
             eq.queue.add(e);
         }

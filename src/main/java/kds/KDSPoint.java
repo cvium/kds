@@ -30,9 +30,10 @@ public class KDSPoint implements Comparable<KDSPoint>{
 
     public void removeCertificates() {
         for (Certificate c : certificates) {
+            c.setFailureTime(Double.MAX_VALUE);
             c.setValid(false);
         }
-        this.certificates = new ArrayList<>();
+        this.certificates.clear();
     }
 
     public boolean isInEvent() {
@@ -74,14 +75,6 @@ public class KDSPoint implements Comparable<KDSPoint>{
         this.certificates = new ArrayList<>();
     }
 
-    public KDSPoint(KDSPoint other) {
-        this.coeffsX = other.coeffsX;
-        this.coeffsY = other.coeffsY;
-        this.idx = other.idx;
-        this.inEvent = other.inEvent;
-        this.certificates = new ArrayList<>(other.certificates);
-    }
-
     public double[] getCoeffsX() {
         return coeffsX;
     }
@@ -99,22 +92,22 @@ public class KDSPoint implements Comparable<KDSPoint>{
     }
 
     public Point getPoint(double t) {
-        double x = 0;
+        double new_x = 0;
 
         for (int i = 0; i < coeffsX.length; ++i) {
-            x += coeffsX[i] * Math.pow(t, i);
+            new_x += coeffsX[i] * Math.pow(t, i);
         }
 
-        double y = 0;
+        double new_y = 0;
 
         for (int i = 0; i < coeffsY.length; ++i) {
-            y += coeffsY[i] * Math.pow(t, i);
+            new_y += coeffsY[i] * Math.pow(t, i);
         }
 
-        this.x = x;
-        this.y = y;
+        this.x = new_x;
+        this.y = new_y;
 
-        return new Point(x, y);
+        return new Point(new_x, new_y);
     }
 
     public void swap(KDSPoint other) {
