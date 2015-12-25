@@ -63,26 +63,10 @@ public class SortedList implements KDS<SortedEvent> {
     }
 
     Complex64F[] findRoots(double[] ac, double[] bc) {
-        int minSize, maxSize;
-        boolean is_a_greater;
-        if (ac.length <= bc.length) {
-            minSize = ac.length;
-            maxSize = bc.length;
-            is_a_greater = false;
-        } else {
-            minSize = bc.length;
-            maxSize = ac.length;
-            is_a_greater = true;
-        }
+        double[] coeffs = new double[ac.length];
 
-        double[] coeffs = new double[maxSize];
-
-        for (int i = 0; i < maxSize; ++i) {
-            if (i < minSize) {
-                coeffs[i] = ac[i] - bc[i];
-            } else {
-                coeffs[i] = is_a_greater ? ac[i] : -bc[i];
-            }
+        for (int i = 0; i < ac.length; ++i) {
+            coeffs[i] = ac[i] - bc[i];
         }
         return PolynomialRootFinder.findRoots(coeffs);
     }
@@ -122,12 +106,7 @@ public class SortedList implements KDS<SortedEvent> {
             }
         }
 
-        return -1; /*
-        try {
-            return Collections.min(rootsXR);
-        } catch (NoSuchElementException e) {
-            return -1;
-        }*/
+        return -1;
     }
 
     @Override
@@ -135,9 +114,7 @@ public class SortedList implements KDS<SortedEvent> {
         for (KDSPoint p : points) {
             p.updatePosition(t);
         }
-        if (t > 0.14) {
-            System.out.println("weee");//weee
-        }
+
         KDSPoint a = (KDSPoint) event.getA();
         KDSPoint b = (KDSPoint) event.getB();
 
@@ -165,7 +142,7 @@ public class SortedList implements KDS<SortedEvent> {
     private void createCertificate(double t, KDSPoint a, KDSPoint b, boolean inFailedEvent) {
         Certificate<SortedEvent> cert = new Certificate<>();
         cert.setFailureTime(computeFailureTime(t, a, b, inFailedEvent));
-        // if failure time is less than 0, then it will never fail in the future
+        // if failure time is less than t, then it will never fail in the future
         if (cert.getFailureTime() >= t) {
             a.getCertificates().add(cert);
             SortedEvent<KDSPoint> e = new SortedEvent<>(cert, this, a, b);
