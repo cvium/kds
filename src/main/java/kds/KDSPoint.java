@@ -6,7 +6,13 @@ import ProGAL.geom2d.viewer.J2DScene;
 import sortedList.SortedEvent;
 
 import java.awt.*;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by clausvium on 21/12/15.
@@ -30,7 +36,7 @@ public class KDSPoint implements Comparable<KDSPoint>{
 
     public void removeCertificates() {
         for (Certificate c : certificates) {
-            c.setFailureTime(Double.MAX_VALUE);
+            //c.setFailureTime(Double.MAX_VALUE);
             c.setValid(false);
         }
         this.certificates.clear();
@@ -131,8 +137,9 @@ public class KDSPoint implements Comparable<KDSPoint>{
     }
 
     public void draw(J2DScene scene, double t, Color c) {
-        Circle circ = new Circle(getPoint(t), 0.01);
-        scene.addShape(circ, c);
+        /*Circle circ = new Circle(getPoint(t), 0.01);
+        scene.addShape(circ, c);*/
+        getPoint(t).toScene(scene, 0.01, c);
         this.inEvent = false;
     }
 
@@ -147,4 +154,33 @@ public class KDSPoint implements Comparable<KDSPoint>{
         getPoint(t);
     }
 
+    public static void toFile(ArrayList<KDSPoint> kps) throws IOException{
+        ArrayList<String> lines = new ArrayList<>();
+        for (KDSPoint kp : kps) {
+            String init = "points.add(new KDSPoint(";
+            String x = "new double[]{";
+            String y = "new double[]{";
+            for (int i = 0; i < kp.getCoeffsX().length; ++i) {
+                x += kp.getCoeffsX()[i];
+                if (i < kp.getCoeffsX().length-1) {
+                    x += ",";
+                } else {
+                    x += "}";
+                }
+            }
+            String mid = ",";
+            for (int i = 0; i < kp.getCoeffsY().length; ++i) {
+                y += kp.getCoeffsY()[i];
+                if (i < kp.getCoeffsY().length-1) {
+                    y += ",";
+                } else {
+                    y += "}";
+                }
+            }
+            String end = "));";
+            lines.add(init + x + mid + y + end);
+        }
+        Path file = Paths.get("coeffs.txt");
+        Files.write(file, lines, Charset.forName("UTF-8"));
+    }
 }

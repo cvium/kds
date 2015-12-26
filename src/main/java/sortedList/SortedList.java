@@ -1,12 +1,11 @@
 package sortedList;
 
-import ProGAL.geom2d.Point;
 import kds.*;
-import org.ejml.data.Complex64F;
+import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
+import org.apache.commons.math3.complex.Complex;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -15,19 +14,19 @@ import java.util.NoSuchElementException;
 public class SortedList implements KDS<SortedEvent> {
     EventQueue eq;
     ArrayList<KDSPoint> points;
-    //LaguerreSolver solver;
+    LaguerreSolver solver;
 
     public SortedList() {
         this.points = new ArrayList<>();
         this.eq = new EventQueue();
-        //this.solver = new LaguerreSolver();
+        this.solver = new LaguerreSolver();
         initialize();
     }
 
     public SortedList(ArrayList<KDSPoint> points) {
         this.points = points;
         this.eq = new EventQueue();
-        //this.solver = new LaguerreSolver();
+        this.solver = new LaguerreSolver();
         initialize();
     }
 
@@ -62,13 +61,13 @@ public class SortedList implements KDS<SortedEvent> {
         }
     }
 
-    Complex64F[] findRoots(double[] ac, double[] bc) {
+    Complex[] findRoots(double t, double[] ac, double[] bc) {
         double[] coeffs = new double[ac.length];
 
         for (int i = 0; i < ac.length; ++i) {
             coeffs[i] = ac[i] - bc[i];
         }
-        return PolynomialRootFinder.findRoots(coeffs);
+        return solver.solveAllComplex(coeffs, t);
     }
 
 
@@ -76,17 +75,17 @@ public class SortedList implements KDS<SortedEvent> {
         double[] aCoeffsX = a.getCoeffsX();
         double[] bCoeffsX = b.getCoeffsX();
 
-        Complex64F[] rootsX = new Complex64F[0];
+        Complex[] rootsX = new Complex[0];
 
         if (aCoeffsX.length > 0 && bCoeffsX.length > 0) {
-            rootsX = findRoots(aCoeffsX, bCoeffsX);
+            rootsX = findRoots(t, aCoeffsX, bCoeffsX);
         }
 
         ArrayList<Double> rootsXR = new ArrayList<>();
 
-        for (Complex64F r : rootsX) {
-            if (r.isReal() && r.getReal() >= t) {
-                rootsXR.add(r.getReal());
+        for (Complex r : rootsX) {
+            if (r.getImaginary() == 0 && r.getReal() >= t) {
+                rootsXR.add(Math.abs(r.getReal()));
             }
         }
 
