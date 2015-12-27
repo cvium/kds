@@ -12,20 +12,20 @@ import java.util.NoSuchElementException;
  * Created by clausvium on 21/12/15.
  */
 public class SortedList implements KDS<SortedEvent> {
-    EventQueue eq;
+    EventQueue<SortedEvent> eq;
     ArrayList<KDSPoint> points;
     LaguerreSolver solver;
 
     public SortedList() {
         this.points = new ArrayList<>();
-        this.eq = new EventQueue();
+        this.eq = new EventQueue<>();
         this.solver = new LaguerreSolver();
         initialize();
     }
 
     public SortedList(ArrayList<KDSPoint> points) {
         this.points = points;
-        this.eq = new EventQueue();
+        this.eq = new EventQueue<>();
         this.solver = new LaguerreSolver();
         initialize();
     }
@@ -40,7 +40,8 @@ public class SortedList implements KDS<SortedEvent> {
         Collections.sort(ps);
         for (int i = 0; i < points.size(); ++i) {
             if (ps.get(i) != points.get(i)) {
-                System.out.println("Is: " + points.get(i).getPoint(t).x() + " should be: " + ps.get(i).getPoint(t).x());
+                System.out.println("Is: " + points.get(i).getPoint(t).x() + " (" + points.get(i).getIdx() + ")"
+                        + " should be: " + ps.get(i).getPoint(t).x() + " (" + ps.get(i).getIdx() + ")");
                 return false;
             }
         }
@@ -84,7 +85,7 @@ public class SortedList implements KDS<SortedEvent> {
         ArrayList<Double> rootsXR = new ArrayList<>();
 
         for (Complex r : rootsX) {
-            if (r.getImaginary() == 0 && r.getReal() >= t) {
+            if (Math.abs(r.getImaginary()) < 1e-10 && r.getReal() >= t) {
                 rootsXR.add(Math.abs(r.getReal()));
             }
         }
@@ -93,7 +94,7 @@ public class SortedList implements KDS<SortedEvent> {
             Collections.sort(rootsXR);
 
             for (double r : rootsXR) {
-                if (r != t) {
+                if (r-t > 1e-10) {
                    return r;
                 }
             }
@@ -136,6 +137,8 @@ public class SortedList implements KDS<SortedEvent> {
             createCertificate(t, a, p, false);
         }
         createCertificate(t, b, a, true);
+
+        //eq.remove(event);
     }
 
     private void createCertificate(double t, KDSPoint a, KDSPoint b, boolean inFailedEvent) {
@@ -145,7 +148,7 @@ public class SortedList implements KDS<SortedEvent> {
         if (cert.getFailureTime() >= t) {
             a.getCertificates().add(cert);
             SortedEvent<KDSPoint> e = new SortedEvent<>(cert, this, a, b);
-            eq.queue.add(e);
+            eq.add(e);
         }
     }
 }

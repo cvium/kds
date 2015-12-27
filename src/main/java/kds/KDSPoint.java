@@ -183,4 +183,22 @@ public class KDSPoint implements Comparable<KDSPoint>{
         Path file = Paths.get("coeffs.txt");
         Files.write(file, lines, Charset.forName("UTF-8"));
     }
+
+    public static void toFileGoogle(ArrayList<KDSPoint> kps) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        for (KDSPoint kp : kps) {
+            String a = "";
+            for (int i = 0; i < kp.getCoeffsX().length; ++i) {
+                a += kp.getCoeffsX()[i] + "*x^" + i;
+                if (i < kp.getCoeffsX().length - 1) {
+                    a += "+";
+                } else {
+                    a += kp.getCoeffsX()[i];
+                }
+            }
+            lines.add(a);
+        }
+        Path file = Paths.get("coeffs_google.txt");
+        Files.write(file, lines, Charset.forName("UTF-8"));
+    }
 }

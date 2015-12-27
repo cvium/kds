@@ -10,10 +10,11 @@ import kds.Certificate;
 import kds.KDSPoint;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 class run {
-    private static int N = 10;
+    private static int N = 500;
     private static int M = 5;
     private static int T = 10;
     private static double TIMESTEP = 0.01;
@@ -72,6 +73,7 @@ class run {
         points.add(new KDSPoint(new double[]{0.9087772057650372, 0.4311158087018987, 0.5448479624424398,
                 0.7371832106732925, 0.28549155003542726}, new double[]{0, 0, 0, 0, 0}));
         */
+        /*
         points.add(new KDSPoint(new double[]{0.5084869422792161,0.19800192479885215,0.45531448050522516,0.6868919667271562,0.993574466103454},new double[]{0.0,0.0,0.0,0.0,0.0}));
         points.add(new KDSPoint(new double[]{0.9510228591488803,0.03841483529978151,0.19006801897766312,0.6585533932714205,0.3460709035712416},new double[]{0.0,0.0,0.0,0.0,0.0}));
         points.add(new KDSPoint(new double[]{0.25782188127951255,0.10334321485581799,0.7860322898021634,0.5021049599206406,0.7912059082098827},new double[]{0.0,0.0,0.0,0.0,0.0}));
@@ -83,12 +85,24 @@ class run {
         points.add(new KDSPoint(new double[]{0.9437438686624938,0.6121554900159948,0.6736119178713141,0.7072884941928156,0.37170983274960956},new double[]{0.0,0.0,0.0,0.0,0.0}));
         points.add(new KDSPoint(new double[]{0.8658071828592309,0.646190057220281,0.8413344170005207,0.7527785337648647,0.42272952933234764},new double[]{0.0,0.0,0.0,0.0,0.0}));
 
-        Color[] c = {Color.BLUE, Color.RED, Color.BLACK, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.darkGray,
+        *//*
+        points.add(new KDSPoint(new double[]{0.4103753479430957,0.20397440729967298,0.206329275699086,0.753102096495774,0.46234011474204184},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.6166072679055391,0.8092095766960287,0.21157165002054756,0.22092587183386558,0.569188491996689},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.8117259953714798,0.1447546666764279,0.5257333623511364,0.059372297944845,0.8008006814521813},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.8172869512191797,0.7731619121170982,0.9982536150889694,0.399483297721809,0.03731637255620246},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.5049722371030404,0.6672971290383739,0.42054901783498977,0.4326216668627959,0.7020310840255034},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.48549758016432065,0.78626791153525,0.5736595722669466,0.1427656223756295,0.22779312919046868},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.037252411557737064,0.9893476731313464,0.9016753645513587,0.4968859776541439,0.17223443187258225},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.11064721059219618,0.43531992761004135,0.8180080235076149,0.635819312922344,0.5725188018766433},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.7315210031838416,0.19980141634885684,0.5027092269586045,0.10658101714273516,0.6820875590877933},new double[]{0.0,0.0,0.0,0.0,0.0}));
+        points.add(new KDSPoint(new double[]{0.38436710512136774,0.29458353845362883,0.4648101141032609,0.18019326069952601,0.29566710016660536},new double[]{0.0,0.0,0.0,0.0,0.0}));
+
+        Color[] c = {Color.BLUE, Color.RED, Color.BLACK, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.GRAY,
                 Color.ORANGE, Color.PINK, Color.YELLOW};
 
         for(int i = 0; i < N; ++i) {
             points.get(i).draw(scene, 0, c[i]);
-        }
+        }*/
 
         for (int i = 0; i < N; ++i) {
             double[] coeffsX = new double[M];
@@ -115,20 +129,14 @@ class run {
         while (t <= T) {
             scene.removeAllShapes();
             try {
-                if (t == 0.12564444176547446){
-                    System.out.println("sandsajkdnsa");
-                }
-                while (sl.eq.queue.element().getCertificate().getFailureTime() <= t) {
-                    if (t == 0.28957302237005034) {
-                        System.out.println("whatever");
-                    }
-                    SortedEvent event = (SortedEvent) sl.eq.queue.poll();
-                    if (sl.eq.queue.element().getCertificate().getFailureTime() == event.getCertificate().getFailureTime()) {
-                        System.out.println("pls work");
-                    }
-                    if (event.getCertificate().isValid()) {
-                        event.process(t);
-                        System.out.println("EVENT at time " + t);
+                ArrayList<SortedEvent> es = sl.eq.peek();
+                while (sl.eq.firstKey() <= t) {
+                    es = sl.eq.poll();
+                    for (SortedEvent<KDSPoint> e : es) {
+                        if (e.getCertificate().isValid()) {
+                            e.process(t);
+                            System.out.println("EVENT at time " + e.getCertificate().getFailureTime());
+                        }
                     }
                 }
                 if (!sl.audit(t)) {
@@ -139,15 +147,15 @@ class run {
                 // do nothing
             }
             for(int i = 0; i < N; ++i) {
-                sl.points.get(i).draw(scene, t, c[i]);
+                //sl.points.get(i).draw(scene, t, c[i]);
+                sl.points.get(i).draw(scene, t);
             }
             scene.repaint();
             //try{Thread.sleep(500);} catch(InterruptedException e) {}
             double nextFailTime;
             try {
-                if (sl.eq.queue.element().getCertificate().getFailureTime() - t < 0.01 &&
-                        sl.eq.queue.element().getCertificate().isValid()) {
-                    nextFailTime = sl.eq.queue.element().getCertificate().getFailureTime();
+                if (sl.eq.firstKey() - t < 0.01) {
+                    nextFailTime = sl.eq.firstKey();
                 } else {
                     nextFailTime = t + TIMESTEP;
                 }
