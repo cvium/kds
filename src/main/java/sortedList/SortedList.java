@@ -1,38 +1,90 @@
 package sortedList;
 
 import kds.*;
+import kds.Solvers.EigenSolver;
 import kds.Solvers.WeierstrassSolver;
 //import org.apache.commons.math3.complex.Complex;
+import org.ejml.data.Complex64F;
 import org.jscience.mathematics.number.Complex;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 /**
  * Created by clausvium on 21/12/15.
  */
 public class SortedList implements KDS<KDSPoint, SortedEvent> {
     EventQueue<SortedEvent> eq;
+    int degree = 3;
+    int numPoints = 10;
     ArrayList<KDSPoint> points;
-    WeierstrassSolver solver;
+    EigenSolver solver;
 
     public SortedList() {
         this.points = new ArrayList<>();
         this.eq = new EventQueue<>();
-        this.solver = new WeierstrassSolver();
+        this.solver = new EigenSolver();
         initialize();
     }
 
     public SortedList(ArrayList<KDSPoint> points) {
         this.points = points;
         this.eq = new EventQueue<>();
-        this.solver = new WeierstrassSolver();
+        this.solver = new EigenSolver();
         initialize();
     }
 
+    public SortedList(int numPoints, int degree) {
+        this.numPoints = numPoints;
+        this.degree = degree;
+        this.eq = new EventQueue<>();
+        this.solver = new EigenSolver();
+        points = new ArrayList<>();
+        Random rand = new Random();
+        for (int i = 0; i < numPoints; ++i) {
+            double[] coeffsX = new double[degree];
+            double[] coeffsY = new double[degree];
+
+            for (int j = 0; j < degree; ++j) {
+                coeffsX[j] = (int) ((Math.random() * 90000) + 1000) / 10000.0;
+                System.out.println(coeffsX[j]);
+                coeffsY[j] = 0;
+            }
+            points.add(new KDSPoint(coeffsX, coeffsY));
+        }
+        initialize();
+    }
+
+    public int getNumPoints() {
+        return numPoints;
+    }
+
+    public void setNumPoints(int numPoints) {
+        this.numPoints = numPoints;
+    }
+
+    public int getDegree() {
+        return degree;
+    }
+
+    public void setDegree(int degree) {
+        this.degree = degree;
+    }
+
     @Override
-    public boolean audit(double t) throws Exception {
+    public EventQueue<SortedEvent> getEventQueue() {
+        return eq;
+    }
+
+    @Override
+    public ArrayList<KDSPoint> getPoints() {
+        return points;
+    }
+
+    @Override
+    public boolean audit(double t) {
         ArrayList<KDSPoint> ps = new ArrayList<>();
         for (KDSPoint p : points) {
             p.updatePosition(t);
@@ -63,7 +115,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
         }
     }
 
-    Complex[] findRoots(double t, double[] ac, double[] bc) {
+    Complex64F[] findRoots(double t, double[] ac, double[] bc) {
         double[] coeffs = new double[ac.length];
 
         for (int i = 0; i < ac.length; ++i) {
@@ -77,7 +129,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
         double[] aCoeffsX = a.getCoeffsX();
         double[] bCoeffsX = b.getCoeffsX();
 
-        Complex[] rootsX = new Complex[0];
+        Complex64F[] rootsX = new Complex64F[0];
 
         if (aCoeffsX.length > 0 && bCoeffsX.length > 0) {
             rootsX = findRoots(t, aCoeffsX, bCoeffsX);
@@ -85,7 +137,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
 
         ArrayList<Double> rootsXR = new ArrayList<>();
 
-        for (Complex r : rootsX) {
+        for (Complex64F r : rootsX) {
             if (Math.abs(r.getImaginary()) < 1e-10 && r.getReal() >= t) {
                 rootsXR.add(Math.abs(r.getReal()));
             }
