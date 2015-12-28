@@ -1,10 +1,9 @@
 package sortedList;
 
 import kds.*;
-import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
+import kds.Solvers.WeierstrassSolver;
 //import org.apache.commons.math3.complex.Complex;
 import org.jscience.mathematics.number.Complex;
-import org.ejml.data.Complex64F;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +69,6 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
         for (int i = 0; i < ac.length; ++i) {
             coeffs[i] = ac[i] - bc[i];
         }
-        //return solver.solveAllComplex(coeffs, t);
         return solver.findRoots(coeffs, t);
     }
 

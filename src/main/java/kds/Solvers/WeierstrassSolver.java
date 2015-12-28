@@ -1,5 +1,6 @@
-package kds;
+package kds.Solvers;
 
+import kds.Solver;
 import org.jscience.mathematics.function.Polynomial;
 import org.jscience.mathematics.function.Term;
 import org.jscience.mathematics.function.Variable;
@@ -9,7 +10,7 @@ import org.jscience.mathematics.number.Complex;
  * Created by clausvium on 28/12/15.
  * https://sites.google.com/site/drjohnbmatthews/polyroots
  */
-public class WeierstrassSolver implements Solvers<Complex> {
+public class WeierstrassSolver implements Solver<Complex> {
     private static final int MAX_COUNT = 999;
     private static final boolean DEBUG = false;
     private static double epsilon = 1E-15;

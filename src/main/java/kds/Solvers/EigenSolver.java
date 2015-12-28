@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package kds;
+package kds.Solvers;
 
+import kds.Solver;
 import org.ejml.data.Complex64F;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
@@ -43,7 +44,7 @@ import org.ejml.interfaces.decomposition.EigenDecomposition;
  *
  * @author Peter Abeles
  */
-public class EigenSolver implements Solvers<Complex64F> {
+public class EigenSolver implements Solver<Complex64F> {
 
     /**
      * <p>
