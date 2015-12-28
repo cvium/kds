@@ -3,6 +3,7 @@ package sortedList;
 import kds.*;
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
 import org.apache.commons.math3.complex.Complex;
+import org.ejml.data.Complex64F;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,13 +63,14 @@ public class SortedList implements KDS<SortedEvent> {
         }
     }
 
-    Complex[] findRoots(double t, double[] ac, double[] bc) {
+    Complex64F[] findRoots(double t, double[] ac, double[] bc) {
         double[] coeffs = new double[ac.length];
 
         for (int i = 0; i < ac.length; ++i) {
             coeffs[i] = ac[i] - bc[i];
         }
-        return solver.solveAllComplex(coeffs, t);
+        //return solver.solveAllComplex(coeffs, t);
+        return PolynomialRootFinder.findRoots(coeffs);
     }
 
 
@@ -76,7 +78,7 @@ public class SortedList implements KDS<SortedEvent> {
         double[] aCoeffsX = a.getCoeffsX();
         double[] bCoeffsX = b.getCoeffsX();
 
-        Complex[] rootsX = new Complex[0];
+        Complex64F[] rootsX = new Complex64F[0];
 
         if (aCoeffsX.length > 0 && bCoeffsX.length > 0) {
             rootsX = findRoots(t, aCoeffsX, bCoeffsX);
@@ -84,7 +86,7 @@ public class SortedList implements KDS<SortedEvent> {
 
         ArrayList<Double> rootsXR = new ArrayList<>();
 
-        for (Complex r : rootsX) {
+        for (Complex64F r : rootsX) {
             if (Math.abs(r.getImaginary()) < 1e-10 && r.getReal() >= t) {
                 rootsXR.add(Math.abs(r.getReal()));
             }
@@ -111,12 +113,14 @@ public class SortedList implements KDS<SortedEvent> {
 
     @Override
     public void update(SortedEvent event, double t) {
-        for (KDSPoint p : points) {
-            p.updatePosition(t);
-        }
-
         KDSPoint a = (KDSPoint) event.getA();
         KDSPoint b = (KDSPoint) event.getB();
+
+        int start = a.getIdx() > 0 ? a.getIdx() - 1 : a.getIdx();
+        int end = b.getIdx() < points.size() - 1 ? b.getIdx() + 1 : points.size();
+        for (int i = start; i < end; ++i) {
+            points.get(i).updatePosition(t);
+        }
 
         a.removeCertificates();
         b.removeCertificates();
