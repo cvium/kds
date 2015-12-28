@@ -2,7 +2,8 @@ package sortedList;
 
 import kds.*;
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver;
-import org.apache.commons.math3.complex.Complex;
+//import org.apache.commons.math3.complex.Complex;
+import org.jscience.mathematics.number.Complex;
 import org.ejml.data.Complex64F;
 
 import java.util.ArrayList;
@@ -15,19 +16,19 @@ import java.util.NoSuchElementException;
 public class SortedList implements KDS<KDSPoint, SortedEvent> {
     EventQueue<SortedEvent> eq;
     ArrayList<KDSPoint> points;
-    LaguerreSolver solver;
+    WeierstrassSolver solver;
 
     public SortedList() {
         this.points = new ArrayList<>();
         this.eq = new EventQueue<>();
-        this.solver = new LaguerreSolver();
+        this.solver = new WeierstrassSolver();
         initialize();
     }
 
     public SortedList(ArrayList<KDSPoint> points) {
         this.points = points;
         this.eq = new EventQueue<>();
-        this.solver = new LaguerreSolver();
+        this.solver = new WeierstrassSolver();
         initialize();
     }
 
@@ -63,14 +64,14 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
         }
     }
 
-    Complex64F[] findRoots(double t, double[] ac, double[] bc) {
+    Complex[] findRoots(double t, double[] ac, double[] bc) {
         double[] coeffs = new double[ac.length];
 
         for (int i = 0; i < ac.length; ++i) {
             coeffs[i] = ac[i] - bc[i];
         }
         //return solver.solveAllComplex(coeffs, t);
-        return PolynomialRootFinder.findRoots(coeffs);
+        return solver.findRoots(coeffs, t);
     }
 
 
@@ -78,7 +79,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
         double[] aCoeffsX = a.getCoeffsX();
         double[] bCoeffsX = b.getCoeffsX();
 
-        Complex64F[] rootsX = new Complex64F[0];
+        Complex[] rootsX = new Complex[0];
 
         if (aCoeffsX.length > 0 && bCoeffsX.length > 0) {
             rootsX = findRoots(t, aCoeffsX, bCoeffsX);
@@ -86,7 +87,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
 
         ArrayList<Double> rootsXR = new ArrayList<>();
 
-        for (Complex64F r : rootsX) {
+        for (Complex r : rootsX) {
             if (Math.abs(r.getImaginary()) < 1e-10 && r.getReal() >= t) {
                 rootsXR.add(Math.abs(r.getReal()));
             }

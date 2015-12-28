@@ -43,7 +43,7 @@ import org.ejml.interfaces.decomposition.EigenDecomposition;
  *
  * @author Peter Abeles
  */
-public class PolynomialRootFinder {
+public class EigenSolver implements Solvers<Complex64F> {
 
     /**
      * <p>
@@ -59,7 +59,7 @@ public class PolynomialRootFinder {
      * @param coefficients Coefficients of the polynomial.
      * @return The roots of the polynomial
      */
-    public static Complex64F[] findRoots(double... coefficients) {
+    public Complex64F[] findRoots(double[] coefficients, double t) {
         int N = coefficients.length-1;
 
         if (N < 1) { return new Complex64F[0];}

@@ -31,6 +31,7 @@ public class EventQueue<EventType extends Event> {
         if (es != null) {
             es.remove(e);
         }
+        queue.put(failureTime, es);
     }
 
     public ArrayList<EventType> peek(double t) throws NoSuchElementException {

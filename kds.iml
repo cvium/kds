@@ -32,5 +32,7 @@
     <orderEntry type="library" name="Gradle: org.ejml:equation:0.27" level="project" />
     <orderEntry type="library" name="Gradle: org.ejml:dense64:0.27" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-math3:3.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.jscience:jscience:4.3.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.javolution:javolution:5.2.3" level="project" />
   </component>
 </module>
