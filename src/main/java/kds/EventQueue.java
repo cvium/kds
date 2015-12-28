@@ -13,19 +13,19 @@ public class EventQueue<EventType extends Event> {
     }
 
     public void add(EventType e) {
-        double failureTime = e.getCertificate().getFailureTime();
+        double failureTime = e.getFailureTime();
         ArrayList<EventType> es = queue.get(failureTime);
         if (es != null) {
             es.add(e);
         } else {
             es = new ArrayList<>();
             es.add(e);
-            queue.put(e.getCertificate().getFailureTime(), es);
+            queue.put(e.getFailureTime(), es);
         }
     }
 
     public void remove(EventType e) {
-        double failureTime = e.getCertificate().getFailureTime();
+        double failureTime = e.getFailureTime();
         ArrayList<EventType> es = queue.get(failureTime);
 
         if (es != null) {

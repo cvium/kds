@@ -6,7 +6,6 @@ package sortedList;
 import ProGAL.geom2d.Point;
 import ProGAL.geom2d.viewer.J2DScene;
 import ProGAL.geom2d.*;
-import kds.Certificate;
 import kds.KDSPoint;
 
 import java.awt.*;
@@ -183,8 +182,8 @@ class run {
                 ArrayList<SortedEvent> es = sl.eq.peek();
                 while (sl.eq.firstKey() <= t) {
                     es = sl.eq.poll();
-                    for (SortedEvent<KDSPoint> e : es) {
-                        if (e.getCertificate().isValid()) {
+                    for (SortedEvent e : es) {
+                        if (e.isValid()) {
                             event = true;
                             e.process(t);
                             System.out.println("EVENT at time " + t);

@@ -3,7 +3,6 @@ package kds;
 import ProGAL.geom2d.*;
 import ProGAL.geom2d.Point;
 import ProGAL.geom2d.viewer.J2DScene;
-import sortedList.SortedEvent;
 
 import java.awt.*;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by clausvium on 21/12/15.
@@ -22,24 +20,24 @@ public class KDSPoint implements Comparable<KDSPoint>{
     double[] coeffsY;
     int idx;
     boolean inEvent;
-    ArrayList<Certificate> certificates;
+    ArrayList<Event> events;
     double x;
     double y;
 
-    public ArrayList<Certificate> getCertificates() {
-        return certificates;
+    public ArrayList<Event> getEvents() {
+        return events;
     }
 
-    public void setCertificates(ArrayList<Certificate> certificates) {
-        this.certificates = certificates;
+    public void setEvents(ArrayList<Event> events) {
+        this.events = events;
     }
 
-    public void removeCertificates() {
-        for (Certificate c : certificates) {
+    public void removeEvents() {
+        for (Event e : events) {
             //c.setFailureTime(Double.MAX_VALUE);
-            c.setValid(false);
+            e.setValid(false);
         }
-        this.certificates.clear();
+        this.events.clear();
     }
 
     public boolean isInEvent() {
@@ -78,7 +76,7 @@ public class KDSPoint implements Comparable<KDSPoint>{
         this.y = coeffsY[0];
         this.coeffsX = coeffsX;
         this.coeffsY = coeffsY;
-        this.certificates = new ArrayList<>();
+        this.events = new ArrayList<>();
     }
 
     public double[] getCoeffsX() {
@@ -121,19 +119,19 @@ public class KDSPoint implements Comparable<KDSPoint>{
         double[] old_coeffsY = other.coeffsY;
         int old_idx = other.idx;
         boolean old_inEvent = other.inEvent;
-        ArrayList<Certificate> old_certificates = new ArrayList<>(other.certificates);
+        ArrayList<Event> old_events = new ArrayList<>(other.events);
 
         other.coeffsX = this.coeffsX;
         other.coeffsY = this.coeffsY;
         other.idx = this.idx;
         other.inEvent = this.inEvent;
-        other.certificates = new ArrayList<>(this.certificates);
+        other.events = new ArrayList<>(this.events);
 
         this.coeffsX = old_coeffsX;
         this.coeffsY = old_coeffsY;
         this.idx = old_idx;
         this.inEvent = old_inEvent;
-        this.certificates = new ArrayList<>(old_certificates);
+        this.events = new ArrayList<>(old_events);
     }
 
     public void draw(J2DScene scene, double t, Color c) {

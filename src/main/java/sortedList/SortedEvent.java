@@ -1,39 +1,21 @@
 package sortedList;
 
-import kds.Certificate;
+import kds.KDSPoint;
 
 /**
  * Created by clausvium on 21/12/15.
  */
-public class SortedEvent<PointType> extends kds.Event{
-    private Certificate<SortedEvent> cert;
+public class SortedEvent extends kds.Event<KDSPoint>{
     private SortedList sl;
-    private PointType a;
-    private PointType b;
 
-    public PointType getA() {
-        return a;
-    }
-
-    public void setA(PointType a) {
-        this.a = a;
-    }
-
-    public PointType getB() {
-        return b;
-    }
-
-    public void setB(PointType b) {
-        this.b = b;
-    }
-
-    public SortedEvent(Certificate<SortedEvent> cert, SortedList sl, PointType a, PointType b) {
-        super(cert);
-        this.cert = cert;
-        cert.setEvent(this);
+    public SortedEvent(SortedList sl, double failureTime, KDSPoint a, KDSPoint b) {
+        super(failureTime, a, b);
         this.sl = sl;
-        this.a = a;
-        this.b = b;
+    }
+
+    public SortedEvent(SortedList sl, KDSPoint a, KDSPoint b) {
+        super(a, b);
+        this.sl = sl;
     }
 
     public SortedEvent() {}
