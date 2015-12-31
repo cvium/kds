@@ -19,6 +19,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
     EventQueue<SortedEvent> eq;
     int degree = 3;
     int numPoints = 10;
+    double starttime;
     ArrayList<KDSPoint> points;
     EigenSolver solver;
 
@@ -26,17 +27,18 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
         this.points = new ArrayList<>();
         this.eq = new EventQueue<>();
         this.solver = new EigenSolver();
-        initialize();
+        initialize(0);
     }
 
-    public SortedList(ArrayList<KDSPoint> points) {
+    public SortedList(double starttime, ArrayList<KDSPoint> points) {
         this.points = points;
         this.eq = new EventQueue<>();
         this.solver = new EigenSolver();
-        initialize();
+        initialize(starttime);
     }
 
-    public SortedList(int numPoints, int degree) {
+    public SortedList(double starttime, int numPoints, int degree) {
+        this.starttime = starttime;
         this.numPoints = numPoints;
         this.degree = degree;
         this.eq = new EventQueue<>();
@@ -48,13 +50,13 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
             double[] coeffsY = new double[degree];
 
             for (int j = 0; j < degree; ++j) {
-                coeffsX[j] = (int) ((Math.random() * 90000) + 1000) / 10000.0;
-                System.out.println(coeffsX[j]);
+                coeffsX[j] = -10 + (10 + 10) * rand.nextDouble();//
+                //System.out.println(coeffsX[j]);
                 coeffsY[j] = 0;
             }
             points.add(new KDSPoint(coeffsX, coeffsY));
         }
-        initialize();
+        initialize(starttime);
     }
 
     public int getNumPoints() {
@@ -102,7 +104,10 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(double starttime) {
+        for (KDSPoint p : points) {
+            p.updatePosition(starttime);
+        }
         Collections.sort(points);
 
         for (int i = 0; i < points.size() - 1; ++i) {
@@ -111,7 +116,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
             KDSPoint b = points.get(i+1);
             b.setIdx(i+1);
 
-            createEvent(0.0, a, b, false);
+            createEvent(starttime, a, b, false);
         }
     }
 

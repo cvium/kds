@@ -21,7 +21,8 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
     boolean visualize = true;
     KDS<PointType, EventType> kds;
     double timestep;
-    double endTime;
+    double starttime;
+    double endtime;
     Level loggerLevel;
     J2DScene scene;
 
@@ -33,11 +34,12 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
         this.loggerLevel = loggerLevel;
     }
 
-    public Simulator(KDS<PointType, EventType> kds, double timestep, double endTime,
+    public Simulator(KDS<PointType, EventType> kds, double starttime, double timestep, double endtime,
                      Level loggerLevel) {
         this.kds = kds;
+        this.starttime = starttime;
         this.timestep = timestep;
-        this.endTime = endTime;
+        this.endtime = endtime;
         this.loggerLevel = loggerLevel;
         LOGGER.setLevel(this.loggerLevel);
         Logger topLogger = java.util.logging.Logger.getLogger("");
@@ -60,7 +62,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
     public void setVisualization(boolean visualize) {
         this.visualize = visualize;
     }
-    public void run(double startTime, boolean visualize) throws IOException {
+    public int run(boolean visualize) throws IOException {
         LOGGER.log(Level.INFO, "Starting simulation");
 
         if (visualize) scene = J2DScene.createJ2DSceneInFrame();
@@ -81,13 +83,15 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
             scene.repaint();
         }
 
-        double t = startTime;
+        double t = starttime;
         boolean event = false;
-        while (t <= endTime) {
+        int errors = 0;
+        while (t <= endtime) {
             LOGGER.log(Level.FINER, "Time: {0}", t);
+            ArrayList<EventType> es;
             try {
                 while (kds.getEventQueue().firstKey() <= t) {
-                    ArrayList<EventType> es = kds.getEventQueue().poll();
+                    es = kds.getEventQueue().poll();
                     for (EventType e : es) {
                         if (e.isValid()) {
                             event = true;
@@ -101,6 +105,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
             }
             if (!kds.audit(t)) {
                 LOGGER.log(Level.SEVERE, "Auditing failed");
+                ++errors;
             } else {
                 LOGGER.log(Level.FINE, "Auditing succeeded");
             }
@@ -115,6 +120,8 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
             }
             t += timestep;
         }
-        LOGGER.log(Level.INFO, "End of simulation");
+        LOGGER.log(Level.INFO, "End of simulation, {0} errors", errors);
+        //System.exit(0);
+        return errors;
     }
 }

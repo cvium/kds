@@ -3,28 +3,30 @@
  */
 package sortedList;
 
-import ProGAL.geom2d.Point;
-import ProGAL.geom2d.viewer.J2DScene;
-import ProGAL.geom2d.*;
 import kds.KDSPoint;
 import kds.Simulator;
 
-import java.awt.*;
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.function.DoubleToIntFunction;
 import java.util.logging.Level;
 
 class run {
-    private static int N = 50;
-    private static int M = 3;
-    private static int T = 10;
-    private static double TIMESTEP = 0.1;
-    private static Level loggerLevel = Level.FINE;
 
     public static void main(String[] args) throws Exception {
-        SortedList kds = new SortedList(N, M);
-        Simulator<KDSPoint, SortedEvent> sim = new Simulator<>(kds, TIMESTEP, T, loggerLevel);
-        sim.run(0, true);
+        final int N = 50000;
+        final int M = 3;
+        final int T = 10;
+        final int NUMRUNS = 100;
+        final double STARTTIME = 0.1;
+        final double TIMESTEP = 0.1;
+        final Level loggerLevel = Level.SEVERE;
+        int failedRuns = 0;
+        for (int i = 0; i < NUMRUNS; ++i) {
+            SortedList kds = new SortedList(STARTTIME, N, M);
+            Simulator<KDSPoint, SortedEvent> sim = new Simulator<>(kds, STARTTIME, TIMESTEP, T, loggerLevel);
+            if (sim.run(false) != 0) {
+                ++failedRuns;
+            }
+        }
+        System.out.println("Failed runs: " + failedRuns);
+        System.exit(0);
     }
 }
