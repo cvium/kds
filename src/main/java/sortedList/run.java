@@ -1,7 +1,7 @@
 /**
  * Created by clausvium on 21/12/15.
  */
-package sortedList;
+package sortedlist;
 
 import kds.KDSPoint;
 import kds.Simulator;

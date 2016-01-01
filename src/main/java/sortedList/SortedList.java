@@ -1,11 +1,9 @@
-package sortedList;
+package sortedlist;
 
 import kds.*;
-import kds.Solvers.EigenSolver;
-import kds.Solvers.WeierstrassSolver;
+import kds.solvers.EigenSolver;
 //import org.apache.commons.math3.complex.Complex;
 import org.ejml.data.Complex64F;
-import org.jscience.mathematics.number.Complex;
 
 import java.util.ArrayList;
 import java.util.Collections;

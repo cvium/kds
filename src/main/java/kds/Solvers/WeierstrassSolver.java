@@ -1,4 +1,4 @@
-package kds.Solvers;
+package kds.solvers;
 
 import kds.Solver;
 import org.jscience.mathematics.function.Polynomial;

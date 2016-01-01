@@ -1,4 +1,4 @@
-package sortedList;
+package sortedlist;
 
 import kds.KDSPoint;
 

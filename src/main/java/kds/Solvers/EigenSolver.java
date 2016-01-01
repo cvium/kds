@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package kds.Solvers;
+package kds.solvers;
 
 import kds.Solver;
 import org.ejml.data.Complex64F;
