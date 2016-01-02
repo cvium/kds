@@ -5,6 +5,7 @@
 
 # Package Files #
 *.jar
+!ProGAL.jar
 *.war
 *.ear
 

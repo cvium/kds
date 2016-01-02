@@ -11,7 +11,7 @@ import java.util.logging.Level;
 class run {
 
     public static void main(String[] args) throws Exception {
-        final int N = 50000;
+        final int N = 50;
         final int M = 3;
         final int T = 10;
         final int NUMRUNS = 100;
