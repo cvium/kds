@@ -23,6 +23,9 @@ public class KDSPoint implements Comparable<KDSPoint>{
     ArrayList<Event> events;
     double x;
     double y;
+    Point p;
+    Circle c;
+    double lastUpdated;
 
     public ArrayList<Event> getEvents() {
         return events;
@@ -77,6 +80,9 @@ public class KDSPoint implements Comparable<KDSPoint>{
         this.coeffsX = coeffsX;
         this.coeffsY = coeffsY;
         this.events = new ArrayList<>();
+        this.p = new Point(x, y);
+        this.c = new Circle(p, 0.01);
+        lastUpdated = 0;
     }
 
     public double[] getCoeffsX() {
@@ -96,22 +102,27 @@ public class KDSPoint implements Comparable<KDSPoint>{
     }
 
     public Point getPoint(double t) {
-        double new_x = 0;
+        if (lastUpdated < t) {
+            double new_x = 0;
 
-        for (int i = 0; i < coeffsX.length; ++i) {
-            new_x += coeffsX[i] * Math.pow(t, i);
+            for (int i = 0; i < coeffsX.length; ++i) {
+                new_x += coeffsX[i] * Math.pow(t, i);
+            }
+
+            double new_y = 0;
+
+            for (int i = 0; i < coeffsY.length; ++i) {
+                new_y += coeffsY[i] * Math.pow(t, i);
+            }
+
+            this.x = new_x;
+            this.y = new_y;
+            p.setCoord(0, x);
+            p.setCoord(1, y);
+            lastUpdated = t;
         }
 
-        double new_y = 0;
-
-        for (int i = 0; i < coeffsY.length; ++i) {
-            new_y += coeffsY[i] * Math.pow(t, i);
-        }
-
-        this.x = new_x;
-        this.y = new_y;
-
-        return new Point(new_x, new_y);
+        return p;
     }
 
     public void swap(KDSPoint other) {
@@ -143,8 +154,8 @@ public class KDSPoint implements Comparable<KDSPoint>{
 
     public void draw(J2DScene scene, double t) {
         Color color = isInEvent() ? java.awt.Color.RED : java.awt.Color.BLUE;
-        Circle circ = new Circle(getPoint(t), 0.01);
-        scene.addShape(circ, color);
+        c.setCenter(getPoint(t));
+        scene.addShape(c, color);
         this.inEvent = false;
     }
 

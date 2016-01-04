@@ -116,7 +116,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
                     kds.getPoints().get(i).draw(scene, t);
                 }
                 scene.repaint();
-                try { Thread.sleep(100); } catch (InterruptedException e) {}
+                try { Thread.sleep((long) (timestep * 1000)); } catch (InterruptedException e) {}
             }
             t += timestep;
         }
