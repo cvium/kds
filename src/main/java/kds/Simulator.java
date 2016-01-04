@@ -2,6 +2,8 @@ package kds;
 
 import ProGAL.geom2d.viewer.J2DScene;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
     double endtime;
     Level loggerLevel;
     J2DScene scene;
+    boolean paused;
 
     public Level getLoggerLevel() {
         return loggerLevel;
@@ -44,6 +47,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
         LOGGER.setLevel(this.loggerLevel);
         Logger topLogger = java.util.logging.Logger.getLogger("");
         topLogger.getHandlers()[0].setLevel( this.loggerLevel );
+        paused = false;
     }
 
     public double getTimestep() {
@@ -64,8 +68,11 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
     }
     public int run(boolean visualize) throws IOException {
         LOGGER.log(Level.INFO, "Starting simulation");
-
-        if (visualize) scene = J2DScene.createJ2DSceneInFrame();
+        PauseListener pl = new PauseListener(this);
+        if (visualize) {
+            scene = J2DScene.createJ2DSceneInFrame();
+            scene.addKeyListener(pl);
+        }
         /*
         Color[] c = {Color.BLUE, Color.RED, Color.BLACK, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.GRAY,
                 Color.ORANGE, Color.PINK, Color.YELLOW};
@@ -88,6 +95,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
         int errors = 0;
         while (t <= endtime) {
             LOGGER.log(Level.FINER, "Time: {0}", t);
+            if (paused) continue;
             ArrayList<EventType> es;
             try {
                 while (kds.getEventQueue().firstKey() <= t) {
@@ -123,5 +131,9 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
         LOGGER.log(Level.INFO, "End of simulation, {0} errors", errors);
         //System.exit(0);
         return errors;
+    }
+
+    public void pause() {
+        paused = !paused;
     }
 }
