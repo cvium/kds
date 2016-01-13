@@ -2,15 +2,9 @@ package kds;
 
 import ProGAL.geom2d.viewer.J2DScene;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,12 +60,12 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
     public void setVisualization(boolean visualize) {
         this.visualize = visualize;
     }
-    public int run(boolean visualize) throws IOException {
+    public int run(boolean visualize, boolean auditEveryTimestep) throws IOException {
         LOGGER.log(Level.INFO, "Starting simulation");
-        PauseListener pl = new PauseListener(this);
+        KDSKeyListener kdsKeyListener = new KDSKeyListener(this);
         if (visualize) {
             scene = J2DScene.createJ2DSceneInFrame();
-            scene.addKeyListener(pl);
+            scene.addKeyListener(kdsKeyListener);
         }
         /*
         Color[] c = {Color.BLUE, Color.RED, Color.BLACK, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.GRAY,
@@ -108,14 +102,16 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
                         }
                     }
                 }
-            } catch (NoSuchElementException e) {
+            } catch (NullPointerException e) {
                 // do nothing
             }
-            if (!kds.audit(t)) {
-                LOGGER.log(Level.SEVERE, "Auditing failed");
-                ++errors;
-            } else {
-                LOGGER.log(Level.FINE, "Auditing succeeded");
+            if (auditEveryTimestep || event) {
+                if (!kds.audit(t)){
+                    LOGGER.log(Level.SEVERE, "Auditing failed");
+                    ++errors;
+                } else{
+                    LOGGER.log(Level.FINE, "Auditing succeeded");
+                }
             }
             event = false;
             if (visualize) {
@@ -124,7 +120,9 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
                     kds.getPoints().get(i).draw(scene, t);
                 }
                 scene.repaint();
-                try { Thread.sleep((long) (timestep * 1000)); } catch (InterruptedException e) {}
+                try {
+                    TimeUnit.NANOSECONDS.sleep((long) (timestep * 1000000000));
+                } catch (InterruptedException e) {}
             }
             t += timestep;
         }
@@ -135,5 +133,14 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
 
     public void pause() {
         paused = !paused;
+    }
+    public void faster() {
+        timestep += timestep;
+        System.out.println(timestep);
+    }
+    public void slower() {
+        if (timestep-timestep > 0) {
+            timestep -= timestep;
+        }
     }
 }

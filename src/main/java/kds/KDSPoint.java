@@ -85,6 +85,10 @@ public class KDSPoint implements Comparable<KDSPoint>{
         lastUpdated = 0;
     }
 
+    public KDSPoint() {
+
+    }
+
     public double[] getCoeffsX() {
         return coeffsX;
     }

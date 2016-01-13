@@ -1,28 +1,25 @@
 /**
  * Created by clausvium on 21/12/15.
  */
-package sortedlist;
-
-import kds.KDSPoint;
-import kds.Simulator;
+package kds;
 
 import java.util.logging.Level;
 
-class run {
+class runDummy {
 
     public static void main(String[] args) throws Exception {
         final int N = 50;
-        final int M = 2;
+        final int M = 3;
         final int T = 10;
         final int NUMRUNS = 1;
-        final double STARTTIME = 0.1;
-        final double TIMESTEP = 0.1;
+        final double STARTTIME = 0.0;
+        final double TIMESTEP = 0.0001;
         final Level loggerLevel = Level.FINE;
         int failedRuns = 0;
         for (int i = 0; i < NUMRUNS; ++i) {
-            SortedList kds = new SortedList(STARTTIME, N, M);
-            Simulator<KDSPoint, SortedEvent> sim = new Simulator<>(kds, STARTTIME, TIMESTEP, T, loggerLevel);
-            if (sim.run(true, true) != 0) {
+            DummyKDS kds = new DummyKDS(STARTTIME, N, M);
+            Simulator<BoundedKDSPoint, Event<BoundedKDSPoint>> sim = new Simulator<>(kds, STARTTIME, TIMESTEP, T, loggerLevel);
+            if (sim.run(true, false) != 0) {
                 ++failedRuns;
             }
         }

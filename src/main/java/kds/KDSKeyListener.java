@@ -6,11 +6,11 @@ import java.awt.event.KeyListener;
 /**
  * Created by cvium on 04-01-2016.
  */
-public class PauseListener implements KeyListener {
+public class KDSKeyListener implements KeyListener {
 
     Simulator s;
 
-    public PauseListener(Simulator s) {
+    public KDSKeyListener(Simulator s) {
         this.s = s;
     }
     @Override
@@ -22,6 +22,12 @@ public class PauseListener implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_P) {
             s.pause();
+        } else if (e.getKeyCode() == KeyEvent.VK_K) {
+            //faster
+            s.faster();
+        } else if (e.getKeyCode() == KeyEvent.VK_J) {
+            //slower
+            s.slower();
         }
     }
 
