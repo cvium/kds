@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/kds.iml" filepath="$PROJECT_DIR$/kds.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kds.iml" filepath="$PROJECT_DIR$/.idea/modules/kds.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kds_main.iml" filepath="$PROJECT_DIR$/.idea/modules/kds_main.iml" group="kds" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kds_test.iml" filepath="$PROJECT_DIR$/.idea/modules/kds_test.iml" group="kds" />
     </modules>
   </component>
 </project>
