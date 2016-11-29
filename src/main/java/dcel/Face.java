@@ -1,4 +1,4 @@
-package DCEL;
+package dcel;
 
 import java.util.ArrayList;
 

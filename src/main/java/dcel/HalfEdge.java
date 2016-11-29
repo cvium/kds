@@ -1,4 +1,4 @@
-package DCEL;
+package dcel;
 
 import kds.KDSPoint;
 

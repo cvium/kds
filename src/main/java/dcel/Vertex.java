@@ -1,8 +1,6 @@
-package DCEL;
+package dcel;
 
 import kds.KDSPoint;
-
-import java.util.Objects;
 
 /**
  * Created by cvium on 28-11-2016.
