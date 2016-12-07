@@ -214,4 +214,13 @@ public class KDSPoint implements Comparable<KDSPoint>{
         Path file = Paths.get("coeffs_google.txt");
         Files.write(file, lines, Charset.forName("UTF-8"));
     }
+
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
 }

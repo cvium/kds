@@ -7,4 +7,6 @@ import java.util.ArrayList;
  */
 public class DCEL {
     private ArrayList<Face> faces;
+    private ArrayList<HalfEdge> edges;
+    private ArrayList<Vertex> vertices;
 }

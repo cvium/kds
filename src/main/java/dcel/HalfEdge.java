@@ -11,6 +11,8 @@ public class HalfEdge {
     private Face face;
     private HalfEdge prev;
     private HalfEdge next;
+    private HalfEdge twin;
+    private boolean isBridge;
 
     public HalfEdge() {
 
@@ -83,8 +85,18 @@ public class HalfEdge {
         this.next = next;
     }
 
-    public HalfEdge twin() {
-        return new HalfEdge(destination, origin);
+    public HalfEdge getTwin() {
+        // create twin if we don't have it. Some annoying bookkeeping
+        if (twin == null) {
+            twin = new HalfEdge(destination, origin);
+            twin.setTwin(this);
+            twin.setPrev(next.getTwin());
+            twin.setNext(prev.getTwin());
+        }
+        return twin;
+    }
+    public void setTwin(HalfEdge twin) {
+        this.twin = twin;
     }
 
     @Override
@@ -103,5 +115,15 @@ public class HalfEdge {
         int result = origin != null ? origin.hashCode() : 0;
         result = 31 * result + (destination != null ? destination.hashCode() : 0);
         return result;
+    }
+
+    // some bookkeeping for convex dt
+
+    public boolean isBridge() {
+        return isBridge;
+    }
+
+    public void markBridge() {
+        isBridge = true;
     }
 }
