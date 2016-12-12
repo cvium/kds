@@ -14,41 +14,28 @@ import static java.util.Collections.sort;
 public class Circle implements ConvexShape {
     @Override
     public circleEnum inCircle(KDSPoint a, KDSPoint b, KDSPoint c, KDSPoint d) {
-        ArrayList<KDSPoint> points = new ArrayList<>();
-        points.add(a);
-        points.add(b);
-        points.add(c);
-        sort(points);
-        a = points.get(0);
-        b = points.get(1);
-        c = points.get(2);
+        double ad_x = a.getX(0) - d.getX(0);
+        double ad_y = a.getY(0) - d.getY(0);
 
-        KDSPoint tmp;
+        double bd_x = b.getX(0) - d.getX(0);
+        double bd_y = b.getY(0) - d.getY(0);
 
-        if (leftOf(a, c, b)) {
-            tmp = c;
-            c = b;
-            b = tmp;
-        }
+        double cd_x = c.getX(0) - d.getX(0);
+        double cd_y = c.getY(0) - d.getY(0);
 
+        double ad = ad_x * ad_x + ad_y * ad_y;
+        double bd = bd_x * bd_x + bd_y * bd_y;
+        double cd = cd_x * cd_x + cd_y * cd_y;
 
-        double adx = a.getX(0) - d.getX(0);
-        double ady = a.getY(0) - d.getY(0);
-        double bdx = b.getX(0) - d.getX(0);
-        double bdy = b.getY(0) - d.getY(0);
-        double cdx = c.getX(0) - d.getX(0);
-        double cdy = c.getY(0) - d.getY(0);
+        double row1 = ad_x * (bd_y * cd - bd * cd_y);
+        double row2 = ad_y * (bd_x * cd - bd * cd_x);
+        double row3 = ad   * (bd_x * cd_y - bd_y * cd_x);
 
-        double abdet = adx * bdy - bdx * ady;
-        double bcdet = bdx * cdy - cdx * bdy;
-        double cadet = cdx * ady - adx * cdy;
-        double alift = adx * adx + ady * ady;
-        double blift = bdx * bdx + bdy * bdy;
-        double clift = cdx * cdx + cdy * cdy;
+        double det = - (row1 - row2 + row3);
 
-        double det = alift * bcdet + blift * cadet + clift * abdet;
-        if (Math.abs(det) < 1e-10) return circleEnum.ON;
-        return det > 0 ? circleEnum.INSIDE : circleEnum.OUTSIDE;
+        if (det > 1e-10) return circleEnum.INSIDE;
+        else if (det < 1e-10) return circleEnum.OUTSIDE;
+        return circleEnum.ON;
     }
 
     /**

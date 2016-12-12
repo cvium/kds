@@ -5,6 +5,8 @@ import kds.KDSPoint;
 
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by cvium on 28-11-2016.
  */
@@ -12,18 +14,20 @@ public class DCEL {
     private ArrayList<Face> faces;
     private ArrayList<HalfEdge> edges;
     private ArrayList<Vertex> vertices;
+    private J2DScene scene;
 
-    public DCEL() {
+    public DCEL(J2DScene scene) {
         faces = new ArrayList<>();
         edges = new ArrayList<>();
         vertices = new ArrayList<>();
+        this.scene = scene;
     }
 
     public HalfEdge createEdge(KDSPoint a, KDSPoint b) {
         HalfEdge e = new HalfEdge(a, b);
-        e.setFace(createFace(e));
+        //e.setFace(createFace(e));
         createTwin(e);
-        edges.add(e);
+        //edges.add(e);
         return e;
     }
 
@@ -40,6 +44,83 @@ public class DCEL {
         createTwin(e);
         edges.add(e);
         return e;
+    }
+
+    public HalfEdge connect(HalfEdge a, HalfEdge b) {
+        HalfEdge c = new HalfEdge(a.getDestination(), b.getOrigin());
+        HalfEdge c_twin = new HalfEdge(b.getOrigin(), a.getDestination());
+        edges.add(c);
+        edges.add(c_twin);
+
+        // add prev and next
+        c.setPrev(a);
+        c.setNext(b);
+
+        c.setTwin(c_twin);
+        c_twin.setTwin(c);
+        // remove the face because we'll most likely get 2 new ones
+        faces.remove(a.getFace());
+        // create two new faces
+        Face c_face = createFace(c);
+        Face c_twin_face = createFace(c_twin);
+        c.setFace(c_face);
+        c_twin.setFace(c_twin_face);
+        // connect the twin
+        if (a.getNext() != null) {
+            c_twin.setNext(a.getNext());
+            a.getNext().setPrev(c_twin);
+        } else if (c.getPrev() != null){
+            c_twin.setNext(c.getPrev().getTwin());
+            c.getPrev().getTwin().setPrev(c_twin);
+        }
+        if (b.getPrev() != null) {
+            c_twin.setPrev(b.getPrev());
+            b.getPrev().setNext(c_twin);
+        } else if (c.getNext() != null){
+            c_twin.setPrev(c.getNext().getTwin());
+            c.getNext().getTwin().setNext(c_twin);
+        }
+        // update a and b's prev/next
+        a.setNext(c);
+        b.setPrev(c);
+        // set faces
+        HalfEdge tmp = c.getNext();
+        int direction = 1; // 1 == next
+        while (true) {
+            if (tmp == c) break;
+            if (tmp == null && direction == 1) {
+                // this means the face is not closed, so we have to start over
+                direction = 0;
+                tmp = c.getPrev();
+                if (tmp == null) break;
+            } else if (tmp == null) {
+                break;
+            }
+            tmp.setFace(c_face);
+            tmp = direction == 1 ? tmp.getNext() : tmp.getPrev();
+        }
+
+        tmp = c_twin.getNext();
+        direction = 1; // 1 == next
+        while (true) {
+            if (tmp == c_twin) break;
+            if (tmp == null && direction == 1) {
+                // this means the face is not closed, so we have to start over
+                direction = 0;
+                tmp = c_twin.getPrev();
+                if (tmp == null) break;
+            } else if (tmp == null) {
+                break;
+            }
+            tmp.setFace(c_twin_face);
+            tmp = direction == 1 ? tmp.getNext() : tmp.getPrev();
+        }
+
+        //scene.removeAllShapes();
+        c_face.draw(scene);
+        scene.repaint();
+        //scene.removeAllShapes();
+        return c;
     }
 
     public void deleteEdge(HalfEdge e) {
@@ -73,14 +154,10 @@ public class DCEL {
         HalfEdge twin = e.getTwin();
         if (twin == null) {
             twin = new HalfEdge(e.getDestination(), e.getOrigin());
-            twin.setFace(createFace(e));
+            //twin.setFace(createFace(e));
             edges.add(twin);
             e.setTwin(twin);
             twin.setTwin(e);
-            if (e.getNext() != null)
-                twin.setPrev(e.getNext().getTwin());
-            if (e.getPrev() != null)
-                twin.setNext(e.getPrev().getTwin());
         }
     }
 

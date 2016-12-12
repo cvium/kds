@@ -68,40 +68,26 @@ public class HalfEdge {
 
     public HalfEdge getPrev() {
         // prev half-edge must have this.origin as its destination
-        assert prev.getDestination() == this.origin;
+        //assert prev.getDestination() == this.origin;
         return prev;
     }
 
     public void setPrev(HalfEdge prev) {
         // prev half-edge must have this.origin as its destination
-        assert prev.getDestination() == this.origin;
-
-        if (this.prev == prev) return; // avoid infinite loops
-
+        //assert prev.getDestination() == this.origin;
         this.prev = prev;
-        if (prev != null)
-            this.twin.setNext(prev.getTwin());
-        else
-            this.twin.setNext(null);
     }
 
     public HalfEdge getNext() {
         // next half-edge must have this.destination as its origin
-        assert next.getOrigin() == this.destination;
+        //assert next.getOrigin() == this.destination;
         return next;
     }
 
     public void setNext(HalfEdge next) {
         // next half-edge must have this.destination as its origin
         assert next.getOrigin() == this.destination;
-
-        if (this.next == next) return; // avoid infinite loops
-
         this.next = next;
-        if (next != null)
-            this.twin.setPrev(next.getTwin());
-        else
-            this.twin.setPrev(null);
     }
 
     public HalfEdge getTwin() {
@@ -139,17 +125,17 @@ public class HalfEdge {
         isBridge = true;
     }
 
-    public HalfEdge connect(HalfEdge other) {
-        // TODO: does this work?
-        HalfEdge newEdge = new HalfEdge(destination, other.getOrigin());
-        next = newEdge;
-        other.setPrev(newEdge);
-        newEdge.setNext(other);
-        newEdge.setPrev(this);
-        // hackish way to create the twin
-        newEdge.getTwin();
-        return newEdge;
-    }
+//    public HalfEdge connect(HalfEdge other) {
+//        // TODO: does this work?
+//        HalfEdge newEdge = new HalfEdge(destination, other.getOrigin());
+//        next = newEdge;
+//        other.setPrev(newEdge);
+//        newEdge.setNext(other);
+//        newEdge.setPrev(this);
+//        // hackish way to create the twin
+//        newEdge.getTwin();
+//        return newEdge;
+//    }
 
     public void draw(J2DScene scene, double t, Color c) {
         if (lineSegment != null)

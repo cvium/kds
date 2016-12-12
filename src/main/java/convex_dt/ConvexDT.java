@@ -1,5 +1,6 @@
 package convex_dt;
 
+import ProGAL.geom2d.Vector;
 import ProGAL.geom2d.viewer.J2DScene;
 import dcel.DCEL;
 import dcel.HalfEdge;
@@ -29,10 +30,11 @@ public class ConvexDT {
     public ConvexDT() {
     }
 
-    public ConvexDT(ArrayList<KDSPoint> points, ConvexShape shape) {
+    public ConvexDT(ArrayList<KDSPoint> points, ConvexShape shape, J2DScene scene) {
         this.points = points;
         this.shape = shape;
-        this.dcel = new DCEL();
+        this.scene = scene;
+        this.dcel = new DCEL(scene);
     }
 
     public DCEL getDcel() {
@@ -67,6 +69,7 @@ public class ConvexDT {
             e2.setPrev(e1);
             if (leftOf(a, b, c) || rightOf(a, b, c)) {
                 // connect and create a triangle
+                System.out.println("Creating triangle!");
                 connect(e2, e1);
             }
             HalfEdge lowest = e1;
@@ -108,7 +111,8 @@ public class ConvexDT {
         } else {
             // TODO I think it should move CW around left as the 'candidate' for lower support can't be on the right
             // side of left when the lowest point in right is lower
-            while (rPrev(left) != null && shape.inInfCircle(rPrev(left).getOrigin(), left.getOrigin(), right.getOrigin()) ==
+            while (rPrev(left) != null && rNext(right) != null &&
+                    shape.inInfCircle(rPrev(left).getOrigin(), left.getOrigin(), right.getOrigin()) ==
                     infCircleEnum.INSIDE && lessThan(rNext(right).getOrigin(), right.getOrigin())) {
                 if (rPrev(left) == null) break;
                 left = rPrev(left);
@@ -119,7 +123,8 @@ public class ConvexDT {
                 } else if (shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
                     right = rNext(right);
                 } else {
-                    return connect(left.getTwin(), oPrev(right)).getTwin();
+                    if (oNext(right) == null) return connect(left.getTwin(), right).getTwin();
+                    return connect(left.getTwin(), oNext(right)).getTwin();
                 }
                 System.out.println("Am I stuck in lowersupport2?");
             }
@@ -158,7 +163,7 @@ public class ConvexDT {
         HalfEdge current;
         for (int direction = 1; direction <= 2; ++direction) {
             current = oNext(edge);
-            while (current != edge) {
+            while (current != edge && current != null) {
                 if (current.isBridge()) current = unBundle(current);
                 else current = oNext(current);
             }
@@ -190,16 +195,16 @@ public class ConvexDT {
 
     public HalfEdge connect(HalfEdge a, HalfEdge b) {
         // TODO: does this work?
-        HalfEdge newEdge = dcel.createEdge(a.getDestination(), b.getOrigin());
-        a.setNext(newEdge);
-        b.setPrev(newEdge);
-        newEdge.setNext(b);
-        newEdge.setPrev(a);
-
-        newEdge.setFace(a.getFace());
-        b.setFace(a.getFace());
-        b.getTwin().setFace(a.getTwin().getFace());
-        newEdge.getTwin().setFace(a.getTwin().getFace());
+        HalfEdge newEdge = dcel.connect(a, b);//dcel.createEdge(a.getDestination(), b.getOrigin());
+//        a.setNext(newEdge);
+//        b.setPrev(newEdge);
+//        newEdge.setNext(b);
+//        newEdge.setPrev(a);
+//
+//        newEdge.setFace(a.getFace());
+//        b.setFace(a.getFace());
+//        b.getTwin().setFace(a.getTwin().getFace());
+//        newEdge.getTwin().setFace(a.getTwin().getFace());
 
         return newEdge;
     }
@@ -223,10 +228,12 @@ public class ConvexDT {
         return connect(base, rcand.getTwin()).getTwin();
     }
 
-    public HalfEdge computeLcand() {
+    public HalfEdge computeLcand() throws Exception {
         HalfEdge current = null, top = null, t = null;
         boolean foundLcand = false;
         lcand = rPrev(base);
+        lcand.draw(scene, 0, Color.ORANGE);
+        sleep(1000);
         assert lcand != null;
         assert base != null;
 
@@ -236,23 +243,30 @@ public class ConvexDT {
                 delete(oPrev(lcand));
                 if (produceONext(lcand) == null) break;
                 lcand = produceONext(lcand);
+                lcand.draw(scene, 0, Color.ORANGE);
+                sleep(1000);
             }
             if (isValid(lcand)) delete(oPrev(lcand));
             else lcand = oPrev(lcand);
+            lcand.draw(scene, 0, Color.ORANGE);
+            sleep(1000);
         }
 
         if (isValid(lcand)) {
             current = oNext(lcand);
             top = lcand;
             while (true) {
-                if (foundLcand) break;
+                if (foundLcand || current == null) break;
+                assert lcand != null;
+                assert current != null;
+                assert base != null;
                 switch (shape.inCircle(lcand.getOrigin(), lcand.getDestination(), base.getOrigin(), current.getDestination())) {
                     case INSIDE:
                         if (current.isBridge() || rPrev(current).isBridge()) {
                             current = produceONext(oPrev(current));
                         }
                         if (leftOf(lcand.getOrigin(), lcand.getDestination(), current.getDestination())) {
-                            if (rPrev(current) != dPrev(lcand))
+                            if (rPrev(current) != dPrev(lcand) && rPrev(current) != null && dPrev(lcand) != null)
                                 makeBundle(connect(lcand, current.getTwin()).getTwin());
                             if (current != oNext(lcand))
                                 makeBundle(lNext(connect(lPrev(lcand), current.getTwin())));
@@ -283,6 +297,10 @@ public class ConvexDT {
                         foundLcand = true;
                         break;
                 }
+                lcand.draw(scene, 0, Color.ORANGE);
+                sleep(1000);
+                current.draw(scene, 0, Color.GREEN);
+                sleep(1000);
                 System.out.println("Am I stuck in lcand?");
             }
         } else {
@@ -313,8 +331,9 @@ public class ConvexDT {
 
         if (rcand != null && shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.BEFORE) {
             rcand = produceOPrev(rcand);
-            while (shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.BEFORE) {
+            while (shape.inInfCircle(rcand.getDestination(), base.getDestination(), base.getOrigin()) == infCircleEnum.BEFORE) {
                 delete(oNext(rcand));
+                if (produceOPrev(rcand) == null) break;
                 rcand = produceOPrev(rcand);
             }
             if (isValid(rcand)) delete(oNext(rcand));
@@ -322,7 +341,16 @@ public class ConvexDT {
         }
 
         if (isValid(rcand)) {
+//            scene.removeAllShapes();
+//            dcel.draw(scene);
+//            try {
+//                sleep(5000);
+//            } catch (InterruptedException a) { }
+//            scene.removeAllShapes();
+//            scene.repaint();
             current = oPrev(rcand);
+            rcand.draw(scene, 0, Color.green);
+            current.draw(scene, 0, Color.ORANGE);
             top = rcand;
             while (true) {
                 if (foundRcand) break;

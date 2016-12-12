@@ -17,17 +17,24 @@ public class run {
     public static void main(String[] args) throws Exception {
         ArrayList<KDSPoint> points = new ArrayList<>();
         ConvexShape circle = new Circle();
-        Random rand = new Random();
 
-        for (int i = 0; i < 6; ++i) {
-            double[] coeffsX = new double[3];
-            double[] coeffsY = new double[3];
-            for (int j = 0; j < 3; ++j) {
-                coeffsX[j] = -1 + (1 + 1) * rand.nextDouble();//
-                coeffsY[j] = -1 + (1 + 1) * rand.nextDouble();
-            }
-            points.add(new KDSPoint(coeffsX, coeffsY));
-        }
+        points.add(new KDSPoint(new double[]{0}, new double[]{0}));
+        points.add(new KDSPoint(new double[]{-0.5}, new double[]{1}));
+        points.add(new KDSPoint(new double[]{0.5}, new double[]{1.5}));
+        points.add(new KDSPoint(new double[]{2}, new double[]{0.5}));
+        points.add(new KDSPoint(new double[]{3}, new double[]{2.5}));
+        points.add(new KDSPoint(new double[]{2.5}, new double[]{3}));
+//        Random rand = new Random();
+//
+//        for (int i = 0; i < 6; ++i) {
+//            double[] coeffsX = new double[1];
+//            double[] coeffsY = new double[1];
+//            for (int j = 0; j < 1; ++j) {
+//                coeffsX[j] = -1 + (1 + 1) * rand.nextDouble();//
+//                coeffsY[j] = -1 + (1 + 1) * rand.nextDouble();
+//            }
+//            points.add(new KDSPoint(coeffsX, coeffsY));
+//        }
 
         sort(points);
 
@@ -39,8 +46,7 @@ public class run {
         scene.autoZoom();
         scene.repaint();
 
-        ConvexDT dt = new ConvexDT(points, circle);
-        dt.setScene(scene);
+        ConvexDT dt = new ConvexDT(points, circle, scene);
 
         HalfEdge lower = dt.delaunay();
         //lower.draw(scene, 0, 2);

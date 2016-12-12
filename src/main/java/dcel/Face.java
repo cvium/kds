@@ -71,9 +71,16 @@ public class Face {
         outerComponent.draw(scene, 0, Color.green);
         HalfEdge e = outerComponent.getNext();
 
-        while (e!= null && e != outerComponent) {
-            e.draw(scene, 0, Color.green);
-            e = e.getNext();
+        int direction = 1;
+        while (true) {
+            if (e == outerComponent) break;
+            if (e == null && direction == 1) {
+                direction = 0;
+                e = outerComponent.getPrev();
+            }
+            if (e == null && direction == 0) break;
+            e.draw(scene, 0, Color.RED);
+            e = direction == 1 ? e.getNext() : e.getPrev();
         }
     }
 }
