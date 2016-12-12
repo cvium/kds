@@ -217,10 +217,21 @@ public class KDSPoint implements Comparable<KDSPoint>{
 
 
     public double getX() {
+        updatePosition(0);
+        return x;
+    }
+
+    public double getX(double t) {
+        updatePosition(t);
         return x;
     }
 
     public double getY() {
+        updatePosition(0);return y;
+    }
+
+    public double getY(double t) {
+        updatePosition(t);
         return y;
     }
 }

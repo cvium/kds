@@ -1,6 +1,10 @@
 package dcel;
 
+import ProGAL.geom2d.LineSegment;
+import ProGAL.geom2d.viewer.J2DScene;
 import kds.KDSPoint;
+
+import java.awt.*;
 
 /**
  * Created by cvium on 29-11-2016.
@@ -13,6 +17,7 @@ public class HalfEdge {
     private HalfEdge next;
     private HalfEdge twin;
     private boolean isBridge;
+    private LineSegment lineSegment;
 
     public HalfEdge() {
 
@@ -70,7 +75,14 @@ public class HalfEdge {
     public void setPrev(HalfEdge prev) {
         // prev half-edge must have this.origin as its destination
         assert prev.getDestination() == this.origin;
+
+        if (this.prev == prev) return; // avoid infinite loops
+
         this.prev = prev;
+        if (prev != null)
+            this.twin.setNext(prev.getTwin());
+        else
+            this.twin.setNext(null);
     }
 
     public HalfEdge getNext() {
@@ -82,17 +94,17 @@ public class HalfEdge {
     public void setNext(HalfEdge next) {
         // next half-edge must have this.destination as its origin
         assert next.getOrigin() == this.destination;
+
+        if (this.next == next) return; // avoid infinite loops
+
         this.next = next;
+        if (next != null)
+            this.twin.setPrev(next.getTwin());
+        else
+            this.twin.setPrev(null);
     }
 
     public HalfEdge getTwin() {
-        // create twin if we don't have it. Some annoying bookkeeping
-        if (twin == null) {
-            twin = new HalfEdge(destination, origin);
-            twin.setTwin(this);
-            twin.setPrev(next.getTwin());
-            twin.setNext(prev.getTwin());
-        }
         return twin;
     }
     public void setTwin(HalfEdge twin) {
@@ -125,5 +137,38 @@ public class HalfEdge {
 
     public void markBridge() {
         isBridge = true;
+    }
+
+    public HalfEdge connect(HalfEdge other) {
+        // TODO: does this work?
+        HalfEdge newEdge = new HalfEdge(destination, other.getOrigin());
+        next = newEdge;
+        other.setPrev(newEdge);
+        newEdge.setNext(other);
+        newEdge.setPrev(this);
+        // hackish way to create the twin
+        newEdge.getTwin();
+        return newEdge;
+    }
+
+    public void draw(J2DScene scene, double t, Color c) {
+        if (lineSegment != null)
+            scene.removeShape(lineSegment);
+        lineSegment = new LineSegment(origin.getPoint(t), destination.getPoint(t));
+        scene.addShape(lineSegment, c);
+        origin.draw(scene, t, java.awt.Color.RED);
+        scene.repaint();
+//        if (next != null)
+//            next.draw(scene, 0, false);
+//        if (prev != null)
+//            prev.draw(scene, 0, false);
+    }
+
+    public void draw(J2DScene scene, double t, boolean next) {
+        if (lineSegment != null)
+            scene.removeShape(lineSegment);
+        lineSegment = new LineSegment(origin.getPoint(0), destination.getPoint(0));
+        Color color = java.awt.Color.GREEN;
+        scene.addShape(lineSegment, color);
     }
 }

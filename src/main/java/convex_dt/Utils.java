@@ -17,6 +17,13 @@ public class Utils {
         return a.compareTo(b) == -1;
     }
 
+    public static boolean lowerThan(HalfEdge a, HalfEdge b) {
+        KDSPoint al = a.getOrigin().getPoint(0).y() < a.getDestination().getPoint(0).y() ? a.getOrigin() : a.getDestination();
+        KDSPoint bl = b.getOrigin().getPoint(0).y() < b.getDestination().getPoint(0).y() ? b.getOrigin() : b.getDestination();
+
+        return al.getY() < bl.getY();
+    }
+
     public static boolean onLine(KDSPoint a, KDSPoint b, KDSPoint c) {
         // If the determinant of the triangle containing these points is 0, they are collinear
         // aka. the triangle area test
@@ -27,29 +34,31 @@ public class Utils {
     }
 
     public static boolean leftOf(KDSPoint a, KDSPoint b, KDSPoint c) {
-        return (b.getX() - a.getX())*(c.getY() - a.getY()) - (c.getX() - a.getX())*(b.getY() - a.getY()) > 0;
+        return (b.getX() - a.getX())*(c.getY() - a.getY()) - (b.getY() - a.getY())*(c.getX() - a.getX()) > 0;
     }
 
     public static boolean rightOf(KDSPoint a, KDSPoint b, KDSPoint c) {
-        return (b.getX() - a.getX())*(c.getY() - a.getY()) - (c.getX() - a.getX())*(b.getY() - a.getY()) < 0;
+        return (b.getX() - a.getX())*(c.getY() - a.getY()) - (b.getY() - a.getY())*(c.getX() - a.getX()) < 0;
     }
 
     /* The following are some annoying helpers to find the relevant edges (C)CW from some edge E */
 
     public static HalfEdge oNext(HalfEdge e) {
+        if (e.getPrev() == null) return null;
         return e.getPrev().getTwin();
     }
 
     public static HalfEdge oPrev(HalfEdge e) {
+        if (e.getTwin().getNext() == null) return null;
         return e.getTwin().getNext();
     }
 
     public static HalfEdge dNext(HalfEdge e) {
-        return e.getNext().getTwin();
+        return e.getTwin().getPrev();
     }
 
     public static HalfEdge dPrev(HalfEdge e) {
-        return e.getTwin().getPrev();
+        return e.getNext().getTwin();
     }
 
     public static HalfEdge lNext(HalfEdge e) {
@@ -61,10 +70,12 @@ public class Utils {
     }
 
     public static HalfEdge rNext(HalfEdge e) {
-        return e.getTwin().getPrev().getTwin();
+        if (e.getTwin().getNext() == null) return null;
+        return e.getTwin().getNext().getTwin();
     }
 
     public static HalfEdge rPrev(HalfEdge e) {
-        return e.getTwin().getNext().getTwin();
+        if (e.getTwin().getPrev() == null) return null;
+        return e.getTwin().getPrev().getTwin();
     }
 }

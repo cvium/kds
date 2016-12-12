@@ -1,5 +1,8 @@
 package dcel;
 
+import ProGAL.geom2d.viewer.J2DScene;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -62,5 +65,15 @@ public class Face {
         int result = outerComponent != null ? outerComponent.hashCode() : 0;
         result = 31 * result + (innerComponent != null ? innerComponent.hashCode() : 0);
         return result;
+    }
+
+    public void draw(J2DScene scene) {
+        outerComponent.draw(scene, 0, Color.green);
+        HalfEdge e = outerComponent.getNext();
+
+        while (e!= null && e != outerComponent) {
+            e.draw(scene, 0, Color.green);
+            e = e.getNext();
+        }
     }
 }

@@ -1,11 +1,17 @@
 package convex_dt;
 
+import ProGAL.geom2d.viewer.J2DScene;
+import dcel.DCEL;
 import dcel.HalfEdge;
 import kds.KDSPoint;
 import static convex_dt.Utils.*; // not very nice, but it's to avoid having to write Utils.<func> everywhere
 import static convex_dt.ConvexShape.*;
+import static java.lang.Thread.sleep;
+import static java.util.Collections.sort;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -17,38 +23,107 @@ public class ConvexDT {
     private HalfEdge rcand;
     private ConvexShape shape;
     private ArrayList<KDSPoint> points;
+    private J2DScene scene;
+    private DCEL dcel;
 
     public ConvexDT() {
     }
 
     public ConvexDT(ArrayList<KDSPoint> points, ConvexShape shape) {
-        throw new NotImplementedException();
+        this.points = points;
+        this.shape = shape;
+        this.dcel = new DCEL();
     }
 
-    public HalfEdge computeSmallDelaunay(ArrayList<KDSPoint> points) {
-        throw new NotImplementedException();
+    public DCEL getDcel() {
+        return dcel;
+    }
+
+    public void setScene(J2DScene scene) {
+        this.scene = scene;
+    }
+
+    public HalfEdge computeSmallDelaunay(ArrayList<KDSPoint> points) throws Exception {
+        if (points.size() == 2) {
+            // sort them
+            sort(points);
+            KDSPoint a = points.get(0);
+            KDSPoint b = points.get(1);
+            HalfEdge e1 = dcel.createEdge(a, b);
+            if (e1.getOrigin().getPoint(0).y() < e1.getDestination().getPoint(0).y())
+                return e1;
+            return e1.getTwin();
+        } else if (points.size() == 3) {
+            // sort them
+            sort(points);
+            KDSPoint a = points.get(0);
+            KDSPoint b = points.get(1);
+            KDSPoint c = points.get(2);
+
+            HalfEdge e1 = dcel.createEdge(a, b);
+            HalfEdge e2 = dcel.createEdge(b, c);
+            // connect a -> b with b -> c
+            e1.setNext(e2);
+            e2.setPrev(e1);
+            if (leftOf(a, b, c) || rightOf(a, b, c)) {
+                // connect and create a triangle
+                connect(e2, e1);
+            }
+            HalfEdge lowest = e1;
+            while (true) {
+                if (lowest.getNext() != null && lowerThan(lowest.getNext(), lowest)) {
+                    lowest = lowest.getNext();
+                } else {
+                    break;
+                }
+                if (lowest == e1) break;
+            }
+            if (lowest.getOrigin().getPoint(0).y() < lowest.getDestination().getPoint(0).y())
+                return lowest;
+            return lowest.getTwin();
+        } else {
+            throw new Exception();
+        }
     }
 
     public HalfEdge findLowerSupport(HalfEdge left, HalfEdge right) {
+        assert left != null && right != null;
         if (lowerThan(left.getOrigin(), right.getOrigin())) {
-            while (shape.inInfCircle(rNext(right).getOrigin(), left.getOrigin(), right.getOrigin()) ==
+            while (rNext(right) != null && shape.inInfCircle(rNext(right).getOrigin(), left.getOrigin(), right.getOrigin()) ==
                     infCircleEnum.INSIDE && lessThan(rNext(right).getOrigin(), right.getOrigin())) {
+                if (rNext(right) == null) break;
                 right = rNext(right);
             }
-            if (shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
-                right = rPrev(right);
-            } else if (shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
-                left = rPrev(left);
-            } else {
-                return connect(right.getTwin(), oPrev(left));
+            while (true) {
+                if (shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                    right = rPrev(right);
+                } else if (shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                    left = rPrev(left);
+                } else {
+                    if (oPrev(left) == null) return connect(right.getTwin(), left);
+                    return connect(right.getTwin(), oPrev(left));
+                }
+                System.out.println("Am I stuck in lowersupport?");
             }
         } else {
-            // TODO ????
-            throw new NotImplementedException();
+            // TODO I think it should move CW around left as the 'candidate' for lower support can't be on the right
+            // side of left when the lowest point in right is lower
+            while (rPrev(left) != null && shape.inInfCircle(rPrev(left).getOrigin(), left.getOrigin(), right.getOrigin()) ==
+                    infCircleEnum.INSIDE && lessThan(rNext(right).getOrigin(), right.getOrigin())) {
+                if (rPrev(left) == null) break;
+                left = rPrev(left);
+            }
+            while (true) {
+                if (shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                    left = rNext(left);
+                } else if (shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                    right = rNext(right);
+                } else {
+                    return connect(left.getTwin(), oPrev(right)).getTwin();
+                }
+                System.out.println("Am I stuck in lowersupport2?");
+            }
         }
-
-        // TODO ??????
-        return connect(right, left);
     }
 
     public void makeBundle(HalfEdge edge) {
@@ -60,7 +135,7 @@ public class ConvexDT {
     }
 
     public HalfEdge unBundle(HalfEdge edge) {
-        HalfEdge fixed, moving, returnEdge, junk;
+        HalfEdge fixed, moving, returnEdge;
         if (onLine(oNext(edge).getDestination(), edge.getOrigin(), edge.getDestination())) {
             fixed = oPrev(edge);
             moving = lNext(lNext(edge));
@@ -72,7 +147,7 @@ public class ConvexDT {
         }
 
         while (fixed != moving) {
-            junk = connect(fixed, moving);
+            connect(fixed, moving); // junk?
             moving = lNext(moving);
         }
 
@@ -92,10 +167,10 @@ public class ConvexDT {
     }
 
     public HalfEdge produceONext(HalfEdge edge) {
-        if (lNext(edge).isBridge()) {
+        if (lNext(edge) != null && lNext(edge).isBridge()) {
             delete(lNext(edge));
             makeBundle(connect(lNext(edge), edge).getTwin());
-        } else if (oNext(edge).isBridge()) {
+        } else if (oNext(edge) != null && oNext(edge).isBridge()) {
             delete(oNext(edge));
             makeBundle(oPrev(connect(edge, lPrev(edge))));
         }
@@ -115,44 +190,51 @@ public class ConvexDT {
 
     public HalfEdge connect(HalfEdge a, HalfEdge b) {
         // TODO: does this work?
-        HalfEdge newEdge = new HalfEdge(a.getDestination(), b.getOrigin());
+        HalfEdge newEdge = dcel.createEdge(a.getDestination(), b.getOrigin());
         a.setNext(newEdge);
         b.setPrev(newEdge);
-        // hackish way to create the twin
-        newEdge.getTwin();
+        newEdge.setNext(b);
+        newEdge.setPrev(a);
+
+        newEdge.setFace(a.getFace());
+        b.setFace(a.getFace());
+        b.getTwin().setFace(a.getTwin().getFace());
+        newEdge.getTwin().setFace(a.getTwin().getFace());
+
         return newEdge;
     }
 
     public void delete(HalfEdge e) {
-        // remove e from its prev and next edges, TODO: IS THAT ENOUGH?
-        e.getPrev().setNext(null);
-        e.getNext().setPrev(null);
-        // have to remove the twin as well
-        e.getTwin().getPrev().setNext(null);
-        e.getTwin().getNext().setPrev(null);
+        dcel.deleteEdge(e);
     }
 
     public HalfEdge connectLeft() {
+        System.out.println("connectLeft()");
         unBundleAll(lcand);
-        // \__   Base is directed from right to left, so base dest must be connected to lcand's origin
+        // \__   Base is directed from right to left, so base origin must be connected to lcand's origin
         return connect(base.getTwin(), lcand.getTwin());
     }
 
     public HalfEdge connectRight() {
+        System.out.println("connectRight()");
         unBundleAll(rcand);
         // TODO: should this be reversed? THINK NOT
-        // __/   Base is directed from left to right, so base dest must be connected to rcand's origin
-        return connect(base.getTwin(), rcand.getTwin());
+        // __/   Base is directed from right to left, so base dest must be connected to rcand's origin
+        return connect(base, rcand.getTwin()).getTwin();
     }
 
     public HalfEdge computeLcand() {
         HalfEdge current = null, top = null, t = null;
+        boolean foundLcand = false;
         lcand = rPrev(base);
+        assert lcand != null;
+        assert base != null;
 
         if (shape.inInfCircle(lcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.BEFORE) {
-            lcand = produceONext(lcand);
+            lcand = produceONext(lcand) != null ? produceONext(lcand) : lcand;
             while (shape.inInfCircle(lcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.BEFORE) {
                 delete(oPrev(lcand));
+                if (produceONext(lcand) == null) break;
                 lcand = produceONext(lcand);
             }
             if (isValid(lcand)) delete(oPrev(lcand));
@@ -162,44 +244,46 @@ public class ConvexDT {
         if (isValid(lcand)) {
             current = oNext(lcand);
             top = lcand;
-
-            switch(shape.inCircle(lcand.getOrigin(), lcand.getDestination(), base.getOrigin(), current.getDestination())) {
-                case INSIDE:
-                    if (current.isBridge() || rPrev(current).isBridge()) {
-                        current = produceONext(oPrev(current));
-                    }
-                    if (leftOf(current.getDestination(), lcand.getOrigin(), lcand.getDestination())) {
-                        if (rPrev(current) != dPrev(lcand))
-                            makeBundle(connect(lcand, current.getTwin()).getTwin());
-                        if (current != oNext(lcand))
-                            makeBundle(lNext(connect(lPrev(lcand), current.getTwin())));
-                        t = produceONext(lcand);
-                        delete(lcand);
-                        lcand = t;
-                        current = oNext(lcand);
-                        top = lcand;
-                    } else {
-                        // We have lcand
+            while (true) {
+                if (foundLcand) break;
+                switch (shape.inCircle(lcand.getOrigin(), lcand.getDestination(), base.getOrigin(), current.getDestination())) {
+                    case INSIDE:
+                        if (current.isBridge() || rPrev(current).isBridge()) {
+                            current = produceONext(oPrev(current));
+                        }
+                        if (leftOf(lcand.getOrigin(), lcand.getDestination(), current.getDestination())) {
+                            if (rPrev(current) != dPrev(lcand))
+                                makeBundle(connect(lcand, current.getTwin()).getTwin());
+                            if (current != oNext(lcand))
+                                makeBundle(lNext(connect(lPrev(lcand), current.getTwin())));
+                            t = produceONext(lcand);
+                            delete(lcand);
+                            lcand = t;
+                            current = oNext(lcand);
+                            top = lcand;
+                        } else {
+                            // We have lcand
+                            foundLcand = true;
+                        }
                         break;
-                        //return lcand;
-                    }
-                    break;
-                case ONBEFORE:
-                    if (leftOf(current.getDestination(), current.getOrigin(), lcand.getDestination())) {
-                        current = rPrev(current);
-                    } else{
-                        return lcand;
-                    }
-                    break;
-                case ONAFTER:
-                    top = dNext(top);
-                    t = current;
-                    current = oNext(current);
-                    delete(current);
-                    break;
-                default:
-                    //return lcand;
-                    break;
+                    case ONBEFORE:
+                        if (leftOf(current.getOrigin(), lcand.getDestination(), current.getDestination())) {
+                            current = rPrev(current);
+                        } else {
+                            foundLcand = true;
+                        }
+                        break;
+                    case ONAFTER:
+                        top = dNext(top);
+                        t = current;
+                        current = oNext(current);
+                        delete(current);
+                        break;
+                    default:
+                        foundLcand = true;
+                        break;
+                }
+                System.out.println("Am I stuck in lcand?");
             }
         } else {
             System.out.println("lcand not valid???");
@@ -209,25 +293,27 @@ public class ConvexDT {
         //assert top != null;
         //assert current != null;
 
-        if (top != lcand) {
+        if (top != lcand && lcand != null && top != null) {
             makeBundle(lNext(connect(top, lcand)));
             top = oNext(lcand);
         }
-        if (oPrev(current) != top) {
+        if (current != null && oPrev(current) != top) {
             makeBundle(oPrev(connect(top, oPrev(current))));
         }
+        //base = base.getTwin();
         return lcand;
     }
 
     public HalfEdge computeRcand() {
         HalfEdge current = null, top = null, t = null;
-        // TODO ?
-        HalfEdge base_twin = base.getTwin();
-        rcand = lNext(base_twin);
+        boolean foundRcand = false;
+        // base must be directed from left to right for this
+        base = base.getTwin();
+        rcand = lNext(base);
 
-        if (shape.inInfCircle(rcand.getDestination(), base_twin.getOrigin(), base_twin.getDestination()) == infCircleEnum.BEFORE) {
+        if (rcand != null && shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.BEFORE) {
             rcand = produceOPrev(rcand);
-            while (shape.inInfCircle(rcand.getDestination(), base_twin.getOrigin(), base_twin.getDestination()) == infCircleEnum.BEFORE) {
+            while (shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.BEFORE) {
                 delete(oNext(rcand));
                 rcand = produceOPrev(rcand);
             }
@@ -238,45 +324,85 @@ public class ConvexDT {
         if (isValid(rcand)) {
             current = oPrev(rcand);
             top = rcand;
-            switch(shape.inCircle(rcand.getOrigin(), rcand.getDestination(), base_twin.getOrigin(), current.getDestination())) {
-                case INSIDE:
-                    if (current.isBridge() || lNext(current).isBridge()) {
-                        current = produceOPrev(lNext(current));
-                    }
-                    if (leftOf(current.getDestination(), rcand.getOrigin(), rcand.getDestination())) {
-                        if (lNext(current) != rcand) {
-
+            while (true) {
+                if (foundRcand) break;
+                switch (shape.inCircle(rcand.getOrigin(), rcand.getDestination(), base.getOrigin(), current.getDestination())) {
+                    case INSIDE:
+                        if (current.isBridge() || lNext(current).isBridge()) {
+                            current = produceOPrev(lNext(current));
                         }
-                    }
-                    break;
-                case ONBEFORE:
-                    break;
-                case ONAFTER:
-                    break;
-                default:
-                    // we have rcand
-                    break;
+                        if (rightOf(rcand.getOrigin(), rcand.getDestination(), current.getDestination())) {
+                            if (lNext(current) != dNext(rcand)) {
+                                makeBundle(connect(rcand, current.getTwin()).getTwin());
+                            }
+                            if (current != oPrev(rcand)) {
+                                makeBundle(connect(lNext(rcand), current.getTwin()));
+                            }
+                            t = produceOPrev(rcand);
+                            delete(rcand);
+                            rcand = t;
+                            current = oPrev(rcand);
+                            top = rcand;
+                        } else {
+                            foundRcand = true;
+                        }
+                        break;
+                    case ONBEFORE:
+                        if (rightOf(current.getOrigin(), rcand.getDestination(), current.getDestination())) {
+                            current = lNext(current);
+                        } else {
+                            foundRcand = true;
+                        }
+                        break;
+                    case ONAFTER:
+                        top = dPrev(current);
+                        t = current;
+                        current = oPrev(current);
+                        delete(current);
+                        break;
+                    default:
+                        // we have rcand
+                        foundRcand = true;
+                        break;
 
+                }
+                System.out.println("Am I stuck in rcand?");
             }
-
         }
 
+        if (top != null && rcand != null && top != rcand) {
+            makeBundle(connect(top, rcand));
+            top = oPrev(rcand);
+        }
+        if (current != null && top != null && oNext(current) != top) {
+            makeBundle(connect(top, oNext(current)));
+        }
 
-        throw new NotImplementedException();
+        // revert direction
+        base = base.getTwin();
+        return rcand;
     }
 
-    public HalfEdge delaunay(ArrayList<KDSPoint> points) {
+    public HalfEdge delaunay() throws Exception {
+        return this.delaunay(this.points);
+    }
+
+    public HalfEdge delaunay(ArrayList<KDSPoint> points) throws Exception {
         if (points.size() < 4) return computeSmallDelaunay(points);
         else {
             int split = (int) Math.floor(points.size() / 2);
 
-            ArrayList<KDSPoint>left = (ArrayList<KDSPoint>) points.subList(0, split);
-            ArrayList<KDSPoint> right = (ArrayList<KDSPoint>) points.subList(split + 1, points.size());
+            ArrayList<KDSPoint>left = new ArrayList<>(points.subList(0, split));
+            ArrayList<KDSPoint> right = new ArrayList<>(points.subList(split, points.size()));
 
             HalfEdge lleft = delaunay(left);
+            //lleft.draw(scene, 0, Color.MAGENTA);
             HalfEdge lright = delaunay(right);
-
+            //lright.draw(scene, 0, 0);
+            sleep(1000);
             base = findLowerSupport(lleft, lright);
+            base.draw(scene, 0, Color.black);
+            sleep(5000);
             boolean leftLower = lowerThan(lleft.getOrigin(), lright.getOrigin());
             HalfEdge lower;
             if (leftLower) {
@@ -286,43 +412,72 @@ public class ConvexDT {
                 lower = rNext(lright);
             }
 
-            lcand = computeLcand();
-            rcand = computeRcand();
+            // merge step
+            while (true) {
+                lcand = computeLcand();
+                rcand = computeRcand();
+                System.out.println(lcand.getTwin() == rcand || lcand == rcand);
 
-            if (isValid(lcand) && isValid(rcand)) {
-                switch(shape.inCircle(base.getOrigin(), base.getDestination(), lcand.getDestination(), rcand.getDestination())) {
-                    case INSIDE:
-                        base = connectRight();
-                        break;
-                    case ON:
-                    case ONBEFORE:
-                    case ONAFTER:
-                        if (rightOf(rcand.getDestination(), lcand.getOrigin(), lcand.getDestination())) {
+                if (isValid(lcand)) System.out.println("lcand valid!");
+                else System.out.println("lcand invalid!");
+                lcand.draw(scene, 0, Color.MAGENTA);
+                sleep(2000);
+                if (isValid(rcand)) System.out.println("rcand valid!");
+                else System.out.println("rcand invalid!");
+                rcand.draw(scene, 0, Color.CYAN);
+                scene.repaint();
+                sleep(2000);
+
+                if (isValid(lcand) && isValid(rcand)) {
+                    System.out.println("1");
+                    switch (shape.inCircle(base.getOrigin(), base.getDestination(), lcand.getDestination(), rcand.getDestination())) {
+                        case INSIDE:
+                            System.out.println("rcand.dest INSIDE");
                             base = connectRight();
-                        } else {
+                            base.draw(scene, 0, Color.BLACK);
+                            break;
+                        case ON:
+                        case ONBEFORE:
+                        case ONAFTER:
+                            System.out.println("rcand.dest ON/ONBEFORE/ONAFTER");
+                            if (rightOf(lcand.getOrigin(), lcand.getDestination(), rcand.getDestination())) {
+                                base = connectRight();
+                                base.draw(scene, 0, Color.BLACK);
+                            } else {
+                                base = connectLeft();
+                                base.draw(scene, 0, Color.BLACK);
+                            }
+                            break;
+                        default:
+                            System.out.println("rcand.dest OUTSIDE");
                             base = connectLeft();
-                        }
-                        break;
-                    default:
-                        base = connectLeft();
+                            base.draw(scene, 0, Color.BLACK);
+                            break;
+                    }
                 }
-            }
-            else if (isValid(lcand)) base = connectLeft();
-            else if (isValid(rcand)) base = connectRight();
-            else if (shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.AFTER) {
-                while (shape.inInfCircle(lcand.getDestination(), lcand.getOrigin(), rcand.getDestination()) == infCircleEnum.INSIDE) {
-                    lcand = rPrev(lcand);
+                else if (isValid(lcand)) {System.out.println("2"); base = connectLeft();}
+                else if (isValid(rcand)) {System.out.println("3"); base = connectRight();}
+                else if (shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.AFTER) {
+                    System.out.println("4");
+                    while (shape.inInfCircle(lcand.getDestination(), lcand.getOrigin(), rcand.getDestination()) == infCircleEnum.INSIDE) {
+                        lcand = rPrev(lcand);
+                    }
+                    base = connect(rcand, oPrev(lcand));
+                    delete(rcand);
+                } else if (shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.AFTER) {
+                    System.out.println("5");
+                    while (shape.inInfCircle(rcand.getDestination(), lcand.getDestination(), rcand.getOrigin()) == infCircleEnum.INSIDE) {
+                        rcand = lNext(rcand);
+                    }
+                    base = connect(lPrev(rcand), lcand.getTwin());
+                    delete(lcand);
+                } else {
+                    System.out.println("Hmm");
+                    break;
                 }
-                base = connect(rcand, oPrev(lcand));
-                delete(rcand);
+                System.out.println("Am I stuck?");
             }
-            else if (shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.AFTER) {
-                while (shape.inInfCircle(rcand.getDestination(), lcand.getDestination(), rcand.getOrigin()) == infCircleEnum.INSIDE) {
-                    rcand = lNext(rcand);
-                }
-                base = connect(lPrev(rcand), lcand.getTwin());
-                delete(lcand);
-            }
+            System.out.println("Broke out!");
 
             if (!leftLower) lower = rPrev(lower);
 
