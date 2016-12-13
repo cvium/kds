@@ -1,12 +1,13 @@
-package convex_dt;
+package utils;
 
+import ProGAL.dataStructures.Pair;
 import dcel.HalfEdge;
 import kds.KDSPoint;
 
 /**
  * Created by cvium on 03-12-2016.
  */
-public class Utils {
+public class Helpers {
     /* The following are some predicates */
 
     public static boolean isCCW(HalfEdge a, HalfEdge b) {
@@ -28,6 +29,43 @@ public class Utils {
         double edge3 = (a.getX() - c.getX()) * (a.getY() + c.getY());
 
         return edge1 + edge2 + edge3 < 1e-10;
+    }
+
+    /**
+     * Returns a pair (CCW, CW) of edges incident to point wrt edge. Assumes edge.dest is point.
+     *
+     * @param edge
+     * @param point
+     * @return
+     */
+    public static Pair<HalfEdge, HalfEdge> getCCWAndCW(HalfEdge edge, KDSPoint point) {
+        assert edge.getDestination() == point;
+
+        HalfEdge prev = point.getIncidentEdge();
+        HalfEdge next = point.getIncidentEdge().getPrev().getTwin();
+        if (next == null) {
+            System.out.println("twin.next is null! Assuming the incident edge is unconnected.");
+            return new Pair<>(prev, prev);
+        }
+
+        HalfEdge ccw = prev, cw = prev;
+
+        do {
+            assert prev.getOrigin() == point.getIncidentEdge().getOrigin();
+            assert next.getOrigin() == point.getIncidentEdge().getOrigin();
+
+            // we're done when edge lies inbetween prev and next
+            if (isCCW(prev.getDestination(), edge.getOrigin(), next.getDestination())) {
+                ccw = prev;
+                cw = next;
+                break;
+            }
+
+            prev = next;
+            next = next.getPrev().getTwin();
+        } while (prev != point.getIncidentEdge() && next != null);
+
+        return new Pair<>(ccw, cw);
     }
 
     public static boolean lowerThan(KDSPoint a, KDSPoint b) {

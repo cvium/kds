@@ -3,6 +3,7 @@ package kds;
 import ProGAL.geom2d.*;
 import ProGAL.geom2d.Point;
 import ProGAL.geom2d.viewer.J2DScene;
+import dcel.HalfEdge;
 
 import java.awt.*;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class KDSPoint implements Comparable<KDSPoint>{
     Point p;
     Circle c;
     double lastUpdated;
+    HalfEdge incidentEdge;
 
     public ArrayList<Event> getEvents() {
         return events;
@@ -233,5 +235,15 @@ public class KDSPoint implements Comparable<KDSPoint>{
     public double getY(double t) {
         updatePosition(t);
         return y;
+    }
+
+    public HalfEdge getIncidentEdge() {
+        //assert incidentEdge.getOrigin() == this;
+        return incidentEdge;
+    }
+
+    public void setIncidentEdge(HalfEdge incidentEdge) {
+        assert incidentEdge.getOrigin() == this;
+        this.incidentEdge = incidentEdge;
     }
 }

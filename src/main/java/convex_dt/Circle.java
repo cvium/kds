@@ -2,10 +2,8 @@ package convex_dt;
 
 import kds.KDSPoint;
 
-import java.util.ArrayList;
-
-import static convex_dt.Utils.leftOf;
-import static convex_dt.Utils.rightOf;
+import static utils.Helpers.leftOf;
+import static utils.Helpers.rightOf;
 import static java.util.Collections.sort;
 
 /**

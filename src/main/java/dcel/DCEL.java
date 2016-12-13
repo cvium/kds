@@ -1,15 +1,14 @@
 package dcel;
 
+import ProGAL.dataStructures.Pair;
 import ProGAL.geom2d.viewer.J2DScene;
 import kds.KDSPoint;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-import static convex_dt.Utils.isCCW;
-import static convex_dt.Utils.leftOf;
-import static convex_dt.Utils.rightOf;
 import static java.lang.Thread.sleep;
+import static utils.Helpers.*;
 
 /**
  * Created by cvium on 28-11-2016.
@@ -29,14 +28,16 @@ public class DCEL {
 
     public HalfEdge createEdge(KDSPoint a, KDSPoint b) {
         HalfEdge e = new HalfEdge(a, b);
+        a.setIncidentEdge(e);
         //e.setFace(createFace(e));
         createTwin(e);
-        //edges.add(e);
+        edges.add(e);
         return e;
     }
 
     public HalfEdge createEdge(KDSPoint a, KDSPoint b, Face f) {
         HalfEdge e = new HalfEdge(a, b);
+        a.setIncidentEdge(e);
         e.setFace(f);
         createTwin(e);
         edges.add(e);
@@ -53,6 +54,11 @@ public class DCEL {
     public HalfEdge connect(HalfEdge a, HalfEdge b) {
         HalfEdge c = new HalfEdge(a.getDestination(), b.getOrigin());
         HalfEdge c_twin = new HalfEdge(b.getOrigin(), a.getDestination());
+        if (a.getDestination().getIncidentEdge() == null)
+            a.getDestination().setIncidentEdge(c);
+        if (b.getOrigin().getIncidentEdge() == null)
+            b.getOrigin().setIncidentEdge(c_twin);
+
         c.setTwin(c_twin);
         c_twin.setTwin(c);
         edges.add(c);
@@ -74,47 +80,9 @@ public class DCEL {
         }
         // case 2: a has a next -> locate the proper incident edges to pre/append c
         else if (a.getNext() != null) {
-            // use a.twin to make it simpler. likewise, use c_twin
-            // means we have to start from a.twin and not a.twin.next
-            HalfEdge tmp = a.getTwin();
-            HalfEdge ccw = tmp;
-            boolean foundCCW = false;
-
-            // stop if the next edge is a.twin
-            do {
-                boolean edgeIsCCW = isCCW(c_twin, tmp);
-                if (foundCCW && !edgeIsCCW) break;
-                else if (edgeIsCCW) {
-                    foundCCW = true;
-                    // break if the new edge is to the right of our previous ccw edge
-                    if (rightOf(ccw.getOrigin(), ccw.getDestination(), tmp.getDestination())) break;
-                    ccw = tmp;
-                }
-
-                // have to break because we're using do-while
-                if (tmp.getTwin().getNext() == null) break;
-                tmp = tmp.getTwin().getNext();
-            } while (tmp != a.getTwin());
-
-            tmp = a.getTwin();
-            HalfEdge cw = null;
-            boolean foundCW = false;
-
-            // stop if the next edge is a.twin.prev, since we handle a.twin in the while loop
-            do {
-                boolean edgeIsCW = !isCCW(c_twin, tmp);
-                if (foundCW && !edgeIsCW) break;
-                else if (edgeIsCW) {
-                    foundCW = true;
-                    // break if the new edge is to the left of our previous cw edge
-                    if (cw != null && leftOf(cw.getOrigin(), cw.getDestination(), tmp.getDestination())) break;
-                    cw = tmp;
-                }
-
-                // have to break because we're using do-while
-                if (tmp.getTwin().getNext() == null) break;
-                tmp = tmp.getTwin().getNext();
-            } while (tmp != a.getTwin());
+            Pair<HalfEdge,HalfEdge> ccw_cw = getCCWAndCW(c_twin, a.getDestination());
+            HalfEdge ccw = ccw_cw.fst;
+            HalfEdge cw = ccw_cw.snd;
 
             assert cw != null;
             assert ccw != null;
@@ -141,46 +109,11 @@ public class DCEL {
         }
         // case 2: b has a prev -> we need to locate the edges CCW and CW from c if they exist
         else if (b.getPrev() != null) {
-            HalfEdge tmp = b;
-            HalfEdge ccw = tmp;
-            boolean foundCCW = false;
-            // locate CCW edge by looking at incident edges
-            do {
-                boolean edgeIsCCW = isCCW(c, tmp);
-                if (foundCCW && !edgeIsCCW) {
-                    // we found the CCW edge
-                    break;
-                } else if (edgeIsCCW) {
-                    foundCCW = true;
-                    // break if the new edge is to the right of our previous ccw edge
-                    if (rightOf(ccw.getOrigin(), ccw.getDestination(), tmp.getDestination())) break;
-                    ccw = tmp;
-                }
-                // have to break because we're using do-while
-                if (tmp.getTwin().getNext() == null) break;
-                tmp = tmp.getTwin().getNext();
-            }
-            while (tmp != null && tmp.getTwin().getNext() != null && tmp != b);
+            Pair<HalfEdge,HalfEdge> ccw_cw = getCCWAndCW(c, b.getOrigin());
 
-            tmp = b;
-            HalfEdge cw = tmp;
-            boolean foundCW = false;
-            // locate CW edge by looking at incident edges
-            do {
-                boolean edgeIsCW = !isCCW(c, tmp);
-                if (foundCW && !edgeIsCW) {
-                    // we found the CW edge
-                    break;
-                } else if (edgeIsCW) {
-                    foundCW = true;
-                    // break if the new edge is to the left of our previous ccw edge
-                    if (leftOf(cw.getOrigin(), cw.getDestination(), tmp.getDestination())) break;
-                    cw = tmp;
-                }
-                // have to break because we're using do-while
-                if (tmp.getPrev() == null) break;
-                tmp = tmp.getPrev().getTwin();
-            } while (tmp != null && tmp.getPrev() != null && tmp != b);
+            HalfEdge ccw = ccw_cw.fst;
+            HalfEdge cw = ccw_cw.snd;
+
             assert ccw != null;
             assert cw != null;
 
@@ -199,6 +132,7 @@ public class DCEL {
             Face c_face = createFace(c);
             c.setFace(c_face);
             HalfEdge tmp = c.getNext();
+            faces.remove(tmp.getFace());
             while (tmp != null && tmp != c) {
                 tmp.setFace(c_face);
                 tmp = tmp.getNext();
@@ -207,6 +141,7 @@ public class DCEL {
             Face c_twin_face = createFace(c_twin);
             c_twin.setFace(c_twin_face);
             tmp = c_twin.getNext();
+            faces.remove(tmp.getFace());
             while (tmp != null && tmp != c_twin) {
                 tmp.draw(scene, 0, Color.CYAN);
                 scene.repaint();
@@ -266,6 +201,8 @@ public class DCEL {
         HalfEdge twin = e.getTwin();
         if (twin == null) {
             twin = new HalfEdge(e.getDestination(), e.getOrigin());
+            if (e.getDestination().getIncidentEdge() == null)
+                e.getDestination().setIncidentEdge(twin);
             //twin.setFace(createFace(e));
             edges.add(twin);
             e.setTwin(twin);

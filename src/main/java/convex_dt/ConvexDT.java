@@ -1,16 +1,13 @@
 package convex_dt;
 
-import ProGAL.geom2d.Vector;
 import ProGAL.geom2d.viewer.J2DScene;
 import dcel.DCEL;
 import dcel.HalfEdge;
 import kds.KDSPoint;
-import static convex_dt.Utils.*; // not very nice, but it's to avoid having to write Utils.<func> everywhere
+import static utils.Helpers.*; // not very nice, but it's to avoid having to write Helpers.<func> everywhere
 import static convex_dt.ConvexShape.*;
 import static java.lang.Thread.sleep;
 import static java.util.Collections.sort;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -461,14 +458,14 @@ public class ConvexDT {
                 if (isValid(rcand)) System.out.println("rcand valid!");
                 else System.out.println("rcand invalid!");
                 rcand.draw(scene, 0, Color.CYAN);
-                scene.repaint();
-                sleep(2000);
-
-                scene.removeAllShapes();
-                scene.repaint();
-                sleep(500);
-                dcel.draw(scene);
-                sleep(5000);
+//                scene.repaint();
+//                sleep(2000);
+//
+//                scene.removeAllShapes();
+//                scene.repaint();
+//                sleep(500);
+//                dcel.draw(scene);
+//                sleep(5000);
                 if (isValid(lcand) && isValid(rcand)) {
                     System.out.println("1");
                     switch (shape.inCircle(base.getOrigin(), base.getDestination(), lcand.getDestination(), rcand.getDestination())) {
