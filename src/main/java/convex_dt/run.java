@@ -52,7 +52,8 @@ public class run {
         //lower.draw(scene, 0, 2);
 
         System.out.println("Printing DCEL!");
-        //scene.removeAllShapes();
+        scene.removeAllShapes();
+        scene.repaint();
         for (KDSPoint p : points) {
             p.draw(scene, 0);
         }

@@ -9,6 +9,27 @@ import kds.KDSPoint;
 public class Utils {
     /* The following are some predicates */
 
+    public static boolean isCCW(HalfEdge a, HalfEdge b) {
+        if (a == null || b == null) {
+            return false;
+        }
+
+        assert a.getDestination() == b.getOrigin();
+        return isCCW(a.getOrigin(), a.getDestination(), b.getDestination());
+    }
+
+    public static boolean isCCW(KDSPoint a, KDSPoint b, KDSPoint c) {
+        if (a == null || b == null || c == null) {
+            return false;
+        }
+        assert a != b && b != c;
+        double edge1 = (b.getX() - a.getX()) * (b.getY() + a.getY());
+        double edge2 = (c.getX() - b.getX()) * (c.getY() + b.getY());
+        double edge3 = (a.getX() - c.getX()) * (a.getY() + c.getY());
+
+        return edge1 + edge2 + edge3 < 1e-10;
+    }
+
     public static boolean lowerThan(KDSPoint a, KDSPoint b) {
         return a.getY() < b.getY();
     }

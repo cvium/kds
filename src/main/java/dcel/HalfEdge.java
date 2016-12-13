@@ -5,6 +5,9 @@ import ProGAL.geom2d.viewer.J2DScene;
 import kds.KDSPoint;
 
 import java.awt.*;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 /**
  * Created by cvium on 29-11-2016.
@@ -86,7 +89,7 @@ public class HalfEdge {
 
     public void setNext(HalfEdge next) {
         // next half-edge must have this.destination as its origin
-        assert next.getOrigin() == this.destination;
+        assert next == null || next.getOrigin() == this.destination;
         this.next = next;
     }
 

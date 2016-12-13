@@ -3,11 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="df4e0843-9e19-4f08-ad4f-f0f95c5af10d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/convex_dt/Circle.java" afterPath="$PROJECT_DIR$/src/main/java/convex_dt/Circle.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java" afterPath="$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/convex_dt/Utils.java" afterPath="$PROJECT_DIR$/src/main/java/convex_dt/Utils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/convex_dt/run.java" afterPath="$PROJECT_DIR$/src/main/java/convex_dt/run.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/dcel/DCEL.java" afterPath="$PROJECT_DIR$/src/main/java/dcel/DCEL.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/dcel/Face.java" afterPath="$PROJECT_DIR$/src/main/java/dcel/Face.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/dcel/HalfEdge.java" afterPath="$PROJECT_DIR$/src/main/java/dcel/HalfEdge.java" />
     </list>
     <ignored path="kds.iws" />
@@ -92,24 +91,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ConvexDT.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ConvexDT.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-23">
-              <caret line="91" column="20" lean-forward="false" selection-start-line="91" selection-start-column="20" selection-end-line="91" selection-end-column="20" />
-              <folding>
-                <element signature="e#7794#7795#0" expanded="true" />
-                <element signature="e#7828#7829#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="404">
+              <caret line="493" column="46" lean-forward="false" selection-start-line="493" selection-start-column="35" selection-end-line="493" selection-end-column="46" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DCEL.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DCEL.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="119" column="0" lean-forward="false" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
+            <state relative-caret-position="-385">
+              <caret line="110" column="24" lean-forward="false" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -120,11 +116,9 @@
       <file leaf-file-name="Circle.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/Circle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
+            <state relative-caret-position="595">
               <caret line="41" column="23" lean-forward="false" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -132,8 +126,8 @@
       <file leaf-file-name="run.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/run.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="21" column="41" lean-forward="true" selection-start-line="21" selection-start-column="41" selection-end-line="21" selection-end-column="41" />
+            <state relative-caret-position="733">
+              <caret line="53" column="45" lean-forward="true" selection-start-line="53" selection-start-column="45" selection-end-line="53" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -146,7 +140,31 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="680">
               <caret line="62" column="15" lean-forward="false" selection-start-line="62" selection-start-column="15" selection-end-line="62" selection-end-column="15" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#624#625#0" expanded="false" />
+                <element signature="e#653#654#0" expanded="false" />
+                <element signature="e#707#708#0" expanded="false" />
+                <element signature="e#743#744#0" expanded="false" />
+                <element signature="e#970#971#0" expanded="false" />
+                <element signature="e#1000#1001#0" expanded="false" />
+                <element signature="e#1047#1048#0" expanded="false" />
+                <element signature="e#1085#1086#0" expanded="false" />
+                <element signature="e#1112#1113#0" expanded="false" />
+                <element signature="e#1138#1139#0" expanded="false" />
+                <element signature="e#1173#1174#0" expanded="false" />
+                <element signature="e#1203#1204#0" expanded="false" />
+                <element signature="e#2010#2011#0" expanded="false" />
+                <element signature="e#2040#2041#0" expanded="false" />
+                <element signature="e#2076#2077#0" expanded="false" />
+                <element signature="e#2106#2107#0" expanded="false" />
+                <element signature="e#2154#2155#0" expanded="false" />
+                <element signature="e#2192#2193#0" expanded="false" />
+                <element signature="e#2240#2241#0" expanded="false" />
+                <element signature="e#2278#2279#0" expanded="false" />
+                <element signature="e#4015#4016#0" expanded="false" />
+                <element signature="e#4042#4043#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -154,10 +172,11 @@
       <file leaf-file-name="HalfEdge.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dcel/HalfEdge.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="141" column="0" lean-forward="false" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
+            <state relative-caret-position="262">
+              <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2401#2402#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -185,10 +204,23 @@
       <file leaf-file-name="Face.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dcel/Face.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="73" column="26" lean-forward="true" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
+            <state relative-caret-position="952">
+              <caret line="73" column="26" lean-forward="false" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#319#320#0" expanded="false" />
+                <element signature="e#371#372#0" expanded="false" />
+                <element signature="e#592#593#0" expanded="false" />
+                <element signature="e#629#630#0" expanded="false" />
+                <element signature="e#691#692#0" expanded="false" />
+                <element signature="e#743#744#0" expanded="false" />
+                <element signature="e#797#798#0" expanded="false" />
+                <element signature="e#834#835#0" expanded="false" />
+                <element signature="e#907#908#0" expanded="false" />
+                <element signature="e#959#960#0" expanded="false" />
+                <element signature="e#1011#1012#0" expanded="false" />
+                <element signature="e#1056#1057#0" expanded="false" />
+                <element signature="e#1108#1109#0" expanded="false" />
+                <element signature="e#1156#1157#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -197,16 +229,9 @@
       <file leaf-file-name="Utils.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/Utils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="346">
-              <caret line="76" column="27" lean-forward="false" selection-start-line="76" selection-start-column="27" selection-end-line="76" selection-end-column="27" />
-              <folding>
-                <element signature="e#2011#2012#0" expanded="true" />
-                <element signature="e#2055#2056#0" expanded="true" />
-                <element signature="e#2103#2104#0" expanded="true" />
-                <element signature="e#2147#2148#0" expanded="true" />
-                <element signature="e#2195#2196#0" expanded="true" />
-                <element signature="e#2229#2230#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="125">
+              <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -243,9 +268,9 @@
       <find>removeall</find>
       <find>computelcand</find>
       <find>connect</find>
-      <find>connectleft</find>
       <find>connect(</find>
       <find>createedge</find>
+      <find>connectleft</find>
     </findStrings>
     <replaceStrings>
       <replace>dcel.createEdge</replace>
@@ -622,19 +647,19 @@
         <option value="$PROJECT_DIR$/src/main/java/convex_dt/ConvexShape.java" />
         <option value="$PROJECT_DIR$/src/main/java/naive_emst/NaiveEMST.java" />
         <option value="$PROJECT_DIR$/src/main/java/kds/KDSPoint.java" />
-        <option value="$PROJECT_DIR$/src/main/java/convex_dt/Utils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/dcel/HalfEdge.java" />
         <option value="$PROJECT_DIR$/src/main/java/dcel/Face.java" />
-        <option value="$PROJECT_DIR$/src/main/java/dcel/DCEL.java" />
-        <option value="$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java" />
-        <option value="$PROJECT_DIR$/src/main/java/convex_dt/run.java" />
         <option value="$PROJECT_DIR$/src/main/java/convex_dt/Circle.java" />
+        <option value="$PROJECT_DIR$/src/main/java/dcel/HalfEdge.java" />
+        <option value="$PROJECT_DIR$/src/main/java/convex_dt/run.java" />
+        <option value="$PROJECT_DIR$/src/main/java/convex_dt/Utils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java" />
+        <option value="$PROJECT_DIR$/src/main/java/dcel/DCEL.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="369" />
-    <option name="y" value="99" />
+    <option name="x" value="298" />
+    <option name="y" value="66" />
     <option name="width" value="1532" />
     <option name="height" value="864" />
   </component>
@@ -676,6 +701,8 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -699,72 +726,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kds" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="thesis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kds" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="thesis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sortedlist" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kds" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="thesis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="org.jetbrains.plugins.gradle.projectView.GradleTreeStructureProvider$GradleSourceSetDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -810,8 +771,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1285,14 +1244,21 @@
       <option name="project" value="LOCAL" />
       <updated>1481533348812</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="this doesn't work">
+      <created>1481573239026</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1481573239026</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="24618000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="369" y="99" width="1532" height="864" extended-state="0" />
+    <frame x="298" y="66" width="1532" height="864" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1304,27 +1270,27 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36568457" sideWeight="0.5032841" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2214854" sideWeight="0.49671593" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928944" sideWeight="0.49671593" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15765172" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32625994" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298153" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29442972" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37002653" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32625994" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1358,7 +1324,8 @@
     <MESSAGE value="fixed dcel package naming" />
     <MESSAGE value="dcel, beginning of naive emst, half way done with convex dt" />
     <MESSAGE value="another big bang" />
-    <option name="LAST_COMMIT_MESSAGE" value="another big bang" />
+    <MESSAGE value="this doesn't work" />
+    <option name="LAST_COMMIT_MESSAGE" value="this doesn't work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1371,57 +1338,69 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>85</line>
+          <line>88</line>
           <properties />
           <option name="timeStamp" value="34" />
         </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>97</line>
-          <properties />
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>240</line>
-          <properties />
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>350</line>
+          <line>353</line>
           <properties />
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/Utils.java</url>
-          <line>77</line>
+          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
+          <line>449</line>
           <properties />
-          <option name="timeStamp" value="43" />
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java</url>
+          <line>165</line>
+          <properties />
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java</url>
+          <line>191</line>
+          <properties />
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java</url>
+          <line>143</line>
+          <properties />
+          <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>262</line>
+          <line>222</line>
           <properties />
-          <option name="timeStamp" value="44" />
+          <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>239</line>
+          <url>file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java</url>
+          <line>183</line>
           <properties />
-          <option name="timeStamp" value="45" />
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>233</line>
+          <url>file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java</url>
+          <line>210</line>
           <properties />
-          <option name="timeStamp" value="48" />
+          <option name="timeStamp" value="61" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
-          <line>105</line>
+          <url>file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java</url>
+          <line>121</line>
           <properties />
-          <option name="timeStamp" value="49" />
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java</url>
+          <line>80</line>
+          <properties />
+          <option name="timeStamp" value="64" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -1437,12 +1416,14 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="50" />
+      <option name="time" value="65" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="base.origin" />
         <watch expression="rcand" language="JAVA" />
+        <watch expression="base.next" />
+        <watch expression="ccw" />
       </configuration>
     </watches-manager>
   </component>
@@ -1470,7 +1451,31 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="140" column="34" lean-forward="false" selection-start-line="140" selection-start-column="34" selection-end-line="140" selection-end-column="34" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#624#625#0" expanded="false" />
+            <element signature="e#653#654#0" expanded="false" />
+            <element signature="e#707#708#0" expanded="false" />
+            <element signature="e#743#744#0" expanded="false" />
+            <element signature="e#970#971#0" expanded="false" />
+            <element signature="e#1000#1001#0" expanded="false" />
+            <element signature="e#1047#1048#0" expanded="false" />
+            <element signature="e#1085#1086#0" expanded="false" />
+            <element signature="e#1112#1113#0" expanded="false" />
+            <element signature="e#1138#1139#0" expanded="false" />
+            <element signature="e#1173#1174#0" expanded="false" />
+            <element signature="e#1203#1204#0" expanded="false" />
+            <element signature="e#2010#2011#0" expanded="false" />
+            <element signature="e#2040#2041#0" expanded="false" />
+            <element signature="e#2076#2077#0" expanded="false" />
+            <element signature="e#2106#2107#0" expanded="false" />
+            <element signature="e#2154#2155#0" expanded="false" />
+            <element signature="e#2192#2193#0" expanded="false" />
+            <element signature="e#2240#2241#0" expanded="false" />
+            <element signature="e#2278#2279#0" expanded="false" />
+            <element signature="e#4015#4016#0" expanded="false" />
+            <element signature="e#4042#4043#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1521,7 +1526,31 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="149" column="20" lean-forward="false" selection-start-line="149" selection-start-column="20" selection-end-line="149" selection-end-column="20" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#624#625#0" expanded="false" />
+            <element signature="e#653#654#0" expanded="false" />
+            <element signature="e#707#708#0" expanded="false" />
+            <element signature="e#743#744#0" expanded="false" />
+            <element signature="e#970#971#0" expanded="false" />
+            <element signature="e#1000#1001#0" expanded="false" />
+            <element signature="e#1047#1048#0" expanded="false" />
+            <element signature="e#1085#1086#0" expanded="false" />
+            <element signature="e#1112#1113#0" expanded="false" />
+            <element signature="e#1138#1139#0" expanded="false" />
+            <element signature="e#1173#1174#0" expanded="false" />
+            <element signature="e#1203#1204#0" expanded="false" />
+            <element signature="e#2010#2011#0" expanded="false" />
+            <element signature="e#2040#2041#0" expanded="false" />
+            <element signature="e#2076#2077#0" expanded="false" />
+            <element signature="e#2106#2107#0" expanded="false" />
+            <element signature="e#2154#2155#0" expanded="false" />
+            <element signature="e#2192#2193#0" expanded="false" />
+            <element signature="e#2240#2241#0" expanded="false" />
+            <element signature="e#2278#2279#0" expanded="false" />
+            <element signature="e#4015#4016#0" expanded="false" />
+            <element signature="e#4042#4043#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1703,7 +1732,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1719,7 +1747,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="145">
           <caret line="44" column="16" lean-forward="false" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1759,36 +1786,53 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="680">
           <caret line="62" column="15" lean-forward="false" selection-start-line="62" selection-start-column="15" selection-end-line="62" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/dcel/HalfEdge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="141" column="0" lean-forward="false" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#624#625#0" expanded="false" />
+            <element signature="e#653#654#0" expanded="false" />
+            <element signature="e#707#708#0" expanded="false" />
+            <element signature="e#743#744#0" expanded="false" />
+            <element signature="e#970#971#0" expanded="false" />
+            <element signature="e#1000#1001#0" expanded="false" />
+            <element signature="e#1047#1048#0" expanded="false" />
+            <element signature="e#1085#1086#0" expanded="false" />
+            <element signature="e#1112#1113#0" expanded="false" />
+            <element signature="e#1138#1139#0" expanded="false" />
+            <element signature="e#1173#1174#0" expanded="false" />
+            <element signature="e#1203#1204#0" expanded="false" />
+            <element signature="e#2010#2011#0" expanded="false" />
+            <element signature="e#2040#2041#0" expanded="false" />
+            <element signature="e#2076#2077#0" expanded="false" />
+            <element signature="e#2106#2107#0" expanded="false" />
+            <element signature="e#2154#2155#0" expanded="false" />
+            <element signature="e#2192#2193#0" expanded="false" />
+            <element signature="e#2240#2241#0" expanded="false" />
+            <element signature="e#2278#2279#0" expanded="false" />
+            <element signature="e#4015#4016#0" expanded="false" />
+            <element signature="e#4042#4043#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/dcel/Face.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="73" column="26" lean-forward="true" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
+        <state relative-caret-position="952">
+          <caret line="73" column="26" lean-forward="false" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
           <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/run.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="21" column="41" lean-forward="true" selection-start-line="21" selection-start-column="41" selection-end-line="21" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#319#320#0" expanded="false" />
+            <element signature="e#371#372#0" expanded="false" />
+            <element signature="e#592#593#0" expanded="false" />
+            <element signature="e#629#630#0" expanded="false" />
+            <element signature="e#691#692#0" expanded="false" />
+            <element signature="e#743#744#0" expanded="false" />
+            <element signature="e#797#798#0" expanded="false" />
+            <element signature="e#834#835#0" expanded="false" />
+            <element signature="e#907#908#0" expanded="false" />
+            <element signature="e#959#960#0" expanded="false" />
+            <element signature="e#1011#1012#0" expanded="false" />
+            <element signature="e#1056#1057#0" expanded="false" />
+            <element signature="e#1108#1109#0" expanded="false" />
+            <element signature="e#1156#1157#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1803,33 +1847,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/Circle.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
+        <state relative-caret-position="595">
           <caret line="41" column="23" lean-forward="false" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="76" column="27" lean-forward="false" selection-start-line="76" selection-start-column="27" selection-end-line="76" selection-end-column="27" />
+        <state relative-caret-position="125">
+          <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/dcel/HalfEdge.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
           <folding>
-            <element signature="e#2011#2012#0" expanded="true" />
-            <element signature="e#2055#2056#0" expanded="true" />
-            <element signature="e#2103#2104#0" expanded="true" />
-            <element signature="e#2147#2148#0" expanded="true" />
-            <element signature="e#2195#2196#0" expanded="true" />
-            <element signature="e#2229#2230#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#2401#2402#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/run.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="119" column="0" lean-forward="false" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
+        <state relative-caret-position="733">
+          <caret line="53" column="45" lean-forward="true" selection-start-line="53" selection-start-column="45" selection-end-line="53" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1838,11 +1884,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-23">
-          <caret line="91" column="20" lean-forward="false" selection-start-line="91" selection-start-column="20" selection-end-line="91" selection-end-column="20" />
+        <state relative-caret-position="404">
+          <caret line="493" column="46" lean-forward="false" selection-start-line="493" selection-start-column="35" selection-end-line="493" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/dcel/DCEL.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-385">
+          <caret line="110" column="24" lean-forward="false" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
           <folding>
-            <element signature="e#7794#7795#0" expanded="true" />
-            <element signature="e#7828#7829#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -64,9 +64,12 @@ public class ConvexDT {
 
             HalfEdge e1 = dcel.createEdge(a, b);
             HalfEdge e2 = dcel.createEdge(b, c);
-            // connect a -> b with b -> c
+            // connect a -> b with b -> c and a <- b with b <- c
             e1.setNext(e2);
+            e1.getTwin().setPrev(e2.getTwin());
             e2.setPrev(e1);
+            e2.getTwin().setNext(e1.getTwin());
+
             if (leftOf(a, b, c) || rightOf(a, b, c)) {
                 // connect and create a triangle
                 System.out.println("Creating triangle!");
@@ -441,7 +444,12 @@ public class ConvexDT {
             }
 
             // merge step
+            int iteration = 0;
             while (true) {
+                if (iteration > 0) {
+                    System.out.println("ROUND TWO");
+                }
+                ++iteration;
                 lcand = computeLcand();
                 rcand = computeRcand();
                 System.out.println(lcand.getTwin() == rcand || lcand == rcand);
@@ -456,6 +464,11 @@ public class ConvexDT {
                 scene.repaint();
                 sleep(2000);
 
+                scene.removeAllShapes();
+                scene.repaint();
+                sleep(500);
+                dcel.draw(scene);
+                sleep(5000);
                 if (isValid(lcand) && isValid(rcand)) {
                     System.out.println("1");
                     switch (shape.inCircle(base.getOrigin(), base.getDestination(), lcand.getDestination(), rcand.getDestination())) {
