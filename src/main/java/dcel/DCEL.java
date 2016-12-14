@@ -145,6 +145,7 @@ public class DCEL {
             while (tmp != null && tmp != c_twin) {
                 tmp.draw(scene, 0, Color.CYAN);
                 scene.repaint();
+                try {sleep(1000);} catch (InterruptedException e){}
                 tmp.setFace(c_twin_face);
                 tmp = tmp.getNext();
             }
@@ -171,7 +172,7 @@ public class DCEL {
     }
 
     public void deleteEdge(HalfEdge e) {
-        // remove e from its prev and next edges, TODO: IS THAT ENOUGH?
+        // remove e from its face if it's the outercomponent of said face. if e has no next and no prev, delete face
         if (e.getFace().getOuterComponent() == e) {
             if (e.getNext() != null)
                 e.getFace().setOuterComponent(e.getNext());
@@ -181,13 +182,36 @@ public class DCEL {
                 faces.remove(e.getFace());
         }
 
-        if (e.getPrev() != null) e.getPrev().setNext(null);
-        if (e.getNext() != null) e.getNext().setPrev(null);
-        // have to remove the twin as well
-        if (e.getTwin().getPrev() != null) e.getTwin().getPrev().setNext(null);
-        if (e.getTwin().getNext() != null) e.getTwin().getNext().setPrev(null);
+        // update incident edges for e and e.twin
+        updateIncidentEdges(e);
+        updateIncidentEdges(e.getTwin());
+
         edges.remove(e);
         edges.remove(e.getTwin());
+
+        e.undraw(scene);
+        e.getTwin().undraw(scene);
+        scene.repaint();
+    }
+
+    private void updateIncidentEdges(HalfEdge e) {
+        // remove e from its prev and next edges, TODO: IS THAT ENOUGH? NO, gotta fix them
+        if (e.getPrev() != null) {
+            // might need a new next, it will always be e.oPrev if it exists
+            if (oPrev(e) != null) {
+                e.getPrev().setNext(oPrev(e));
+                oPrev(e).setPrev(e.getPrev());
+            }
+            else e.getPrev().setNext(null);
+        }
+        if (e.getNext() != null) {
+            // its next might need a new prev, it will always be e.dNext if it exists
+            if (dNext(e) != null) {
+                e.getNext().setPrev(dNext(e));
+                dNext(e).setNext(e.getNext());
+            }
+            else e.getNext().setNext(null);
+        }
     }
 
     private Face createFace(HalfEdge e) {

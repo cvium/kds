@@ -160,4 +160,12 @@ public class HalfEdge {
         Color color = java.awt.Color.GREEN;
         scene.addShape(lineSegment, color);
     }
+
+    public void undraw(J2DScene scene) {
+        if (lineSegment != null) {
+            try {
+                scene.removeShape(lineSegment);
+            } catch (IllegalStateException e) {}
+        }
+    }
 }

@@ -23,7 +23,7 @@ public class Helpers {
         if (a == null || b == null || c == null) {
             return false;
         }
-        assert a != b && b != c;
+        //assert a != b && b != c;
         double edge1 = (b.getX() - a.getX()) * (b.getY() + a.getY());
         double edge2 = (c.getX() - b.getX()) * (c.getY() + b.getY());
         double edge3 = (a.getX() - c.getX()) * (a.getY() + c.getY());
@@ -55,10 +55,28 @@ public class Helpers {
             assert next.getOrigin() == point.getIncidentEdge().getOrigin();
 
             // we're done when edge lies inbetween prev and next
-            if (isCCW(prev.getDestination(), edge.getOrigin(), next.getDestination())) {
-                ccw = prev;
-                cw = next;
-                break;
+//            if (isCCW(prev.getDestination(), edge.getOrigin(), next.getDestination())) {
+//                ccw = prev;
+//                cw = next;
+//                break;
+//            }
+            // edge.org can either be left of prev or right of prev
+            if (leftOf(prev.getOrigin(), prev.getDestination(), edge.getOrigin())) {
+                // either next.dest is to the left of the line edge.dest -> edge.org
+                // or it's to the right of prev.org -> prev.dest
+                if (leftOf(edge.getDestination(), edge.getOrigin(), next.getDestination()) ||
+                        rightOf(prev.getOrigin(), prev.getDestination(), next.getDestination())) {
+                    ccw = prev;
+                    cw = next;
+                    break;
+                }
+            } else if (rightOf(prev.getOrigin(), prev.getDestination(), edge.getOrigin())) {
+                if (rightOf(prev.getOrigin(), prev.getDestination(), next.getDestination()) &&
+                        leftOf(edge.getDestination(), edge.getOrigin(), next.getDestination())) {
+                    ccw = prev;
+                    cw = next;
+                    break;
+                }
             }
 
             prev = next;
@@ -92,10 +110,24 @@ public class Helpers {
         return Math.abs(part_1 - part_2 + part_3) <= 1e-10;
     }
 
+    /**
+     *
+     * @param a origin
+     * @param b destination
+     * @param c query point
+     * @return true if c is left of a->b
+     */
     public static boolean leftOf(KDSPoint a, KDSPoint b, KDSPoint c) {
         return (b.getX() - a.getX())*(c.getY() - a.getY()) - (b.getY() - a.getY())*(c.getX() - a.getX()) > 0;
     }
 
+    /**
+     *
+     * @param a origin
+     * @param b destination
+     * @param c query point
+     * @return true if c is right of a->b
+     */
     public static boolean rightOf(KDSPoint a, KDSPoint b, KDSPoint c) {
         return (b.getX() - a.getX())*(c.getY() - a.getY()) - (b.getY() - a.getY())*(c.getX() - a.getX()) < 0;
     }
