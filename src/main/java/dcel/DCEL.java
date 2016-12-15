@@ -145,7 +145,7 @@ public class DCEL {
             c.setFace(c_face);
             for (HalfEdge e : c) {
                 try {
-                    if (e.getFace() != c_face) deleteFace(e.getFace());
+                    if (e.getFace() != c_face && e.getFace() != null) deleteFace(e.getFace());
                 } catch (IllegalStateException ex) {}
                 e.setFace(c_face);
             }
@@ -156,7 +156,7 @@ public class DCEL {
                 c_twin.setFace(c_twin_face);
                 for (HalfEdge e : c_twin) {
                     try {
-                        if (e.getFace() != c_twin_face) deleteFace(e.getFace());
+                        if (e.getFace() != c_twin_face && e.getFace() != null) deleteFace(e.getFace());
                     } catch (IllegalStateException ex) {}
                     e.setFace(c_twin_face);
                 }
