@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 /**
  * Created by cvium on 29-11-2016.
  */
-public class HalfEdge {
+public class HalfEdge implements Iterable<HalfEdge> {
     private KDSPoint origin;
     private KDSPoint destination;
     private Face face;
@@ -116,6 +116,45 @@ public class HalfEdge {
         int result = origin != null ? origin.hashCode() : 0;
         result = 31 * result + (destination != null ? destination.hashCode() : 0);
         return result;
+    }
+
+
+    @Override
+    public Iterator<HalfEdge> iterator() {
+        return new HalfEdgeIterator(this);
+    }
+
+    public class HalfEdgeIterator implements Iterator<HalfEdge> {
+
+        private HalfEdge currentEdge;
+        private HalfEdge startEdge;
+        private boolean first = true;
+
+        public HalfEdgeIterator(HalfEdge start) {
+            currentEdge = start;
+            startEdge = start;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentEdge != startEdge || first;
+        }
+
+        @Override
+        public HalfEdge next() {
+            first = false;
+            if (currentEdge.getNext() == null) {
+                currentEdge = currentEdge.getTwin();
+            } else {
+                currentEdge = currentEdge.getNext();
+            }
+            return currentEdge;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     // some bookkeeping for convex dt

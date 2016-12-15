@@ -16,14 +16,26 @@ import static utils.Helpers.*;
 public class DCEL {
     private ArrayList<Face> faces;
     private ArrayList<HalfEdge> edges;
-    private ArrayList<Vertex> vertices;
+    private ArrayList<KDSPoint> vertices;
     private J2DScene scene;
 
-    public DCEL(J2DScene scene) {
+    public DCEL(J2DScene scene, ArrayList<KDSPoint> vertices) {
         faces = new ArrayList<>();
         edges = new ArrayList<>();
-        vertices = new ArrayList<>();
+        this.vertices = vertices;
         this.scene = scene;
+    }
+
+    public ArrayList<Face> getFaces() {
+        return faces;
+    }
+
+    public ArrayList<HalfEdge> getEdges() {
+        return edges;
+    }
+
+    public ArrayList<KDSPoint> getVertices() {
+        return vertices;
     }
 
     public HalfEdge createEdge(KDSPoint a, KDSPoint b) {
@@ -126,29 +138,66 @@ public class DCEL {
             cw.getTwin().setNext(c_twin);
         }
 
-        // only update faces if we created a new one
+        // only update faces if we created new ones
         if (a.getNext() != null || b.getPrev() != null) {
-            // handle faces by traversing the edges and updating the face
+            // handle faces by traversing the edges and updating the faces
             Face c_face = createFace(c);
             c.setFace(c_face);
-            HalfEdge tmp = c.getNext();
-            faces.remove(tmp.getFace());
-            while (tmp != null && tmp != c) {
-                tmp.setFace(c_face);
-                tmp = tmp.getNext();
+            for (HalfEdge e : c) {
+                try {
+                    if (e.getFace() != c_face) deleteFace(e.getFace());
+                } catch (IllegalStateException ex) {}
+                e.setFace(c_face);
             }
 
-            Face c_twin_face = createFace(c_twin);
-            c_twin.setFace(c_twin_face);
-            tmp = c_twin.getNext();
-            faces.remove(tmp.getFace());
-            while (tmp != null && tmp != c_twin) {
-                tmp.draw(scene, 0, Color.CYAN);
-                scene.repaint();
-                try {sleep(1000);} catch (InterruptedException e){}
-                tmp.setFace(c_twin_face);
-                tmp = tmp.getNext();
+            // if c and c.twin share the same face, then don't update anything -- happens _only_ when it's the inf face
+            if (c_twin.getFace() != c.getFace()) {
+                Face c_twin_face = createFace(c_twin);
+                c_twin.setFace(c_twin_face);
+                for (HalfEdge e : c_twin) {
+                    try {
+                        if (e.getFace() != c_twin_face) deleteFace(e.getFace());
+                    } catch (IllegalStateException ex) {}
+                    e.setFace(c_twin_face);
+                }
             }
+
+            c_face.draw(scene, Color.ORANGE);
+
+
+//            Face c_face = createFace(c);
+//            c.setFace(c_face);
+//            HalfEdge tmp = c.getNext();
+//            faces.remove(tmp.getFace());
+//            while (tmp != null && tmp != c) {
+//                tmp.setFace(c_face);
+//                tmp = tmp.getNext();
+//            }
+//
+//            Face c_twin_face = createFace(c_twin);
+//            c_twin.setFace(c_twin_face);
+//            tmp = c_twin.getNext();
+//            faces.remove(tmp.getFace());
+//            while (tmp != null && tmp != c_twin) {
+//                tmp.setFace(c_twin_face);
+//                tmp = tmp.getNext();
+//            }
+//            try {
+//                System.out.println("Drawing faces!");
+//                //scene.removeAllShapes();
+//                for (KDSPoint v : vertices) {
+//                    v.draw(scene, 0);
+//                }
+//                c_face.draw(scene, Color.ORANGE);
+//                scene.repaint();
+//                sleep(5000);
+//                //scene.removeAllShapes();
+//                c_twin_face.draw(scene, Color.GREEN);
+//                scene.repaint();
+//                sleep(5000);
+//            } catch (InterruptedException e) {
+//
+//            }
         }
 
         c.getFace().draw(scene);
@@ -171,15 +220,41 @@ public class DCEL {
         return c;
     }
 
-    public void deleteEdge(HalfEdge e) {
-        // remove e from its face if it's the outercomponent of said face. if e has no next and no prev, delete face
+    /**
+     * Updates the face of the soon-to-be-removed edge e
+     *
+     * @param e half edge being removed
+     */
+    public void updateFace(HalfEdge e) {
         if (e.getFace().getOuterComponent() == e) {
             if (e.getNext() != null)
                 e.getFace().setOuterComponent(e.getNext());
             else if (e.getPrev() != null)
                 e.getFace().setOuterComponent(e.getPrev());
             else
-                faces.remove(e.getFace());
+                deleteFace(e.getFace());
+        }
+    }
+
+    public void deleteFace(Face f) {
+        // can't remove the unbounded face
+        assert !f.isUnbounded();
+        faces.remove(f);
+    }
+
+    public void deleteEdge(HalfEdge e) {
+        // remove e from its face if it's the outercomponent of said face. if e has no next and no prev, delete face
+        updateFace(e);
+        updateFace(e.getTwin());
+
+        // update incident edge for the origin of e and e.twin
+        if (e == e.getOrigin().getIncidentEdge()) {
+            HalfEdge cand = oNext(e) != null ? oNext(e) : oPrev(e);
+            e.getOrigin().setIncidentEdge(cand);
+        }
+        if (e.getTwin() == e.getTwin().getOrigin().getIncidentEdge()) {
+            HalfEdge cand = oNext(e.getTwin()) != null ? oNext(e.getTwin()) : oPrev(e.getTwin());
+            e.getTwin().getOrigin().setIncidentEdge(cand);
         }
 
         // update incident edges for e and e.twin
@@ -197,16 +272,16 @@ public class DCEL {
     private void updateIncidentEdges(HalfEdge e) {
         // remove e from its prev and next edges, TODO: IS THAT ENOUGH? NO, gotta fix them
         if (e.getPrev() != null) {
-            // might need a new next, it will always be e.oPrev if it exists
-            if (oPrev(e) != null) {
+            // might need a new next, it will always be e.oPrev if it exists, but don't use it if it's twin
+            if (oPrev(e) != null && oPrev(e) != e.getTwin()) {
                 e.getPrev().setNext(oPrev(e));
                 oPrev(e).setPrev(e.getPrev());
             }
             else e.getPrev().setNext(null);
         }
         if (e.getNext() != null) {
-            // its next might need a new prev, it will always be e.dNext if it exists
-            if (dNext(e) != null) {
+            // its next might need a new prev, it will always be e.dNext if it exists, but don't use it if it's twin
+            if (dNext(e) != null && dNext(e) != e.getTwin()) {
                 e.getNext().setPrev(dNext(e));
                 dNext(e).setNext(e.getNext());
             }
@@ -214,7 +289,7 @@ public class DCEL {
         }
     }
 
-    private Face createFace(HalfEdge e) {
+    public Face createFace(HalfEdge e) {
         Face f = new Face(e);
         faces.add(f);
         return f;
@@ -236,7 +311,14 @@ public class DCEL {
 
     public void draw(J2DScene scene) {
         for (Face f : faces) {
+            if (f.getOuterComponent().getFace() != f) {
+                System.out.println("WTF");
+                continue;
+            }
             f.draw(scene);
+            try {
+                sleep(1000);
+            } catch (InterruptedException ex) {}
         }
     }
 }
