@@ -1,4 +1,4 @@
-package convex_dt;
+package convex_dt.shapes;
 
 import kds.KDSPoint;
 
@@ -6,6 +6,15 @@ import kds.KDSPoint;
  * Created by cvium on 03-12-2016.
  */
 public interface ConvexShape {
+    /**
+     * Predicate to test whether point d lies in the smallest circle containing a, b and c on its boundary.
+     *
+     * @param a
+     * @param b
+     * @param c
+     * @param d query point
+     * @return circleEnum
+     */
     circleEnum inCircle(KDSPoint a, KDSPoint b, KDSPoint c, KDSPoint d);
 
     /**

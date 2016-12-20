@@ -4,6 +4,13 @@ import ProGAL.dataStructures.Pair;
 import dcel.HalfEdge;
 import kds.KDSPoint;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
 /**
  * Created by cvium on 03-12-2016.
  */
@@ -168,5 +175,53 @@ public class Helpers {
     public static HalfEdge rPrev(HalfEdge e) {
         if (e.getTwin().getPrev() == null) return null;
         return e.getTwin().getPrev().getTwin();
+    }
+
+    public static void pointsToFile(ArrayList<KDSPoint> kps) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        for (KDSPoint kp : kps) {
+            String init = "points.add(new KDSPoint(";
+            String x = "new double[]{";
+            String y = "new double[]{";
+            for (int i = 0; i < kp.getCoeffsX().length; ++i) {
+                x += kp.getCoeffsX()[i];
+                if (i < kp.getCoeffsX().length-1) {
+                    x += ",";
+                } else {
+                    x += "}";
+                }
+            }
+            String mid = ",";
+            for (int i = 0; i < kp.getCoeffsY().length; ++i) {
+                y += kp.getCoeffsY()[i];
+                if (i < kp.getCoeffsY().length-1) {
+                    y += ",";
+                } else {
+                    y += "}";
+                }
+            }
+            String end = "));";
+            lines.add(init + x + mid + y + end);
+        }
+        Path file = Paths.get("coeffs.txt");
+        Files.write(file, lines, Charset.forName("UTF-8"));
+    }
+
+    public static void pointsToFileGoogle(ArrayList<KDSPoint> kps) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        for (KDSPoint kp : kps) {
+            String a = "";
+            for (int i = 0; i < kp.getCoeffsX().length; ++i) {
+                a += kp.getCoeffsX()[i] + "*x^" + i;
+                if (i < kp.getCoeffsX().length - 1) {
+                    a += "+";
+                } else {
+                    a += kp.getCoeffsX()[i];
+                }
+            }
+            lines.add(a);
+        }
+        Path file = Paths.get("coeffs_google.txt");
+        Files.write(file, lines, Charset.forName("UTF-8"));
     }
 }

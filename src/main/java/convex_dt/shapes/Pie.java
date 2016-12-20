@@ -1,4 +1,4 @@
-package convex_dt;
+package convex_dt.shapes;
 
 import kds.KDSPoint;
 

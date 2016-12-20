@@ -14,7 +14,6 @@ import static java.lang.Thread.sleep;
 public class Face {
     private HalfEdge outerComponent;
     private ArrayList<HalfEdge> innerComponent;
-    private boolean isUnbounded = false;
 
     public Face() {
     }
@@ -26,14 +25,6 @@ public class Face {
     public Face(HalfEdge outerComponent, ArrayList<HalfEdge> innerComponent) {
         this.outerComponent = outerComponent;
         this.innerComponent = innerComponent;
-    }
-
-    public boolean isUnbounded() {
-        return isUnbounded;
-    }
-
-    public void setUnbounded(boolean unbounded) {
-        isUnbounded = unbounded;
     }
 
     public HalfEdge getOuterComponent() {
@@ -82,22 +73,7 @@ public class Face {
     public void draw(J2DScene scene, Color c) {
         for (HalfEdge e : outerComponent) {
             e.draw(scene, 0, c);
-            //try{sleep(1000);}catch (InterruptedException ex) {}
         }
-//        outerComponent.draw(scene, 0, c);
-//        HalfEdge e = outerComponent.getNext();
-//
-//        int direction = 1;
-//        while (true) {
-//            if (e == outerComponent) break;
-//            if (e == null && direction == 1) {
-//                direction = 0;
-//                e = outerComponent.getPrev();
-//            }
-//            if (e == null && direction == 0) break;
-//            e.draw(scene, 0, c);
-//            e = direction == 1 ? e.getNext() : e.getPrev();
-//        }
     }
 
     public void draw(J2DScene scene) {

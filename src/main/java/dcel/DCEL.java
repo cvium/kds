@@ -85,10 +85,6 @@ public class DCEL {
 
             c.setPrev(a);
             c_twin.setNext(a.getTwin());
-
-            // update face
-            c.setFace(a.getFace());
-            c_twin.setFace(a.getTwin().getFace());
         }
         // case 2: a has a next -> locate the proper incident edges to pre/append c
         else if (a.getNext() != null) {
@@ -116,8 +112,6 @@ public class DCEL {
 
             c.setNext(b);
             c_twin.setPrev(b.getTwin());
-            c.setFace(b.getFace()); // c shares the same face as b
-            c_twin.setFace(b.getTwin().getFace()); // c twin shares same face with b twin
         }
         // case 2: b has a prev -> we need to locate the edges CCW and CW from c if they exist
         else if (b.getPrev() != null) {
@@ -138,85 +132,29 @@ public class DCEL {
             cw.getTwin().setNext(c_twin);
         }
 
-        // only update faces if we created new ones
-        if (a.getNext() != null || b.getPrev() != null) {
-            // handle faces by traversing the edges and updating the faces
-            Face c_face = createFace(c);
-            c.setFace(c_face);
-            for (HalfEdge e : c) {
-                try {
-                    if (e.getFace() != c_face && e.getFace() != null) deleteFace(e.getFace());
-                } catch (IllegalStateException ex) {}
-                e.setFace(c_face);
+        // handle faces by traversing the edges and updating the faces
+        Face c_face = createFace(c);
+        c.setFace(c_face);
+        for (HalfEdge e : c) {
+            try {
+                if (e.getFace() != c_face && e.getFace() != null) deleteFace(e.getFace());
+            } catch (IllegalStateException ex) {
             }
-
-            // if c and c.twin share the same face, then don't update anything -- happens _only_ when it's the inf face
-            if (c_twin.getFace() != c.getFace()) {
-                Face c_twin_face = createFace(c_twin);
-                c_twin.setFace(c_twin_face);
-                for (HalfEdge e : c_twin) {
-                    try {
-                        if (e.getFace() != c_twin_face && e.getFace() != null) deleteFace(e.getFace());
-                    } catch (IllegalStateException ex) {}
-                    e.setFace(c_twin_face);
-                }
-            }
-
-            c_face.draw(scene, Color.ORANGE);
-
-
-//            Face c_face = createFace(c);
-//            c.setFace(c_face);
-//            HalfEdge tmp = c.getNext();
-//            faces.remove(tmp.getFace());
-//            while (tmp != null && tmp != c) {
-//                tmp.setFace(c_face);
-//                tmp = tmp.getNext();
-//            }
-//
-//            Face c_twin_face = createFace(c_twin);
-//            c_twin.setFace(c_twin_face);
-//            tmp = c_twin.getNext();
-//            faces.remove(tmp.getFace());
-//            while (tmp != null && tmp != c_twin) {
-//                tmp.setFace(c_twin_face);
-//                tmp = tmp.getNext();
-//            }
-//            try {
-//                System.out.println("Drawing faces!");
-//                //scene.removeAllShapes();
-//                for (KDSPoint v : vertices) {
-//                    v.draw(scene, 0);
-//                }
-//                c_face.draw(scene, Color.ORANGE);
-//                scene.repaint();
-//                sleep(5000);
-//                //scene.removeAllShapes();
-//                c_twin_face.draw(scene, Color.GREEN);
-//                scene.repaint();
-//                sleep(5000);
-//            } catch (InterruptedException e) {
-//
-//            }
+            e.setFace(c_face);
         }
 
-        c.getFace().draw(scene);
-        scene.repaint();
-        /*try {
-            scene.removeAllShapes();
-            scene.repaint();
-            c.getFace().draw(scene);
-            scene.repaint();
-            sleep(5000);
-
-            scene.removeAllShapes();
-            scene.repaint();
-            sleep(1000);
-            c_twin.getFace().draw(scene);
-            scene.repaint();
-            sleep(5000);
-        } catch (Exception e) {}*/
-        //scene.removeAllShapes();
+        // if c and c.twin share the same face, then don't update anything -- happens _only_ when it's the inf face
+        if (c_twin.getFace() != c.getFace()) {
+            Face c_twin_face = createFace(c_twin);
+            c_twin.setFace(c_twin_face);
+            for (HalfEdge e : c_twin) {
+                try {
+                    if (e.getFace() != c_twin_face && e.getFace() != null) deleteFace(e.getFace());
+                } catch (IllegalStateException ex) {
+                }
+                e.setFace(c_twin_face);
+            }
+        }
         return c;
     }
 
@@ -237,8 +175,6 @@ public class DCEL {
     }
 
     public void deleteFace(Face f) {
-        // can't remove the unbounded face
-        assert !f.isUnbounded();
         faces.remove(f);
     }
 
@@ -267,6 +203,8 @@ public class DCEL {
         e.undraw(scene);
         e.getTwin().undraw(scene);
         scene.repaint();
+        System.out.println("INFO: Deleted an edge.");
+        try {sleep(1000);} catch (InterruptedException ex) {}
     }
 
     private void updateIncidentEdges(HalfEdge e) {
@@ -312,7 +250,8 @@ public class DCEL {
     public void draw(J2DScene scene) {
         for (Face f : faces) {
             if (f.getOuterComponent().getFace() != f) {
-                System.out.println("WTF");
+                System.out.println("ERROR: Face is invalid! Drawing its outer component in YELLOW.");
+                f.getOuterComponent().draw(scene, 0, Color.YELLOW);
                 continue;
             }
             f.draw(scene);

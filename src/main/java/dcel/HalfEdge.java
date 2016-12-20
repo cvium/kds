@@ -6,8 +6,6 @@ import kds.KDSPoint;
 
 import java.awt.*;
 import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
 /**
  * Created by cvium on 29-11-2016.
@@ -167,18 +165,6 @@ public class HalfEdge implements Iterable<HalfEdge> {
         isBridge = true;
     }
 
-//    public HalfEdge connect(HalfEdge other) {
-//        // TODO: does this work?
-//        HalfEdge newEdge = new HalfEdge(destination, other.getOrigin());
-//        next = newEdge;
-//        other.setPrev(newEdge);
-//        newEdge.setNext(other);
-//        newEdge.setPrev(this);
-//        // hackish way to create the twin
-//        newEdge.getTwin();
-//        return newEdge;
-//    }
-
     public void draw(J2DScene scene, double t, Color c) {
         if (lineSegment != null)
             scene.removeShape(lineSegment);
@@ -186,18 +172,6 @@ public class HalfEdge implements Iterable<HalfEdge> {
         scene.addShape(lineSegment, c);
         origin.draw(scene, t, java.awt.Color.RED);
         scene.repaint();
-//        if (next != null)
-//            next.draw(scene, 0, false);
-//        if (prev != null)
-//            prev.draw(scene, 0, false);
-    }
-
-    public void draw(J2DScene scene, double t, boolean next) {
-        if (lineSegment != null)
-            scene.removeShape(lineSegment);
-        lineSegment = new LineSegment(origin.getPoint(0), destination.getPoint(0));
-        Color color = java.awt.Color.GREEN;
-        scene.addShape(lineSegment, color);
     }
 
     public void undraw(J2DScene scene) {
