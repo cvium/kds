@@ -4,96 +4,54 @@ import kds.*;
 import kds.solvers.EigenSolver;
 //import org.apache.commons.math3.complex.Complex;
 import org.ejml.data.Complex64F;
+import utils.Primitive;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 /**
  * Created by clausvium on 21/12/15.
  */
-public class SortedList implements KDS<KDSPoint, SortedEvent> {
-    EventQueue<SortedEvent> eq;
-    int degree = 3;
-    int numPoints = 10;
-    double starttime;
-    ArrayList<KDSPoint> points;
-    EigenSolver solver;
+public class SortedList<P extends Primitive> implements KDS<P, SortedEvent<P>> {
+    private EventQueue<SortedEvent<P>> eq;
+    private ArrayList<P> primitives;
+    private EigenSolver solver;
 
     public SortedList() {
-        this.points = new ArrayList<>();
+        this.primitives = new ArrayList<>();
         this.eq = new EventQueue<>();
         this.solver = new EigenSolver();
         initialize(0);
     }
 
-    public SortedList(double starttime, ArrayList<KDSPoint> points) {
-        this.points = points;
+    public SortedList(double starttime, ArrayList<P> primitives) {
+        this.primitives = primitives;
         this.eq = new EventQueue<>();
         this.solver = new EigenSolver();
         initialize(starttime);
-    }
-
-    public SortedList(double starttime, int numPoints, int degree) {
-        this.starttime = starttime;
-        this.numPoints = numPoints;
-        this.degree = degree;
-        this.eq = new EventQueue<>();
-        this.solver = new EigenSolver();
-        points = new ArrayList<>();
-        Random rand = new Random();
-        for (int i = 0; i < numPoints; ++i) {
-            double[] coeffsX = new double[degree];
-            double[] coeffsY = new double[degree];
-
-            for (int j = 0; j < degree; ++j) {
-                coeffsX[j] = -10 + (10 + 10) * rand.nextDouble();//
-                //System.out.println(coeffsX[j]);
-                coeffsY[j] = 0;
-            }
-            points.add(new KDSPoint(coeffsX, coeffsY));
-        }
-        initialize(starttime);
-    }
-
-    public int getNumPoints() {
-        return numPoints;
-    }
-
-    public void setNumPoints(int numPoints) {
-        this.numPoints = numPoints;
-    }
-
-    public int getDegree() {
-        return degree;
-    }
-
-    public void setDegree(int degree) {
-        this.degree = degree;
     }
 
     @Override
-    public EventQueue<SortedEvent> getEventQueue() {
+    public EventQueue<SortedEvent<P>> getEventQueue() {
         return eq;
     }
 
-    @Override
-    public ArrayList<KDSPoint> getPoints() {
-        return points;
+    public ArrayList<P> getPrimitives() {
+        return primitives;
     }
 
     @Override
     public boolean audit(double t) {
-        ArrayList<KDSPoint> ps = new ArrayList<>();
-        for (KDSPoint p : points) {
+        ArrayList<Primitive> ps = new ArrayList<>();
+        for (P p : primitives) {
             p.updatePosition(t);
             ps.add(p);
         }
         Collections.sort(ps);
-        for (int i = 0; i < points.size(); ++i) {
-            if (ps.get(i) != points.get(i)) {
-                System.out.println("Is: " + points.get(i).getPoint(t).x() + " (" + points.get(i).getIdx() + ")"
+        for (int i = 0; i < primitives.size(); ++i) {
+            if (ps.get(i) != primitives.get(i)) {
+                System.out.println("Is: " + primitives.get(i).getPoint(t).x() + " (" + primitives.get(i).getIdx() + ")"
                         + " should be: " + ps.get(i).getPoint(t).x() + " (" + ps.get(i).getIdx() + ")");
                 return false;
             }
@@ -103,15 +61,15 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
 
     @Override
     public void initialize(double starttime) {
-        for (KDSPoint p : points) {
+        for (P p : primitives) {
             p.updatePosition(starttime);
         }
-        Collections.sort(points);
+        Collections.sort(primitives);
 
-        for (int i = 0; i < points.size() - 1; ++i) {
-            KDSPoint a = points.get(i);
+        for (int i = 0; i < primitives.size() - 1; ++i) {
+            P a = primitives.get(i);
             a.setIdx(i);
-            KDSPoint b = points.get(i+1);
+            P b = primitives.get(i+1);
             b.setIdx(i+1);
 
             createEvent(starttime, a, b, false);
@@ -128,7 +86,7 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
     }
 
 
-    double computeFailureTime(double t, KDSPoint a, KDSPoint b, boolean inFailedEvent) {
+    double computeFailureTime(double t, P a, P b, boolean inFailedEvent) {
         double[] aCoeffsX = a.getCoeffsX();
         double[] bCoeffsX = b.getCoeffsX();
 
@@ -166,42 +124,44 @@ public class SortedList implements KDS<KDSPoint, SortedEvent> {
     }
 
     @Override
-    public void update(SortedEvent event, double t) {
-        KDSPoint a = event.getA();
-        KDSPoint b = event.getB();
+    public void update(SortedEvent<P> event, double t) {
+        P a = event.getA();
+        P b = event.getB();
 
         int start = a.getIdx() > 0 ? a.getIdx() - 1 : a.getIdx();
-        int end = b.getIdx() < points.size() - 1 ? b.getIdx() + 1 : points.size();
+        int end = b.getIdx() < primitives.size() - 1 ? b.getIdx() + 1 : primitives.size();
         for (int i = start; i < end; ++i) {
-            points.get(i).updatePosition(t);
+            primitives.get(i).updatePosition(t);
         }
 
         a.removeEvents();
         b.removeEvents();
 
-        Collections.swap(points, a.getIdx(), b.getIdx());
+        Collections.swap(primitives, a.getIdx(), b.getIdx());
         a.setIdx(a.getIdx() + 1);
         b.setIdx(b.getIdx() - 1);
 
         a.setInEvent(true);
         b.setInEvent(true);
         if (b.getIdx() > 0) {
-            KDSPoint p = points.get(b.getIdx() - 1);
+            P p = primitives.get(b.getIdx() - 1);
             p.removeEvents();
             createEvent(t, p, b, false);
         }
-        if (a.getIdx() < points.size() - 1) {
-            KDSPoint p = points.get(a.getIdx() + 1);
+        if (a.getIdx() < primitives.size() - 1) {
+            P p = primitives.get(a.getIdx() + 1);
             createEvent(t, a, p, false);
         }
+        // inFailedEvent seems to be used to make sure it chooses the root _after_ current time t
+        // TODO improve, confusing variable, why not just always force it to pick smallest root after t??
         createEvent(t, b, a, true);
     }
 
-    private void createEvent(double t, KDSPoint a, KDSPoint b, boolean inFailedEvent) {
+    private void createEvent(double t, P a, P b, boolean inFailedEvent) {
         double failureTime = computeFailureTime(t, a, b, inFailedEvent);
 
         if (failureTime >= t) {
-            SortedEvent event = new SortedEvent(this, failureTime, a, b);
+            SortedEvent<P> event = new SortedEvent<>(this, failureTime, a, b);
             a.getEvents().add(event);
             eq.add(event);
         }

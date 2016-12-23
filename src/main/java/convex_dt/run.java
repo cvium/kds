@@ -77,11 +77,20 @@ public class run {
             points.add(new KDSPoint(new double[]{-0.0077880672087131675},new double[]{-0.1144654412966819}));
             points.add(new KDSPoint(new double[]{0.8977062892429617},new double[]{0.479309675690081}));
 
-        } else if (true) {
+        } else if (false) {
             points.add(new KDSPoint(new double[]{0},new double[]{0}));
             points.add(new KDSPoint(new double[]{-0.2},new double[]{0.5}));
             points.add(new KDSPoint(new double[]{-0.4},new double[]{0.1}));
             points.add(new KDSPoint(new double[]{-1},new double[]{1}));
+            points.add(new KDSPoint(new double[]{-1.2},new double[]{0.8}));
+            points.add(new KDSPoint(new double[]{-1.4},new double[]{1.1}));
+        } else if (false) {
+            points.add(new KDSPoint(new double[]{0},new double[]{0}));
+            points.add(new KDSPoint(new double[]{-0.2},new double[]{0.5}));
+            points.add(new KDSPoint(new double[]{-0.7},new double[]{0.11}));
+            points.add(new KDSPoint(new double[]{-0.4},new double[]{0.01}));
+            points.add(new KDSPoint(new double[]{-1},new double[]{1}));
+            points.add(new KDSPoint(new double[]{-1.3},new double[]{0.81}));
             points.add(new KDSPoint(new double[]{-1.2},new double[]{0.8}));
             points.add(new KDSPoint(new double[]{-1.4},new double[]{1.1}));
         }
@@ -89,12 +98,12 @@ public class run {
         else{
             Random rand = new Random();
 
-            for (int i = 0; i < 10; ++i) {
+            for (int i = 0; i < 100; ++i) {
                 double[] coeffsX = new double[1];
                 double[] coeffsY = new double[1];
                 for (int j = 0; j < 1; ++j) {
-                    coeffsX[j] = -1 + (1 + 1) * rand.nextDouble();//
-                    coeffsY[j] = -1 + (1 + 1) * rand.nextDouble();
+                    coeffsX[j] = -5 + (5 + 5) * rand.nextDouble();//
+                    coeffsY[j] = -5 + (5 + 5) * rand.nextDouble();
                 }
                 points.add(new KDSPoint(coeffsX, coeffsY));
             }

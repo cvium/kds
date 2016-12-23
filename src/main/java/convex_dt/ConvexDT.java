@@ -100,8 +100,10 @@ public class ConvexDT {
     public HalfEdge findLowerSupport(HalfEdge left, HalfEdge right) {
         assert left != null && right != null;
         if (lowerThan(left.getOrigin(), right.getOrigin())) {
+            // no clue what the point of this while is
             while (rNext(right) != null && shape.inInfCircle(rNext(right).getOrigin(), left.getOrigin(), right.getOrigin()) ==
                     infCircleEnum.INSIDE && lessThan(rNext(right).getOrigin(), right.getOrigin())) {
+                System.out.println("Entered the weird while in lowersupport");
                 if (rNext(right) == null) break;
                 right = rNext(right);
             }
@@ -123,21 +125,28 @@ public class ConvexDT {
         } else {
             // TODO I think it should move CW around left as the 'candidate' for lower support can't be on the right
             // side of left when the lowest point in right is lower
-            while (rNext(left) != null && shape.inInfCircle(rNext(left).getOrigin(), left.getOrigin(), right.getOrigin()) ==
-                    infCircleEnum.INSIDE && lessThan(rNext(left).getOrigin(), left.getOrigin())) {
-                if (rNext(left) == null) break;
-                left = rNext(left);
-            }
+//            while (rNext(left) != null && shape.inInfCircle(rNext(left).getOrigin(), left.getOrigin(), right.getOrigin()) ==
+//                    infCircleEnum.INSIDE && lessThan(rNext(left).getOrigin(), left.getOrigin())) {
+//                if (rNext(left) == null) break;
+//                left = rNext(left);
+//            }
             while (true) {
-                if (shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                right.draw(scene, 0, Color.ORANGE);
+                try {sleep(0);} catch (InterruptedException e) {}
+                // if rNext.org is inside the inf circle with left.org and right.org on boundary, then it's a better candidate
+                if ((rNext(left) != null && shape.inInfCircle(rNext(left).getOrigin(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) ||
+                        shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
                     // sort of a hack to make sure we get the right edge in the case where the left side is invalid
                     // as lower support. We assume that its twin is ok.
-                    if (rPrev(left) == null) left = left.getTwin();
-                    else left = rPrev(left);
-                } else if (shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                    System.out.println("left");
+                    if (rNext(left) == null) left = left.getTwin();
+                    else left = rNext(left);
+                } else if ((rNext(right) != null && shape.inInfCircle(rNext(right).getOrigin(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) ||
+                        shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
                     // see above
-                    if (rPrev(right) == null) right = right.getTwin();
-                    else right = rPrev(right);
+                    System.out.println("right");
+                    if (rNext(right) == null) right = right.getTwin();
+                    else right = rNext(right);
                 } else {
                     if (oNext(left) == null) return connect(right.getTwin(), left);
                     return connect(right.getTwin(), oNext(left));
@@ -249,7 +258,7 @@ public class ConvexDT {
         boolean foundLcand = false;
         lcand = rPrev(base);
         lcand.draw(scene, 0, Color.ORANGE);
-        sleep(1000);
+        sleep(0);
         assert lcand != null;
         assert base != null;
 
@@ -260,12 +269,12 @@ public class ConvexDT {
                 if (produceONext(lcand) == null) break;
                 lcand = produceONext(lcand);
                 lcand.draw(scene, 0, Color.ORANGE);
-                sleep(1000);
+                sleep(0);
             }
             if (isValid(lcand)) delete(oPrev(lcand));
             else lcand = oPrev(lcand);
             lcand.draw(scene, 0, Color.ORANGE);
-            sleep(1000);
+            sleep(0);
         }
 
         if (isValid(lcand)) {
@@ -314,9 +323,9 @@ public class ConvexDT {
                         break;
                 }
                 lcand.draw(scene, 0, Color.ORANGE);
-                sleep(1000);
+                sleep(0);
                 current.draw(scene, 0, Color.YELLOW);
-                sleep(1000);
+                sleep(0);
                 System.out.println("Am I stuck in lcand?");
             }
         } else {
@@ -359,7 +368,7 @@ public class ConvexDT {
             current = oPrev(rcand);
             rcand.draw(scene, 0, Color.green);
             current.draw(scene, 0, Color.BLUE);
-            sleep(1000);
+            sleep(0);
             top = rcand;
             while (true) {
                 assert rcand != null;
@@ -435,10 +444,10 @@ public class ConvexDT {
             lleft.draw(scene, 0, Color.PINK);
             HalfEdge lright = delaunay(right);
             lright.draw(scene, 0, Color.PINK);
-            sleep(10000);
+            //sleep(10000);
             base = findLowerSupport(lleft, lright);
             base.draw(scene, 0, Color.black);
-            //sleep(1000);
+            //sleep(0);
             boolean leftLower = lowerThan(lleft.getOrigin(), lright.getOrigin());
             HalfEdge lower;
             if (leftLower) {
@@ -451,7 +460,7 @@ public class ConvexDT {
             // merge step
             while (true) {
                 base.draw(scene, 0, Color.BLACK);
-                sleep(1000);
+                sleep(0);
                 lcand = computeLcand();
                 rcand = computeRcand();
                 //System.out.println(lcand.getTwin() == rcand || lcand == rcand);
@@ -459,11 +468,11 @@ public class ConvexDT {
                 if (isValid(lcand)) System.out.println("lcand valid!");
                 else System.out.println("lcand invalid!");
                 lcand.draw(scene, 0, Color.MAGENTA);
-                sleep(1000);
+                sleep(0);
                 if (isValid(rcand)) System.out.println("rcand valid!");
                 else System.out.println("rcand invalid!");
                 rcand.draw(scene, 0, Color.CYAN);
-                sleep(1000);
+                sleep(0);
                 if (isValid(lcand) && isValid(rcand)) {
                     System.out.println("1");
                     switch (shape.inCircle(base.getOrigin(), base.getDestination(), lcand.getDestination(), rcand.getDestination())) {
@@ -471,7 +480,7 @@ public class ConvexDT {
                             System.out.println("rcand.dest INSIDE");
                             base = connectRight();
                             base.draw(scene, 0, Color.BLACK);
-                            sleep(1000);
+                            sleep(0);
                             break;
                         case ON:
                         case ONBEFORE:
@@ -480,18 +489,18 @@ public class ConvexDT {
                             if (rightOf(lcand.getOrigin(), lcand.getDestination(), rcand.getDestination())) {
                                 base = connectRight();
                                 base.draw(scene, 0, Color.BLACK);
-                                sleep(1000);
+                                sleep(0);
                             } else {
                                 base = connectLeft();
                                 base.draw(scene, 0, Color.BLACK);
-                                sleep(1000);
+                                sleep(0);
                             }
                             break;
                         default:
                             System.out.println("rcand.dest OUTSIDE");
                             base = connectLeft();
                             base.draw(scene, 0, Color.BLACK);
-                            sleep(1000);
+                            sleep(0);
                             break;
                     }
                 }

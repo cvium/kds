@@ -23,5 +23,19 @@ public class NaiveEMST {
 
     public void compute() {
 
+
+
+    }
+
+    public ArrayList<KDSPoint> getPoints() {
+        return points;
+    }
+
+    public void setPoints(ArrayList<KDSPoint> points) {
+        this.points = points;
+    }
+
+    public ArrayList<HalfEdge> getEdges() {
+        return edges;
     }
 }

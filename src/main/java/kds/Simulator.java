@@ -76,8 +76,8 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
         }*/
 
         if (visualize) {
-            for (int i = 0; i < kds.getPoints().size(); ++i) {
-                kds.getPoints().get(i).draw(scene, 0);
+            for (int i = 0; i < kds.getPrimitives().size(); ++i) {
+                kds.getPrimitives().get(i).draw(scene, 0);
             }
             scene.centerCamera();
             scene.autoZoom();
@@ -116,8 +116,8 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
             event = false;
             if (visualize) {
                 scene.removeAllShapes();
-                for(int i = 0; i < kds.getPoints().size(); ++i) {
-                    kds.getPoints().get(i).draw(scene, t);
+                for(int i = 0; i < kds.getPrimitives().size(); ++i) {
+                    kds.getPrimitives().get(i).draw(scene, t);
                 }
                 scene.repaint();
                 try {

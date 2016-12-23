@@ -56,8 +56,7 @@ public class DummyKDS implements KDS<BoundedKDSPoint, Event<BoundedKDSPoint>> {
         return null;
     }
 
-    @Override
-    public ArrayList<BoundedKDSPoint> getPoints() {
+    public ArrayList<BoundedKDSPoint> getPrimitives() {
         return points;
     }
 }

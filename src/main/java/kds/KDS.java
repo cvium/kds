@@ -10,5 +10,5 @@ public interface KDS<PointType, EventType extends Event<PointType>> {
     void initialize(double starttime);
     void update(EventType event, double t);
     EventQueue<EventType> getEventQueue();
-    ArrayList<PointType> getPoints();
+    ArrayList<PointType> getPrimitives();
 }

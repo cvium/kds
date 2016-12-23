@@ -1,7 +1,7 @@
 package kds;
 
 
-public abstract class Event<PointType> implements Comparable<Event> {
+public abstract class Event<Primitive> implements Comparable<Event> {
     double failureTime;
     boolean valid = true;
 
@@ -21,39 +21,61 @@ public abstract class Event<PointType> implements Comparable<Event> {
         this.failureTime = failureTime;
     }
 
-    PointType a;
-    PointType b;
+    Primitive a;
+    Primitive b;
+    Primitive c;
+    Primitive d;
 
-    public PointType getA() {
+    public Primitive getA() {
         return a;
     }
 
-    public void setA(PointType a) {
+    public void setA(Primitive a) {
         this.a = a;
     }
 
-    public PointType getB() {
+    public Primitive getB() {
         return b;
     }
 
-    public void setB(PointType b) {
+    public void setB(Primitive b) {
         this.b = b;
+    }
+
+    public Primitive getC() {
+        return c;
+    }
+
+    public void setC(Primitive c) {
+        this.c = c;
+    }
+
+    public Primitive getD() {
+        return d;
+    }
+
+    public void setD(Primitive d) {
+        this.d = d;
     }
 
     public abstract void process(double t);
 
-    public Event(PointType a, PointType b) {
+    public Event(Primitive a, Primitive b) {
         this.a = a;
         this.b = b;
     }
 
-    public Event(double failureTime, PointType a, PointType b) {
+    public Event(double failureTime, Primitive a, Primitive b) {
         this.a = a;
         this.b = b;
         this.failureTime = failureTime;
     }
 
     public Event() {}
+
+    public abstract void computeFailureTime(double t, Primitive...primitives);
+
+    //public abstract Event createEvent();
 
     @Override
     public int compareTo(Event other) {

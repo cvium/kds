@@ -4,19 +4,15 @@ import ProGAL.geom2d.*;
 import ProGAL.geom2d.Point;
 import ProGAL.geom2d.viewer.J2DScene;
 import dcel.HalfEdge;
+import utils.Primitive;
 
 import java.awt.*;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
  * Created by clausvium on 21/12/15.
  */
-public class KDSPoint implements Comparable<KDSPoint>{
+public class KDSPoint implements Primitive {
     double[] coeffsX;
     double[] coeffsY;
     int idx;
@@ -62,17 +58,18 @@ public class KDSPoint implements Comparable<KDSPoint>{
     }
 
     @Override
-    public int compareTo(KDSPoint other) {
-        double xdiff = Math.abs(this.x - other.x);
-        double ydiff = Math.abs(this.y - other.y);
+    public int compareTo(Primitive other) {
+        KDSPoint othercast = (KDSPoint) other;
+        double xdiff = Math.abs(this.x - othercast.x);
+        double ydiff = Math.abs(this.y - othercast.y);
         if (xdiff <= 1e-10) {
             if (ydiff <= 1e-10) {
                 return 0;
             } else {
-                return this.y < other.y ? -1 : 1;
+                return this.y < othercast.y ? -1 : 1;
             }
         } else {
-            return this.x < other.x ? -1 : 1;
+            return this.x < othercast.x ? -1 : 1;
         }
     }
 
