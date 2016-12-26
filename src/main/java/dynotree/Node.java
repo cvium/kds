@@ -4,13 +4,32 @@ package dynotree;
  * Created by clausvium on 23/12/16.
  */
 public class Node<Key> {
-    Key key;
-    Node parent;
-    Node leftChild;
-    Node rightChild;
+    private Key key; // key kept in the node, must implement Comparable/Comparator
+    private int size; // size of the tree rooted at this node
+    private Node<Key> parent; // parent pointer
+    private Node<Key> leftChild; // left child pointer
+    private Node<Key> rightChild; // right child pointer
 
     public boolean isRoot() {
         return parent == null || (parent.getLeftChild() != this && parent.getRightChild() != this);
+    }
+
+    void update() {
+        size = 1;
+        if (leftChild != null) size += leftChild.getSize();
+        if (rightChild != null) size += rightChild.getSize();
+    }
+
+    public void normalize() {
+
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public Node(Key key) {
@@ -25,27 +44,27 @@ public class Node<Key> {
         this.key = key;
     }
 
-    public Node getParent() {
+    public Node<Key> getParent() {
         return parent;
     }
 
-    public void setParent(Node parent) {
+    public void setParent(Node<Key> parent) {
         this.parent = parent;
     }
 
-    public Node getLeftChild() {
+    public Node<Key> getLeftChild() {
         return leftChild;
     }
 
-    public void setLeftChild(Node leftChild) {
+    public void setLeftChild(Node<Key> leftChild) {
         this.leftChild = leftChild;
     }
 
-    public Node getRightChild() {
+    public Node<Key> getRightChild() {
         return rightChild;
     }
 
-    public void setRightChild(Node rightChild) {
+    public void setRightChild(Node<Key> rightChild) {
         this.rightChild = rightChild;
     }
 }
