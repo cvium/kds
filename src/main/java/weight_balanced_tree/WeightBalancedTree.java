@@ -1,8 +1,5 @@
 package weight_balanced_tree;
 
-import org.apache.commons.math3.optim.nonlinear.vector.Weight;
-
-import java.util.ArrayList;
 
 /**
  * Created by clausvium on 26/12/16.
@@ -60,7 +57,60 @@ public class WeightBalancedTree<Key extends Comparable<Key>> {
         //new_node.getParent().setWeight(new_node.getParent().getWeight() + 1);
 
         // time to rebalance the tree
-        tmp_node = last_node;
+        rebalance(last_node);
+    }
+
+    public WBTNode<Key> delete(Key key) {
+        if (root == null) return null;
+
+        // find the node to delete
+        WBTNode<Key> node = find(key);
+
+        if (node == null) return null;
+
+        // should be safe to assume that the keys match, otherwise I suck
+        assert node.getKey() == key;
+
+        WBTNode<Key> parent = node.getParent();
+        boolean isLeftChild = parent.getLeftChild() == node;
+        WBTNode<Key> balance_node = node.getParent(); // the node on which we start the balancing
+
+        if (node.isLeaf()) {
+            // just remove it!
+            node.setParent(null);
+            if (isLeftChild) parent.setLeftChild(null);
+            else parent.setRightChild(null);
+        } else if (node.getLeftChild().isNull() || node.getRightChild().isNull()) {
+            // we can simply splice its child to its parent
+            WBTNode<Key> child = node.getLeftChild().isNull() ? node.getRightChild() : node.getLeftChild();
+            if (node.getParent().getLeftChild() == node) node.getParent().setLeftChild(child);
+            else node.getParent().setRightChild(child);
+        } else {
+            // have to find a predecessor or successor to replace it. Pick it based on weights to hopefully avoid the
+            // number of rotations. Delete it to avoid duplicate and then put its key inside node
+            WBTNode<Key> replacement;
+            if (node.getLeftChild().getWeight() > node.getRightChild().getWeight()) {
+                replacement = predecessor(node);
+                // manually delete the replacement from the tree to avoid rotating before we're done
+                assert replacement.isLeaf();
+                replacement.getParent().setRightChild(null);
+            } else {
+                replacement = successor(node);
+                // manually delete the replacement from the tree to avoid rotating before we're done
+                assert replacement.isLeaf();
+                replacement.getParent().setLeftChild(null);
+            }
+            // replace the key
+            node.setKey(replacement.getKey());
+            balance_node = replacement.getParent();
+        }
+
+        // time to rebalance the tree
+        rebalance(balance_node);
+        return node;
+    }
+
+    private void rebalance(WBTNode<Key> tmp_node) {
         while (!tmp_node.isNull()) {
             tmp_node.setWeight(tmp_node.getLeftChild().getWeight() + tmp_node.getRightChild().getWeight());
 
@@ -77,42 +127,29 @@ public class WeightBalancedTree<Key extends Comparable<Key>> {
                     rotate_right(tmp_node);
 
                     tmp_node.getRightChild().setWeight(tmp_node.getRightChild().getLeftChild().getWeight()
-                    + tmp_node.getRightChild().getRightChild().getWeight());
+                            + tmp_node.getRightChild().getRightChild().getWeight());
                     tmp_node.getLeftChild().setWeight(tmp_node.getLeftChild().getLeftChild().getWeight()
-                    + tmp_node.getLeftChild().getRightChild().getWeight());
+                            + tmp_node.getLeftChild().getRightChild().getWeight());
                 }
             } else if (tmp_node.getLeftChild().getWeight() < alpha * tmp_node.getWeight()) {
                 if (tmp_node.getRightChild().getRightChild().getWeight() > (alpha + epsilon) * tmp_node.getWeight()) {
                     rotate_left(tmp_node);
                     tmp_node.getLeftChild().setWeight(tmp_node.getLeftChild().getLeftChild().getWeight() +
-                    tmp_node.getLeftChild().getRightChild().getWeight());
+                            tmp_node.getLeftChild().getRightChild().getWeight());
 
                 } else {
                     rotate_right(tmp_node.getRightChild());
                     rotate_left(tmp_node.getLeftChild());
                     tmp_node.getRightChild().setWeight(tmp_node.getRightChild().getLeftChild().getWeight() +
-                    tmp_node.getRightChild().getRightChild().getWeight());
+                            tmp_node.getRightChild().getRightChild().getWeight());
 
                     tmp_node.getLeftChild().setWeight(tmp_node.getLeftChild().getLeftChild().getWeight() +
-                    tmp_node.getLeftChild().getRightChild().getWeight());
+                            tmp_node.getLeftChild().getRightChild().getWeight());
                 }
             }
 
             tmp_node = tmp_node.getParent();
         }
-    }
-
-    public void delete(Key key) {
-        if (root == null) return;
-
-        // find the node to delete
-        WBTNode<Key> tmp_node = find(key);
-
-        if (tmp_node == null) return;
-
-        // should be safe to assume that the keys match, otherwise I suck
-        assert tmp_node.getKey() == key;
-
     }
 
     public WBTNode<Key> find(Key key) {
@@ -156,5 +193,70 @@ public class WeightBalancedTree<Key extends Comparable<Key>> {
         node.getRightChild().setLeftChild(node.getRightChild().getRightChild());
         node.getRightChild().setRightChild(tmp_node);
         node.getRightChild().setKey(tmp_key);
+    }
+
+    public WBTNode<Key> predecessor(WBTNode<Key> node) {
+        if (node == null || node.isNull()) return null;
+
+        if (!node.getLeftChild().isNull()) {
+            return findMaximum(node.getLeftChild());
+        }
+
+        WBTNode<Key> ancestor = node.getParent();
+        WBTNode<Key> child = node;
+        while (!ancestor.isNull() && ancestor.getLeftChild() == child) {
+            child = ancestor;
+            ancestor = ancestor.getParent();
+        }
+
+        return ancestor;
+    }
+
+    public WBTNode<Key> predecessor(Key key) {
+        return predecessor(find(key));
+    }
+
+    public WBTNode<Key> successor(WBTNode<Key> node) {
+        if (node == null || node.isNull()) return null;
+
+        if (!node.getRightChild().isNull()) {
+            return findMinimum(node.getRightChild());
+        }
+
+        WBTNode<Key> ancestor = node.getParent();
+        WBTNode<Key> child = node;
+
+        while (!ancestor.isNull() && ancestor.getRightChild() == child) {
+            child = ancestor;
+            ancestor = ancestor.getParent();
+        }
+
+        return ancestor;
+    }
+
+    public WBTNode<Key> successor(Key key) {
+        return successor(find(key));
+    }
+
+    public WBTNode<Key> findMaximum(WBTNode<Key> node) {
+        if (node == null || node.isNull()) return null;
+
+        WBTNode<Key> maximum = node;
+        while (!maximum.isNull()) {
+            maximum = maximum.getRightChild();
+        }
+
+        return maximum.getParent();
+    }
+
+    public WBTNode<Key> findMinimum(WBTNode<Key> node) {
+        if (node == null || node.isNull()) return null;
+
+        WBTNode<Key> minimum = node;
+        while (!minimum.isNull()) {
+            minimum = minimum.getLeftChild();
+        }
+
+        return minimum.getParent();
     }
 }

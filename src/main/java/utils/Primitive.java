@@ -19,6 +19,8 @@ public interface Primitive extends Comparable<Primitive> {
     double[] getCoeffsX();
     double[] getCoeffsY();
     Point getPoint(double t);
+    Point getPoint();
+    double getDistance(Primitive other);
     //boolean inEvent();
     //Primitive getPrimitive(double t);
 }

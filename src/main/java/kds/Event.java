@@ -1,7 +1,9 @@
 package kds;
 
 
-public abstract class Event<Primitive> implements Comparable<Event> {
+import utils.Primitive;
+
+public abstract class Event<P extends Primitive> implements Comparable<Event> {
     double failureTime;
     boolean valid = true;
 
@@ -21,51 +23,51 @@ public abstract class Event<Primitive> implements Comparable<Event> {
         this.failureTime = failureTime;
     }
 
-    Primitive a;
-    Primitive b;
-    Primitive c;
-    Primitive d;
+    P a;
+    P b;
+    P c;
+    P d;
 
-    public Primitive getA() {
+    public P getA() {
         return a;
     }
 
-    public void setA(Primitive a) {
+    public void setA(P a) {
         this.a = a;
     }
 
-    public Primitive getB() {
+    public P getB() {
         return b;
     }
 
-    public void setB(Primitive b) {
+    public void setB(P b) {
         this.b = b;
     }
 
-    public Primitive getC() {
+    public P getC() {
         return c;
     }
 
-    public void setC(Primitive c) {
+    public void setC(P c) {
         this.c = c;
     }
 
-    public Primitive getD() {
+    public P getD() {
         return d;
     }
 
-    public void setD(Primitive d) {
+    public void setD(P d) {
         this.d = d;
     }
 
     public abstract void process(double t);
 
-    public Event(Primitive a, Primitive b) {
+    public Event(P a, P b) {
         this.a = a;
         this.b = b;
     }
 
-    public Event(double failureTime, Primitive a, Primitive b) {
+    public Event(double failureTime, P a, P b) {
         this.a = a;
         this.b = b;
         this.failureTime = failureTime;
@@ -73,7 +75,7 @@ public abstract class Event<Primitive> implements Comparable<Event> {
 
     public Event() {}
 
-    public abstract void computeFailureTime(double t, Primitive...primitives);
+    public abstract void computeFailureTime(double t);
 
     //public abstract Event createEvent();
 

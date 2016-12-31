@@ -47,6 +47,11 @@ public class DummyKDS implements KDS<BoundedKDSPoint, Event<BoundedKDSPoint>> {
     }
 
     @Override
+    public void initialize(double starttime, ArrayList<BoundedKDSPoint> ps) {
+
+    }
+
+    @Override
     public void update(Event event, double t) {
 
     }

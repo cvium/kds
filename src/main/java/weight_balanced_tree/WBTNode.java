@@ -13,6 +13,8 @@ public class WBTNode<Key extends Comparable<Key>> {
     private WBTNode<Key> rightChild;
     private Key key;
 
+    public WBTNode() {}
+
     public WBTNode(Key key) {
         this.key = key;
     }
@@ -47,6 +49,7 @@ public class WBTNode<Key extends Comparable<Key>> {
     }
 
     public void setWeight(int weight) {
+        if (weight == 0) weight = 1;  // make sure weight is always at least 1 when setting it outside the class
         this.weight = weight;
     }
 
@@ -58,7 +61,7 @@ public class WBTNode<Key extends Comparable<Key>> {
     public void setLeftChild(WBTNode<Key> leftChild) {
         assert !isNull;
         this.leftChild = leftChild;
-        leftChild.setParent(this);
+        if (leftChild != null) leftChild.setParent(this);
     }
 
     public WBTNode<Key> getRightChild() {
@@ -69,7 +72,7 @@ public class WBTNode<Key extends Comparable<Key>> {
     public void setRightChild(WBTNode<Key> rightChild) {
         assert !isNull;
         this.rightChild = rightChild;
-        rightChild.setParent(this);
+        if (rightChild != null) rightChild.setParent(this);
     }
 
     public Key getKey() {
@@ -87,5 +90,9 @@ public class WBTNode<Key extends Comparable<Key>> {
 
     public void setParent(WBTNode<Key> parent) {
         this.parent = parent;
+    }
+
+    public boolean isLeaf() {
+        return leftChild == null && rightChild == null;
     }
 }

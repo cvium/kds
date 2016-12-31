@@ -2,19 +2,20 @@ package sortedlist;
 
 import kds.Event;
 import kds.KDSPoint;
+import utils.Primitive;
 
 /**
  * Created by clausvium on 21/12/15.
  */
-public class SortedEvent<P> extends kds.Event<P>{
-    private SortedList sl;
+public class SortedEvent<P extends Primitive> extends kds.Event<P>{
+    private SortedList<P> sl;
 
-    public SortedEvent(SortedList sl, double failureTime, P a, P b) {
+    public SortedEvent(SortedList<P> sl, double failureTime, P a, P b) {
         super(failureTime, a, b);
         this.sl = sl;
     }
 
-    public SortedEvent(SortedList sl, P a, P b) {
+    public SortedEvent(SortedList<P> sl, P a, P b) {
         super(a, b);
         this.sl = sl;
     }
@@ -22,7 +23,7 @@ public class SortedEvent<P> extends kds.Event<P>{
     public SortedEvent() {}
 
     @Override
-    public void computeFailureTime(double t, P[] ps) {
+    public void computeFailureTime(double t) {
 
     }
 

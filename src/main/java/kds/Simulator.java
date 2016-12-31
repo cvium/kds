@@ -23,6 +23,14 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
     J2DScene scene;
     boolean paused;
 
+    public J2DScene getScene() {
+        return scene;
+    }
+
+    public void setScene(J2DScene scene) {
+        this.scene = scene;
+    }
+
     public Level getLoggerLevel() {
         return loggerLevel;
     }
@@ -64,7 +72,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
         LOGGER.log(Level.INFO, "Starting simulation");
         KDSKeyListener kdsKeyListener = new KDSKeyListener(this);
         if (visualize) {
-            scene = J2DScene.createJ2DSceneInFrame();
+            if (scene == null) scene = J2DScene.createJ2DSceneInFrame();
             scene.addKeyListener(kdsKeyListener);
         }
         /*

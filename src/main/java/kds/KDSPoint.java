@@ -128,6 +128,16 @@ public class KDSPoint implements Primitive {
         return p;
     }
 
+    @Override
+    public double getDistance(Primitive other) {
+        return getPoint().getSquaredDistance(other.getPoint());
+    }
+
+    @Override
+    public Point getPoint() {
+        return p;
+    }
+
     public void swap(KDSPoint other) {
         double[] old_coeffsX = other.coeffsX;
         double[] old_coeffsY = other.coeffsY;

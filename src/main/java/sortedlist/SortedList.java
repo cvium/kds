@@ -4,6 +4,7 @@ import kds.*;
 import kds.solvers.EigenSolver;
 //import org.apache.commons.math3.complex.Complex;
 import org.ejml.data.Complex64F;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import utils.Primitive;
 
 import java.util.ArrayList;
@@ -74,6 +75,11 @@ public class SortedList<P extends Primitive> implements KDS<P, SortedEvent<P>> {
 
             createEvent(starttime, a, b, false);
         }
+    }
+
+    @Override
+    public void initialize(double starttime, ArrayList<P> ps) {
+        throw new NotImplementedException();
     }
 
     Complex64F[] findRoots(double t, double[] ac, double[] bc) {
