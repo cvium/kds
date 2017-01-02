@@ -14,6 +14,8 @@ public class EventQueue<EventType extends Event> {
 
     public void add(EventType e) {
         double failureTime = e.getFailureTime();
+        System.out.println(failureTime);
+        if (failureTime == -1) return;
         ArrayList<EventType> es = queue.get(failureTime);
         if (es != null) {
             es.add(e);
@@ -31,7 +33,7 @@ public class EventQueue<EventType extends Event> {
         if (es != null) {
             es.remove(e);
         }
-        queue.put(failureTime, es);
+        //queue.put(failureTime, es);
     }
 
     public ArrayList<EventType> peek(double t) throws NoSuchElementException {
@@ -68,6 +70,10 @@ public class EventQueue<EventType extends Event> {
     }
 
     public double firstKey() {
-        return queue.firstKey();
+        try {
+            return queue.firstKey();
+        } catch (NoSuchElementException ex) {
+            return Double.MAX_VALUE;
+        }
     }
 }

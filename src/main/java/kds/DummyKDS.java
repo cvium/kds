@@ -52,7 +52,7 @@ public class DummyKDS implements KDS<BoundedKDSPoint, Event<BoundedKDSPoint>> {
     }
 
     @Override
-    public void update(Event event, double t) {
+    public void process(Event event, double t) {
 
     }
 

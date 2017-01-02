@@ -1,6 +1,7 @@
 package kds;
 
 
+import kds.solvers.EigenSolver;
 import utils.Primitive;
 
 public abstract class Event<P extends Primitive> implements Comparable<Event> {
@@ -75,7 +76,7 @@ public abstract class Event<P extends Primitive> implements Comparable<Event> {
 
     public Event() {}
 
-    public abstract void computeFailureTime(double t);
+    public abstract void computeFailureTime(EigenSolver solver, double t);
 
     //public abstract Event createEvent();
 

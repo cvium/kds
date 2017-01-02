@@ -6,9 +6,17 @@ import utils.Primitive;
  * Created by clausvium on 28/12/16.
  */
 public class DistanceFunction<P extends Primitive> implements TournamentTreeWinner<P> {
-    private Primitive p;
+    private P p;
 
-    public DistanceFunction(Primitive p) {
+    public DistanceFunction(P p) {
+        this.p = p;
+    }
+
+    public P getP() {
+        return p;
+    }
+
+    public void setP(P p) {
         this.p = p;
     }
 
@@ -16,6 +24,7 @@ public class DistanceFunction<P extends Primitive> implements TournamentTreeWinn
     public P findWinner(P first, P second) {
         double firstDistance = p.getDistance(first);
         double secondDistance = p.getDistance(second);
+        if (Math.abs(firstDistance - secondDistance) < 1e-10) System.out.println("FUCK");
         return firstDistance < secondDistance ? first : second;
     }
 

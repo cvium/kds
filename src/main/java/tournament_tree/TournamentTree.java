@@ -1,6 +1,5 @@
 package tournament_tree;
 
-import kds.Event;
 import kds.EventQueue;
 import kds.KDS;
 import kds.solvers.EigenSolver;
@@ -12,14 +11,14 @@ import java.util.ArrayList;
 /**
  * Created by clausvium on 22/12/16.
  */
-public class TournamentTree<P extends Primitive, EventType extends Event<P>> implements KDS<P, EventType> {
+public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEvent<P>> {
     private double alpha = 0.288; // the weight ratio used for balancing - default value as described in
                                   // Advanced Data Structures by Peter Brass
     private double epsilon = 0.005;
     private TournamentNode<P> root; // aka the winner
     private EigenSolver solver = new EigenSolver();
     private TournamentTreeWinner<P> winnerFunction;
-    private EventQueue<EventType> eq;
+    private EventQueue<TournamentEvent<P>> eq;
     private ArrayList<TournamentNode<P>> leaves;
     private int nextKey = 0;
 
@@ -34,17 +33,30 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
         this.eq = new EventQueue<>();
         this.leaves = new ArrayList<>();
         initialize(t, leaves);
-        if (!audit(t)) System.out.println("bleh");
+        if (!audit(t))
+            audit(t);
     }
 
     @Override
     public boolean audit(double t) {
         double smallestDistance = Double.MAX_VALUE;
+        ArrayList<Double> distances = new ArrayList<>();
         for (TournamentNode<P> leaf : leaves) {
-            double val = winnerFunction.computeValue(leaf.getObject());
+            double val = winnerFunction.computeValue(leaf.getWinner());
             if (smallestDistance > val) smallestDistance = val;
+            distances.add(val);
         }
-        return winnerFunction.computeValue(root.getObject()) == smallestDistance && validate(root);
+        boolean valid = true;
+        if (winnerFunction.computeValue(root.getWinner()) != smallestDistance) {
+            valid = false;
+            System.out.println("Winner not valid. Is: " + winnerFunction.computeValue(root.getWinner()) + " should be: " + smallestDistance);
+            System.out.println("Distances: " + distances);
+        }
+        if (!validate(root)) {
+            valid = false;
+            System.out.println("The tree itself is not valid :(");
+        }
+        return valid;
     }
 
     public boolean validate(TournamentNode<P> node) {
@@ -57,10 +69,10 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
         if (!valid) return false; // no need to check, TODO print out offenders
 
         if (!node.getLeftChild().isNull()) {
-            valid = node.getLeftChild().getKey() < node.getKey();
+            valid = node.getLeftChild().getKey() < node.getKey() && isBalanced(node.getLeftChild(), node);
         }
         if (!node.getRightChild().isNull()) {
-            valid = valid && node.getKey() <= node.getRightChild().getKey();
+            valid = valid && node.getKey() <= node.getRightChild().getKey() && isBalanced(node.getRightChild(), node);
         }
         return valid;
     }
@@ -75,24 +87,36 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
     public void initialize(double starttime, ArrayList<P> leaves) {
         // create the leaf nodes
         for (P leaf : leaves) {
-            this.leaves.add(insert(starttime, nextKey, leaf));
+            this.leaves.add(insert(starttime, ++nextKey, leaf));
         }
     }
 
     @Override
-    public void update(EventType event, double t) {
+    public void process(TournamentEvent<P> event, double t) {
+        eq.remove(event);
 
+        P oldWinner = event.getNode().getWinner();
+        if (oldWinner == event.getNode().getLeftChild().getWinner()) {
+            event.getNode().setWinner(event.getNode().getRightChild().getWinner());
+        } else {
+            event.getNode().setWinner(event.getNode().getLeftChild().getWinner());
+        }
+
+        event.getNode().createEvent(solver, event.getFailureTime(), winnerFunction, true);
+
+        // percolate
+        updateWinners(t, event.getNode().getParent());
     }
 
     @Override
-    public EventQueue<EventType> getEventQueue() {
-        return null;
+    public EventQueue<TournamentEvent<P>> getEventQueue() {
+        return eq;
     }
 
     public ArrayList<P> getPrimitives() {
         ArrayList<P> primitives = new ArrayList<>();
         for (TournamentNode<P> leaf : leaves) {
-            primitives.add(leaf.getObject());
+            primitives.add(leaf.getWinner());
         }
         return primitives;
     }
@@ -106,16 +130,17 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
     }
 
     /**
-     * Inserts P object with int key at time t
+     * Inserts P winner with int key at time t
      *
-     * @param t the time at which the object is inserted
+     * @param t the time at which the winner is inserted
      * @param key the key of the node
-     * @param object the object associated with the key
+     * @param winner the winner associated with the key
      * @return the new leaf node
      */
-    public TournamentNode<P> insert(double t, int key, P object) {
+    public TournamentNode<P> insert(double t, int key, P winner) {
         if (root == null) {
-            root = new TournamentNode<>(key, object);
+            root = new TournamentNode<>(key, winner);
+            root.setRightChild(new TournamentNode<>(key, winner));
             return root;
         }
 
@@ -124,33 +149,35 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
         TournamentNode<P> leaf = root;
 
         // find the location to insert, which is always a leaf
-        while (!leaf.isLeaf()) {
+        while (!leaf.isNull()) {
             if (key < leaf.getKey()) leaf = leaf.getLeftChild();
             else leaf = leaf.getRightChild();
         }
+
+        // since we stopped at a null node, grab its parent
+        leaf = leaf.getParent();
 
         // TODO handle duplicate key
         //assert tmp_node == null || key != tmp_node.getKey();
 
         // let's insert it
-        TournamentNode<P> new_node = new TournamentNode<>(key, object);
+        TournamentNode<P> new_node = new TournamentNode<>(key, winner);
         // attach the new node to the leaf node and alter the old leaf node such that it becomes an internal node
         // which means the old leaf must be moved down a level and become the new leaf's sibling
         if (key < leaf.getKey()) {
             leaf.setLeftChild(new_node);
-            leaf.setRightChild(new TournamentNode<>(nextKey++, leaf.getObject()));
+            leaf.setRightChild(new TournamentNode<>(leaf.getKey(), leaf.getWinner()));
         }
         else  {
             // here we have to swap the keys as we always let inner nodes have the key of its right leaf
             // it is safe to do as everything in the left subtree is less than the new key
             leaf.setRightChild(new_node);
-            leaf.setLeftChild(new TournamentNode<>(nextKey++, leaf.getObject()));
+            leaf.setLeftChild(new TournamentNode<>(leaf.getKey(), leaf.getWinner()));
             leaf.setKey(new_node.getKey());
         }
         // time to rebalance the tree
         rebalance(t, leaf);
 
-        this.nextKey += 1; // update the key counter
         return new_node;
     }
 
@@ -159,10 +186,11 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
      *
      * @param node the node in which the winner must be updated
      */
-    private void updateWinners(TournamentNode<P> node) {
+    private void updateWinners(double t, TournamentNode<P> node) {
         TournamentNode<P> current = node;
         while (!current.isNull()) {
             // TODO
+            updateWinner(t, current);
             current = current.getParent();
         }
     }
@@ -173,18 +201,26 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
      * @param node
      */
     private void updateWinner(double t, TournamentNode<P> node) {
-        if (node.getLeftChild().isNull() && node.getRightChild().isNull()) {}
-        else if (node.getLeftChild().isNull()) {
-            node.setObject(node.getRightChild().getObject());
-        } else if (node.getRightChild().isNull()) {
-            node.setObject(node.getLeftChild().getObject());
-        } else {
-            P leftWinner = node.getLeftChild().getObject();
-            P rightWinner = node.getRightChild().getObject();
+        if (node == null || node.isNull() || node.getLeftChild().isNull() && node.getRightChild().isNull()) return;
 
-            node.setObject(winnerFunction.findWinner(leftWinner, rightWinner));
+        // update the positions
+        node.getWinner().updatePosition(t);
+        if (!node.getLeftChild().isNull()) node.getLeftChild().getWinner().updatePosition(t);
+        if (!node.getRightChild().isNull()) node.getRightChild().getWinner().updatePosition(t);
+
+        if (node.getLeftChild().isNull()) {
+            node.setWinner(node.getRightChild().getWinner());
+        } else if (node.getRightChild().isNull()) {
+            node.setWinner(node.getLeftChild().getWinner());
+        } else {
+            P leftWinner = node.getLeftChild().getWinner();
+            P rightWinner = node.getRightChild().getWinner();
+
+            node.setWinner(winnerFunction.findWinner(leftWinner, rightWinner));
         }
-        node.createEvent(t);
+
+        if (node.getEvent() != null) eq.remove(node.getEvent());
+        eq.add(node.createEvent(solver, t, winnerFunction, false));
     }
 
     public TournamentNode<P> delete(double t, int key) {
@@ -245,31 +281,36 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
 
     private void rebalance(double t, TournamentNode<P> tmp_node) {
         while (!tmp_node.isNull()) {
-            tmp_node.setWeight(tmp_node.getLeftChild().getWeight() + tmp_node.getRightChild().getWeight());
+            tmp_node.updateWeights();
 
-            if (tmp_node.getRightChild().getWeight() < alpha * tmp_node.getWeight()) {
+            if (!isBalanced(tmp_node.getRightChild(), tmp_node)) {
 
-                if (tmp_node.getLeftChild().getLeftChild().getWeight() > (alpha + epsilon) * tmp_node.getWeight()) {
+                if (!tmp_node.getLeftChild().getLeftChild().isNull() &&
+                        tmp_node.getLeftChild().getLeftChild().getWeight() > (alpha + epsilon) * tmp_node.getWeight()) {
                     rotate_right(t, tmp_node);
                 } else if (!tmp_node.getLeftChild().isNull()){
                     rotate_left(t, tmp_node.getLeftChild());
                     rotate_right(t, tmp_node);
                 }
-            } else if (tmp_node.getLeftChild().getWeight() < alpha * tmp_node.getWeight()) {
-                if (tmp_node.getRightChild().getRightChild().getWeight() > (alpha + epsilon) * tmp_node.getWeight()) {
+            } else if (!isBalanced(tmp_node.getLeftChild(), tmp_node)) {
+                if (!tmp_node.getRightChild().getRightChild().isNull() &&
+                        tmp_node.getRightChild().getRightChild().getWeight() > (alpha + epsilon) * tmp_node.getWeight()) {
                     rotate_left(t, tmp_node);
 
                 } else if (!tmp_node.getRightChild().isNull()){
                     rotate_right(t, tmp_node.getRightChild());
                     rotate_left(t, tmp_node.getLeftChild());
                 }
-            } else {
-                // even if we don't rotate, we have to update the winner certificate
-                updateWinner(t, tmp_node);
             }
+            // even if we don't rotate, we have to update the winner certificate
+            updateWinner(t, tmp_node);
 
             tmp_node = tmp_node.getParent();
         }
+    }
+
+    public boolean isBalanced(TournamentNode<P> node, TournamentNode<P> other_node) {
+        return node.getWeight() >= alpha * other_node.getWeight();
     }
 
     public TournamentNode<P> find(double key) {
@@ -308,26 +349,32 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
                 / \         / \
                d   e       c   d
          */
-
+        System.out.println("rotate_left");
         TournamentNode<P> parent = node.getParent();
 
         TournamentNode<P> newRoot = node.getRightChild();
         TournamentNode<P> rightChild = node.getRightChild().getLeftChild();
-        node.setRightChild(rightChild);
-        newRoot.setLeftChild(node);
+        if (!rightChild.isNull()) node.setRightChild(rightChild);
 
         if (!parent.isNull() && parent.isLeftChild(node)) {
             parent.setLeftChild(newRoot);
         } else if (!parent.isNull()) {
             parent.setRightChild(newRoot);
+        } else {
+            // this means that 'node' is the root and since 'newRoot' is a child of 'node', we have to manually
+            // reset its parent to avoid a weird cycle
+            newRoot.setParent(null);
+            // update root
+            root = newRoot;
         }
+        newRoot.setLeftChild(node);
         // update b's weights and then a's
         node.updateWeights();
         newRoot.updateWeights();
 
         // update the winners, we don't let it percolate though as there may be more rotations
         updateWinner(t, node);
-        updateWinner(t, newRoot);
+        //updateWinner(t, newRoot);
     }
 
     public void rotate_right(double t, TournamentNode<P> node) {
@@ -349,23 +396,29 @@ public class TournamentTree<P extends Primitive, EventType extends Event<P>> imp
              / \               / \
             c   d             d   e
          */
-
+        System.out.println("rotate_right");
         TournamentNode<P> parent = node.getParent();
 
         TournamentNode<P> newRoot = node.getLeftChild();
-        node.setLeftChild(newRoot.getRightChild());
-        newRoot.setRightChild(node);
+        TournamentNode<P> leftChild = newRoot.getRightChild();
+        if (!leftChild.isNull()) node.setLeftChild(leftChild);
 
         if (!parent.isNull() && parent.isLeftChild(node)) {
             parent.setLeftChild(newRoot);
         } else if (!parent.isNull()) {
             parent.setRightChild(newRoot);
+        } else {
+            // this means that 'node' is the root and since 'newRoot' is a child of 'node', we have to manually
+            // reset its parent to avoid a weird cycle
+            newRoot.setParent(null);
+            root = newRoot;
         }
-        // update a's weights and then b's
+        newRoot.setRightChild(node);
+        // process a's weights and then b's
         node.updateWeights();
         newRoot.updateWeights();
 
-        // update the winners, we don't let it percolate though as there may be more rotations
+        // process the winners, we don't let it percolate though as there may be more rotations
         updateWinner(t, node);
         updateWinner(t, newRoot);
     }

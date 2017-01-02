@@ -11,7 +11,7 @@ public interface KDS<PointType extends Primitive, EventType extends Event<PointT
     boolean audit(double t);
     void initialize(double starttime);
     void initialize(double starttime, ArrayList<PointType> ps);
-    void update(EventType event, double t);
+    void process(EventType event, double t);
     EventQueue<EventType> getEventQueue();
     ArrayList<PointType> getPrimitives();
 }

@@ -143,7 +143,7 @@ public class DCEL {
             e.setFace(c_face);
         }
 
-        // if c and c.twin share the same face, then don't update anything -- happens _only_ when it's the inf face
+        // if c and c.twin share the same face, then don't process anything -- happens _only_ when it's the inf face
         if (c_twin.getFace() != c.getFace()) {
             Face c_twin_face = createFace(c_twin);
             c_twin.setFace(c_twin_face);
@@ -183,7 +183,7 @@ public class DCEL {
         updateFace(e);
         updateFace(e.getTwin());
 
-        // update incident edge for the origin of e and e.twin
+        // process incident edge for the origin of e and e.twin
         if (e == e.getOrigin().getIncidentEdge()) {
             HalfEdge cand = oNext(e) != null ? oNext(e) : oPrev(e);
             e.getOrigin().setIncidentEdge(cand);
@@ -193,7 +193,7 @@ public class DCEL {
             e.getTwin().getOrigin().setIncidentEdge(cand);
         }
 
-        // update incident edges for e and e.twin
+        // process incident edges for e and e.twin
         updateIncidentEdges(e);
         updateIncidentEdges(e.getTwin());
 

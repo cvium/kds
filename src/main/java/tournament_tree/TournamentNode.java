@@ -1,5 +1,6 @@
 package tournament_tree;
 
+import kds.solvers.EigenSolver;
 import utils.Primitive;
 
 /**
@@ -12,7 +13,7 @@ public class TournamentNode<P extends Primitive> {
     private TournamentNode<P> rightChild;
     private TournamentEvent<P> event;
     private int key;
-    private P object; // the winner object of the subtree rooted at this node
+    private P winner; // the winner winner of the subtree rooted at this node
     private int weight;
     private boolean isNull = false; // special flag indicating that it's a null node
 
@@ -30,23 +31,24 @@ public class TournamentNode<P extends Primitive> {
         this.weight = 1;
     }
 
-    public TournamentNode(int key, P object) {
+    public TournamentNode(int key, P winner) {
         this.key = key;
         this.weight = 1;
-        this.object = object;
+        this.winner = winner;
     }
 
-    public TournamentNode(int key, int weight, P object, TournamentNode<P> leftChild, TournamentNode<P> rightChild) {
+    public TournamentNode(int key, int weight, P winner, TournamentNode<P> leftChild, TournamentNode<P> rightChild) {
         this.key = key;
-        this.object = object;
+        this.winner = winner;
         this.weight = weight;
         this.leftChild = leftChild;
         this.rightChild = rightChild;
     }
 
-    public TournamentEvent<P> createEvent(double t) {
-        event = new TournamentEvent<>(leftChild, rightChild);
-        event.computeFailureTime(t);
+    public TournamentEvent<P> createEvent(EigenSolver solver, double t, TournamentTreeWinner<P> winnerFunction,
+                                          boolean inFailedEvent) {
+        event = new TournamentEvent<>(this, winnerFunction, inFailedEvent);
+        event.computeFailureTime(solver, t);
 
         return event;
     }
@@ -69,7 +71,7 @@ public class TournamentNode<P extends Primitive> {
     }
 
     public TournamentNode<P> getLeftChild() {
-        if (leftChild == null) return new TournamentNode<>(true);
+        if (leftChild == null) return getNullNode(false);
         return leftChild;
     }
 
@@ -80,7 +82,7 @@ public class TournamentNode<P extends Primitive> {
     }
 
     public TournamentNode<P> getRightChild() {
-        if (rightChild == null) return new TournamentNode<>(true);
+        if (rightChild == null) return getNullNode(false);
         return rightChild;
     }
 
@@ -99,7 +101,7 @@ public class TournamentNode<P extends Primitive> {
     }
 
     public TournamentNode<P> getParent() {
-        if (parent == null) return new TournamentNode<>(true);
+        if (parent == null) return getNullNode(true);
         return parent;
     }
 
@@ -119,12 +121,12 @@ public class TournamentNode<P extends Primitive> {
         this.event = event;
     }
 
-    public P getObject() {
-        return object;
+    public P getWinner() {
+        return winner;
     }
 
-    public void setObject(P object) {
-        this.object = object;
+    public void setWinner(P winner) {
+        this.winner = winner;
     }
 
     /**
@@ -151,5 +153,12 @@ public class TournamentNode<P extends Primitive> {
      */
     public void updateWinner() {
         // TODO
+    }
+
+    private TournamentNode<P> getNullNode(boolean isParent) {
+        TournamentNode<P> nullNode = new TournamentNode<>();
+        if (!isParent) nullNode.setParent(this);
+        nullNode.setNull(true);
+        return nullNode;
     }
 }

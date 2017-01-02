@@ -102,10 +102,11 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
             try {
                 while (kds.getEventQueue().firstKey() <= t) {
                     es = kds.getEventQueue().poll();
+                    if (es.size() > 0) LOGGER.log(Level.FINER, "{0} events", es.size());
                     for (EventType e : es) {
                         if (e.isValid()) {
                             event = true;
-                            e.process(e.getFailureTime());
+                            kds.process(e, e.getFailureTime());
                             LOGGER.log(Level.FINER, "EVENT at time t={0}", e.getFailureTime());
                         }
                     }

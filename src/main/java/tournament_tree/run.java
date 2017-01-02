@@ -15,27 +15,27 @@ import java.util.logging.Level;
 public class run {
 
     public static void main(String[] args) throws Exception {
-        KDSPoint p = new KDSPoint(new double[]{0.1}, new double[]{0.3});
+        KDSPoint p = new KDSPoint(new double[]{0.1, 0}, new double[]{0.3, 0});
         DistanceFunction<KDSPoint> distanceFunction = new DistanceFunction<>(p);
         ArrayList<KDSPoint> leaves = new ArrayList<>();
         Random rand = new Random();
 
-        for (int i = 0; i < 3; ++i) {
-            double[] coeffsX = new double[1];
-            double[] coeffsY = new double[1];
-            for (int j = 0; j < 1; ++j) {
-                coeffsX[j] = 1 + (1 - 1) * rand.nextDouble();//
+        for (int i = 0; i < 10; ++i) {
+            double[] coeffsX = new double[2];
+            double[] coeffsY = new double[2];
+            for (int j = 0; j < 2; ++j) {
+                coeffsX[j] = 1 + (1 + 1) * rand.nextDouble();//
                 coeffsY[j] = -1 + (1 + 1) * rand.nextDouble();
             }
             leaves.add(new KDSPoint(coeffsX, coeffsY));
         }
         System.out.println(leaves.size());
-        TournamentTree<KDSPoint, TournamentEvent<KDSPoint>> tournamentTree = new TournamentTree<>(0, leaves, distanceFunction);
+        TournamentTree<KDSPoint> tournamentTree = new TournamentTree<>(0, leaves, distanceFunction);
 
-        Simulator<KDSPoint, TournamentEvent<KDSPoint>> simulator = new Simulator<>(tournamentTree, 0, 0.01, 0, Level.ALL);
-        simulator.setScene(J2DScene.createJ2DSceneInFrame());
-        p.draw(simulator.getScene(), 0);
-        int error = simulator.run(true, true);
+        Simulator<KDSPoint, TournamentEvent<KDSPoint>> simulator = new Simulator<>(tournamentTree, 0, 0.1, 10, Level.ALL);
+        //simulator.setScene(J2DScene.createJ2DSceneInFrame());
+        //p.draw(simulator.getScene(), 0);
+        int error = simulator.run(false, true);
         if (error > 0) {
             throw new Exception();
         }

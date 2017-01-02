@@ -1,7 +1,6 @@
 package sortedlist;
 
-import kds.Event;
-import kds.KDSPoint;
+import kds.solvers.EigenSolver;
 import utils.Primitive;
 
 /**
@@ -23,13 +22,13 @@ public class SortedEvent<P extends Primitive> extends kds.Event<P>{
     public SortedEvent() {}
 
     @Override
-    public void computeFailureTime(double t) {
+    public void computeFailureTime(EigenSolver solver, double t) {
 
     }
 
 
     @Override
     public void process(double t) {
-        sl.update(this, t);
+        sl.process(this, t);
     }
 }
