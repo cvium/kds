@@ -301,9 +301,10 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
                     rotate_right(t, tmp_node.getRightChild());
                     rotate_left(t, tmp_node.getLeftChild());
                 }
+            } else {
+                // even if we don't rotate, we have to update the winner certificate
+                updateWinner(t, tmp_node);
             }
-            // even if we don't rotate, we have to update the winner certificate
-            updateWinner(t, tmp_node);
 
             tmp_node = tmp_node.getParent();
         }
@@ -374,7 +375,7 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
 
         // update the winners, we don't let it percolate though as there may be more rotations
         updateWinner(t, node);
-        //updateWinner(t, newRoot);
+        updateWinner(t, newRoot);
     }
 
     public void rotate_right(double t, TournamentNode<P> node) {

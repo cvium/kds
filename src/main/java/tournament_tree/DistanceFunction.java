@@ -25,7 +25,7 @@ public class DistanceFunction<P extends Primitive> implements TournamentTreeWinn
         double firstDistance = p.getDistance(first);
         double secondDistance = p.getDistance(second);
         if (Math.abs(firstDistance - secondDistance) < 1e-10) System.out.println("FUCK");
-        return firstDistance < secondDistance ? first : second;
+        return firstDistance <= secondDistance ? first : second;
     }
 
     @Override

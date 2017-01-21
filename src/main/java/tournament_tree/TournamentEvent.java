@@ -3,16 +3,12 @@ package tournament_tree;
 import kds.solvers.EigenSolver;
 import org.ejml.data.Complex64F;
 import utils.Primitive;
-import utils.RootFinder;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.NoSuchElementException;
+import utils.Polynomial;
 
 /**
  * Created by clausvium on 22/12/16.
  */
-public class TournamentEvent<P extends Primitive> extends kds.Event<P>{
+public class TournamentEvent<P extends Primitive> extends kds.Event<P> {
 
     private TournamentNode<P> node;
     private TournamentTreeWinner<P> winnerFunction;
@@ -60,16 +56,12 @@ public class TournamentEvent<P extends Primitive> extends kds.Event<P>{
         double[] p2_coeffs = getDistCoeffs(winnerFunction.getP().getCoeffsX(), winnerFunction.getP().getCoeffsY(),
                 bCoeffsX, bCoeffsY);
 
-        double[] coeffs = new double[p1_coeffs.length];
-
-        for (int i = 0; i < p1_coeffs.length; ++i) {
-            coeffs[i] = p1_coeffs[i] - p2_coeffs[i];
-        }
+        double[] coeffs = Polynomial.subtract(p1_coeffs, p2_coeffs);
 
         try {
-            double failureTime = RootFinder.findFirstRoot(coeffs, t, this.inFailedEvent);
+            double failureTime = Polynomial.findFirstRoot(coeffs, t, this.inFailedEvent);
             super.setFailureTime(failureTime);
-        } catch (RootFinder.NoRootException ex) {
+        } catch (Polynomial.NoRootException ex) {
             // event is invalid
             this.setValid(false);
             super.setFailureTime(-1);
@@ -77,16 +69,15 @@ public class TournamentEvent<P extends Primitive> extends kds.Event<P>{
     }
 
     double[] getDistCoeffs(double[] p1_coeffsX, double[] p1_coeffsY, double[] p2_coeffsX, double[] p2_coeffsY) {
-        double[] x = expand(p1_coeffsX, p2_coeffsX);
-        double[] y = expand(p1_coeffsY, p2_coeffsY);
 
-        double[] res = new double[x.length];
+        // dist^2 = (p2_x - p1_x)^2 + (p2_y - p1_y)^2
+        double[] x = Polynomial.subtract(p1_coeffsX, p2_coeffsX);
+        double[] y = Polynomial.subtract(p1_coeffsY, p2_coeffsY);
 
-        for (int i = 0; i < x.length; ++i) {
-            res[i] = x[i] + y[i];
-        }
+        double[] x_squared = Polynomial.multiplication(x, x);
+        double[] y_squared = Polynomial.multiplication(y, y);
 
-        return res;
+        return Polynomial.add(x_squared, y_squared);
     }
 
     double[] expand(double[] p1_coeffs, double[] p2_coeffs) {

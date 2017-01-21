@@ -20,7 +20,7 @@ public class run {
         ArrayList<KDSPoint> leaves = new ArrayList<>();
         Random rand = new Random();
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 2; ++i) {
             double[] coeffsX = new double[2];
             double[] coeffsY = new double[2];
             for (int j = 0; j < 2; ++j) {
