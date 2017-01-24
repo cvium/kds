@@ -247,13 +247,13 @@ public class ZeroTri implements ConvexShape {
         KDSPoint b_point, c_point;
 
         // the first two cases pertain to when at least one of b and c is on the vertical line
-        if ((b.getX() > c.getX() && (!rightOf(b, c, -30.0) || Helpers.onLine(a, b, -30.0)))
+        if ((b.getX() > c.getX() && !isAbove(b, c, -30.0))
                 || (b.getX() == c.getX() && b.getY() >= c.getY())) {
             b_angle = 90;
             c_angle = -30;
             b_point = new KDSPoint(new double[]{b.getX()}, new double[]{b.getY() + 5});
             c_point = new KDSPoint(new double[]{c.getX()-5}, new double[]{getYCoordinate(c, c.getX()-5, c_angle)});
-        } else if ((c.getX() > b.getX() && (rightOf(c, b, 30.0)) || Helpers.onLine(a, b, 30.0))
+        } else if ((c.getX() > b.getX() && !isBelow(c, b, 30.0))
                 || (c.getY() <= b.getY())) {
             b_angle = 30;
             c_angle = 90;

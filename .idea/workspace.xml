@@ -3,19 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="df4e0843-9e19-4f08-ad4f-f0f95c5af10d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/convex_dt/run.java" afterPath="$PROJECT_DIR$/src/main/java/convex_dt/run.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/convex_dt/shapes/ZeroTri.java" afterPath="$PROJECT_DIR$/src/main/java/convex_dt/shapes/ZeroTri.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/kds/DummyKDS.java" afterPath="$PROJECT_DIR$/src/main/java/kds/DummyKDS.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/kds/EventQueue.java" afterPath="$PROJECT_DIR$/src/main/java/kds/EventQueue.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/kds/KDS.java" afterPath="$PROJECT_DIR$/src/main/java/kds/KDS.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/kds/Simulator.java" afterPath="$PROJECT_DIR$/src/main/java/kds/Simulator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sortedlist/SortedEvent.java" afterPath="$PROJECT_DIR$/src/main/java/sortedlist/SortedEvent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sortedlist/SortedList.java" afterPath="$PROJECT_DIR$/src/main/java/sortedlist/SortedList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/tournament_tree/DistanceFunction.java" afterPath="$PROJECT_DIR$/src/main/java/tournament_tree/DistanceFunction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/tournament_tree/TournamentEvent.java" afterPath="$PROJECT_DIR$/src/main/java/tournament_tree/TournamentEvent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/tournament_tree/TournamentTree.java" afterPath="$PROJECT_DIR$/src/main/java/tournament_tree/TournamentTree.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/tournament_tree/TournamentTreeWinner.java" afterPath="$PROJECT_DIR$/src/main/java/tournament_tree/TournamentTreeWinner.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/tournament_tree/run.java" afterPath="$PROJECT_DIR$/src/main/java/tournament_tree/run.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/utils/Helpers.java" afterPath="$PROJECT_DIR$/src/main/java/utils/Helpers.java" />
     </list>
     <ignored path="kds.iws" />
@@ -63,11 +51,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Helpers.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Helpers.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/utils/Helpers.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="680">
-              <caret line="49" column="46" lean-forward="false" selection-start-line="49" selection-start-column="46" selection-end-line="49" selection-end-column="46" />
+            <state relative-caret-position="170">
+              <caret line="49" column="36" lean-forward="false" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -76,8 +64,8 @@
       <file leaf-file-name="ConvexDT.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="110" column="97" lean-forward="false" selection-start-line="110" selection-start-column="20" selection-end-line="110" selection-end-column="97" />
+            <state relative-caret-position="45">
+              <caret line="83" column="49" lean-forward="true" selection-start-line="83" selection-start-column="49" selection-end-line="83" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -131,11 +119,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ZeroTri.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ZeroTri.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/shapes/ZeroTri.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="255" column="63" lean-forward="true" selection-start-line="255" selection-start-column="20" selection-end-line="255" selection-end-column="63" />
+            <state relative-caret-position="340">
+              <caret line="275" column="100" lean-forward="false" selection-start-line="275" selection-start-column="100" selection-end-line="275" selection-end-column="100" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -635,17 +623,17 @@
         <option value="$PROJECT_DIR$/src/main/java/tournament_tree/TournamentTree.java" />
         <option value="$PROJECT_DIR$/src/main/java/kds/Simulator.java" />
         <option value="$PROJECT_DIR$/src/main/java/tournament_tree/run.java" />
-        <option value="$PROJECT_DIR$/src/main/java/utils/Helpers.java" />
-        <option value="$PROJECT_DIR$/src/main/java/convex_dt/shapes/ZeroTri.java" />
         <option value="$PROJECT_DIR$/src/main/java/convex_dt/run.java" />
+        <option value="$PROJECT_DIR$/src/main/java/convex_dt/shapes/ZeroTri.java" />
+        <option value="$PROJECT_DIR$/src/main/java/utils/Helpers.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="95" />
-    <option name="y" value="33" />
+    <option name="x" value="453" />
+    <option name="y" value="26" />
     <option name="width" value="1528" />
-    <option name="height" value="881" />
+    <option name="height" value="874" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -1268,11 +1256,18 @@
       <option name="project" value="LOCAL" />
       <updated>1483172290604</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="many changes, zerotri etc.">
+      <created>1485250138692</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1485250138692</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="95" y="33" width="1528" height="881" extended-state="0" />
+    <frame x="453" y="26" width="1528" height="874" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1285,7 +1280,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36568457" sideWeight="0.5032841" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32814527" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36446175" sideWeight="0.49671593" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36387435" sideWeight="0.49671593" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928944" sideWeight="0.49671593" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1298,7 +1293,7 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37224385" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37565446" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1334,7 +1329,8 @@
     <MESSAGE value="refactored SortedList to be a bit more general, probably needs more work. Started on tournament tree and dynotree" />
     <MESSAGE value="some linkcut implementation and some wbt implementation. Neither is done." />
     <MESSAGE value="tournament tree, insertion not working" />
-    <option name="LAST_COMMIT_MESSAGE" value="tournament tree, insertion not working" />
+    <MESSAGE value="many changes, zerotri etc." />
+    <option name="LAST_COMMIT_MESSAGE" value="many changes, zerotri etc." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1375,6 +1371,12 @@
           <properties />
           <option name="timeStamp" value="46" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java</url>
+          <line>90</line>
+          <properties />
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -1389,7 +1391,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="47" />
+      <option name="time" value="48" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1634,6 +1636,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2006">
           <caret line="133" column="42" lean-forward="false" selection-start-line="133" selection-start-column="42" selection-end-line="133" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#1056#1057#0" expanded="false" />
+            <element signature="e#1081#1082#0" expanded="false" />
+            <element signature="e#1124#1125#0" expanded="false" />
+            <element signature="e#1157#1158#0" expanded="false" />
+            <element signature="e#2317#2318#0" expanded="false" />
+            <element signature="e#2368#2369#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1641,6 +1652,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="20" column="5" lean-forward="false" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
+          <folding>
+            <element signature="e#235#236#0" expanded="false" />
+            <element signature="e#261#262#0" expanded="false" />
+            <element signature="e#284#285#0" expanded="false" />
+            <element signature="e#308#309#0" expanded="false" />
+            <element signature="e#337#338#0" expanded="false" />
+            <element signature="e#363#364#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1667,6 +1686,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
           <caret line="36" column="16" lean-forward="false" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="16" />
+          <folding>
+            <element signature="e#662#663#0" expanded="false" />
+            <element signature="e#689#690#0" expanded="false" />
+            <element signature="e#740#741#0" expanded="false" />
+            <element signature="e#772#773#0" expanded="false" />
+            <element signature="e#823#824#0" expanded="false" />
+            <element signature="e#871#872#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1766,14 +1793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/utils/Helpers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="49" column="46" lean-forward="false" selection-start-line="49" selection-start-column="46" selection-end-line="49" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/kds/KDSPoint.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -1790,14 +1809,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="110" column="97" lean-forward="false" selection-start-line="110" selection-start-column="20" selection-end-line="110" selection-end-column="97" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/shapes/ConvexShape.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-136">
@@ -1808,11 +1819,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/shapes/ZeroTri.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="255" column="63" lean-forward="true" selection-start-line="255" selection-start-column="20" selection-end-line="255" selection-end-column="63" />
+        <state relative-caret-position="340">
+          <caret line="275" column="100" lean-forward="false" selection-start-line="275" selection-start-column="100" selection-end-line="275" selection-end-column="100" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/utils/Helpers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="49" column="36" lean-forward="false" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/convex_dt/ConvexDT.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="83" column="49" lean-forward="true" selection-start-line="83" selection-start-column="49" selection-end-line="83" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>

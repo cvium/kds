@@ -47,7 +47,7 @@ public class Helpers {
         double edge2 = (c.getX() - b.getX()) * (c.getY() + b.getY());
         double edge3 = (a.getX() - c.getX()) * (a.getY() + c.getY());
 
-        return Math.abs(edge1 + edge2 + edge3) < 1e-10;
+        return edge1 + edge2 + edge3 < 1e-10;
     }
 
     /**
