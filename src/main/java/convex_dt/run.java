@@ -3,6 +3,7 @@ package convex_dt;
 import ProGAL.geom2d.viewer.J2DScene;
 import convex_dt.shapes.Circle;
 import convex_dt.shapes.ConvexShape;
+import convex_dt.shapes.ZeroTri;
 import dcel.HalfEdge;
 import kds.KDSPoint;
 
@@ -20,7 +21,7 @@ import static utils.Helpers.pointsToFile;
 public class run {
     public static void main(String[] args) throws Exception {
         ArrayList<KDSPoint> points = new ArrayList<>();
-        ConvexShape circle = new Circle();
+        ConvexShape circle = new ZeroTri();
 
         if (false) {
             points.add(new KDSPoint(new double[]{0}, new double[]{0}));
@@ -98,12 +99,12 @@ public class run {
         else{
             Random rand = new Random();
 
-            for (int i = 0; i < 100; ++i) {
+            for (int i = 0; i < 10; ++i) {
                 double[] coeffsX = new double[1];
                 double[] coeffsY = new double[1];
                 for (int j = 0; j < 1; ++j) {
-                    coeffsX[j] = -5 + (5 + 5) * rand.nextDouble();//
-                    coeffsY[j] = -5 + (5 + 5) * rand.nextDouble();
+                    coeffsX[j] = -2 + (2 + 2) * rand.nextDouble();//
+                    coeffsY[j] = -2 + (2 + 2) * rand.nextDouble();
                 }
                 points.add(new KDSPoint(coeffsX, coeffsY));
             }

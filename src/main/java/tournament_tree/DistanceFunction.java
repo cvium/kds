@@ -29,7 +29,8 @@ public class DistanceFunction<P extends Primitive> implements TournamentTreeWinn
     }
 
     @Override
-    public double computeValue(Primitive primitive) {
+    public double computeValue(double t, Primitive primitive) {
+        p.updatePosition(t);
         return p.getDistance(primitive);
     }
 }

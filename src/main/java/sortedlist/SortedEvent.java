@@ -29,6 +29,6 @@ public class SortedEvent<P extends Primitive> extends kds.Event<P>{
 
     @Override
     public void process(double t) {
-        sl.process(this, t);
+        sl.process(this);
     }
 }

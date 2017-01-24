@@ -7,6 +7,6 @@ import utils.Primitive;
  */
 public interface TournamentTreeWinner<P extends Primitive> {
     P findWinner(P first, P second);
-    double computeValue(P p);
+    double computeValue(double t, P p);
     P getP();
 }

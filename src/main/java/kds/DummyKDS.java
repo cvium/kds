@@ -1,6 +1,5 @@
 package kds;
 
-import kds.solvers.EigenSolver;
 import sortedlist.SortedEvent;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class DummyKDS implements KDS<BoundedKDSPoint, Event<BoundedKDSPoint>> {
     }
 
     @Override
-    public void process(Event event, double t) {
+    public void process(Event event) {
 
     }
 

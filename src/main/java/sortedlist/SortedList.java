@@ -130,7 +130,8 @@ public class SortedList<P extends Primitive> implements KDS<P, SortedEvent<P>> {
     }
 
     @Override
-    public void process(SortedEvent<P> event, double t) {
+    public void process(SortedEvent<P> event) {
+        double t = event.getFailureTime();
         P a = event.getA();
         P b = event.getB();
 

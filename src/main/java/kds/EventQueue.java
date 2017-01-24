@@ -1,11 +1,13 @@
 package kds;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by clausvium on 21/12/15.
  */
 public class EventQueue<EventType extends Event> {
+
     public TreeMap<Double, ArrayList<EventType>> queue;
 
     public EventQueue() {
@@ -14,7 +16,7 @@ public class EventQueue<EventType extends Event> {
 
     public void add(EventType e) {
         double failureTime = e.getFailureTime();
-        System.out.println(failureTime);
+        Logger.getGlobal().info("" + failureTime);
         if (failureTime == -1) return;
         ArrayList<EventType> es = queue.get(failureTime);
         if (es != null) {

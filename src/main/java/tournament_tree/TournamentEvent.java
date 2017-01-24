@@ -43,6 +43,8 @@ public class TournamentEvent<P extends Primitive> extends kds.Event<P> {
             super.setFailureTime(-1);
             return;
         }
+        leftChild.getWinner().updatePosition(t);
+        rightChild.getWinner().updatePosition(t);
 
         double[] aCoeffsX = leftChild.getWinner().getCoeffsX();
         double[] aCoeffsY = leftChild.getWinner().getCoeffsY();
@@ -56,7 +58,7 @@ public class TournamentEvent<P extends Primitive> extends kds.Event<P> {
         double[] p2_coeffs = getDistCoeffs(winnerFunction.getP().getCoeffsX(), winnerFunction.getP().getCoeffsY(),
                 bCoeffsX, bCoeffsY);
 
-        double[] coeffs = Polynomial.subtract(p1_coeffs, p2_coeffs);
+        double[] coeffs = Polynomial.subtract(p2_coeffs, p1_coeffs);
 
         try {
             double failureTime = Polynomial.findFirstRoot(coeffs, t, this.inFailedEvent);
@@ -79,24 +81,4 @@ public class TournamentEvent<P extends Primitive> extends kds.Event<P> {
 
         return Polynomial.add(x_squared, y_squared);
     }
-
-    double[] expand(double[] p1_coeffs, double[] p2_coeffs) {
-        double first = Math.pow(p1_coeffs[0], 2) - 2 * p1_coeffs[0] * p2_coeffs[0] + Math.pow(p2_coeffs[0], 2);
-        double second = 2 * p1_coeffs[0] * p1_coeffs[1] - 2 * p1_coeffs[0] * p2_coeffs[1] - 2 * p1_coeffs[1] *
-                p2_coeffs[0] + 2 * p2_coeffs[0] * p2_coeffs[1];
-        second = 2 * (p1_coeffs[0] * (p1_coeffs[1] - p2_coeffs[1]) - p2_coeffs[0] * (p1_coeffs[1] - p2_coeffs[0]));
-        double third = Math.pow(p1_coeffs[1], 2) - 2 * p1_coeffs[1] * p2_coeffs[1] + Math.pow(p2_coeffs[1], 2);
-
-        return new double[]{first, second, third};
-    }
-
-    Complex64F[] findRoots(EigenSolver solver, double t, double[] ac, double[] bc) {
-        double[] coeffs = new double[ac.length];
-
-        for (int i = 0; i < ac.length; ++i) {
-            coeffs[i] = ac[i] - bc[i];
-        }
-        return solver.findRoots(coeffs, t);
-    }
-
 }

@@ -7,11 +7,14 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import utils.Primitive;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Logger;
 
 /**
  * Created by clausvium on 22/12/16.
  */
 public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEvent<P>> {
+    private static final Logger LOGGER = Logger.getGlobal();//Logger.getLogger( Simulator.class.getName() );
     private double alpha = 0.288; // the weight ratio used for balancing - default value as described in
                                   // Advanced Data Structures by Peter Brass
     private double epsilon = 0.005;
@@ -39,22 +42,22 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
 
     @Override
     public boolean audit(double t) {
-        double smallestDistance = Double.MAX_VALUE;
         ArrayList<Double> distances = new ArrayList<>();
         for (TournamentNode<P> leaf : leaves) {
-            double val = winnerFunction.computeValue(leaf.getWinner());
-            if (smallestDistance > val) smallestDistance = val;
-            distances.add(val);
+            leaf.getWinner().updatePosition(t);
+            distances.add(winnerFunction.computeValue(t, leaf.getWinner()));
         }
+        Collections.sort(distances);
+        double smallestDistance = Collections.min(distances);
         boolean valid = true;
-        if (winnerFunction.computeValue(root.getWinner()) != smallestDistance) {
+        if (winnerFunction.computeValue(t, root.getWinner()) != smallestDistance) {
             valid = false;
-            System.out.println("Winner not valid. Is: " + winnerFunction.computeValue(root.getWinner()) + " should be: " + smallestDistance);
-            System.out.println("Distances: " + distances);
+            LOGGER.info("Winner not valid. Is: " + winnerFunction.computeValue(t, root.getWinner()) + " should be: " + smallestDistance);
+            LOGGER.info("Distances: " + distances);
         }
         if (!validate(root)) {
             valid = false;
-            System.out.println("The tree itself is not valid :(");
+            LOGGER.info("The tree itself is not valid :(");
         }
         return valid;
     }
@@ -92,7 +95,7 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
     }
 
     @Override
-    public void process(TournamentEvent<P> event, double t) {
+    public void process(TournamentEvent<P> event) {
         eq.remove(event);
 
         P oldWinner = event.getNode().getWinner();
@@ -105,7 +108,7 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
         event.getNode().createEvent(solver, event.getFailureTime(), winnerFunction, true);
 
         // percolate
-        updateWinners(t, event.getNode().getParent());
+        updateWinners(event.getFailureTime(), event.getNode().getParent());
     }
 
     @Override
@@ -165,14 +168,20 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
         // attach the new node to the leaf node and alter the old leaf node such that it becomes an internal node
         // which means the old leaf must be moved down a level and become the new leaf's sibling
         if (key < leaf.getKey()) {
-            leaf.setLeftChild(new_node);
+            // a leaf must always be a right child!
+            TournamentNode<P> new_inner = new TournamentNode<>(key, winner);
+            new_inner.setRightChild(new_node);
+            leaf.setLeftChild(new_inner);
             leaf.setRightChild(new TournamentNode<>(leaf.getKey(), leaf.getWinner()));
         }
         else  {
             // here we have to swap the keys as we always let inner nodes have the key of its right leaf
             // it is safe to do as everything in the left subtree is less than the new key
             leaf.setRightChild(new_node);
-            leaf.setLeftChild(new TournamentNode<>(leaf.getKey(), leaf.getWinner()));
+            // a leaf must always be a right child!
+            TournamentNode<P> new_inner = new TournamentNode<>(leaf.getKey(), leaf.getWinner());
+            new_inner.setRightChild(new TournamentNode<>(leaf.getKey(), leaf.getWinner()));
+            leaf.setLeftChild(new_inner);
             leaf.setKey(new_node.getKey());
         }
         // time to rebalance the tree
@@ -190,7 +199,15 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
         TournamentNode<P> current = node;
         while (!current.isNull()) {
             // TODO
+            //LOGGER.info("updating winners");
+            current.getWinner().updatePosition(t);
+            current.getLeftChild().getWinner().updatePosition(t);
+            current.getRightChild().getWinner().updatePosition(t);
+            //LOGGER.info("current winner: " + winnerFunction.computeValue(t, current.getWinner()));
+            //LOGGER.info("left winner: " + winnerFunction.computeValue(t, current.getLeftChild().getWinner()));
+            //LOGGER.info("right winner: " + winnerFunction.computeValue(t, current.getRightChild().getWinner()));
             updateWinner(t, current);
+            //LOGGER.info("new winner: " + winnerFunction.computeValue(t, current.getWinner()));
             current = current.getParent();
         }
     }
@@ -201,7 +218,7 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
      * @param node
      */
     private void updateWinner(double t, TournamentNode<P> node) {
-        if (node == null || node.isNull() || node.getLeftChild().isNull() && node.getRightChild().isNull()) return;
+        if (node == null || node.isNull() || node.isLeaf()) return;
 
         // update the positions
         node.getWinner().updatePosition(t);
@@ -301,7 +318,7 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
                     rotate_right(t, tmp_node.getRightChild());
                     rotate_left(t, tmp_node.getLeftChild());
                 }
-            } else {
+            } else if (!tmp_node.isLeaf()) {
                 // even if we don't rotate, we have to update the winner certificate
                 updateWinner(t, tmp_node);
             }
@@ -350,7 +367,7 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
                 / \         / \
                d   e       c   d
          */
-        System.out.println("rotate_left");
+        LOGGER.info("rotate_left");
         TournamentNode<P> parent = node.getParent();
 
         TournamentNode<P> newRoot = node.getRightChild();
@@ -374,8 +391,8 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
         newRoot.updateWeights();
 
         // update the winners, we don't let it percolate though as there may be more rotations
-        updateWinner(t, node);
-        updateWinner(t, newRoot);
+        if (!node.isLeaf()) updateWinner(t, node);
+        //updateWinner(t, newRoot);
     }
 
     public void rotate_right(double t, TournamentNode<P> node) {
@@ -397,12 +414,20 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
              / \               / \
             c   d             d   e
          */
-        System.out.println("rotate_right");
+        LOGGER.info("rotate_right");
         TournamentNode<P> parent = node.getParent();
 
         TournamentNode<P> newRoot = node.getLeftChild();
         TournamentNode<P> leftChild = newRoot.getRightChild();
-        if (!leftChild.isNull()) node.setLeftChild(leftChild);
+        if (!leftChild.isNull()) {
+            if (leftChild.isLeaf()) {
+                TournamentNode<P> new_inner = new TournamentNode<>(leftChild.getKey(), leftChild.getWinner());
+                new_inner.setRightChild(leftChild);
+                node.setLeftChild(new_inner);
+            } else {
+                node.setLeftChild(leftChild);
+            }
+        }
 
         if (!parent.isNull() && parent.isLeftChild(node)) {
             parent.setLeftChild(newRoot);
@@ -420,8 +445,8 @@ public class TournamentTree<P extends Primitive> implements KDS<P, TournamentEve
         newRoot.updateWeights();
 
         // process the winners, we don't let it percolate though as there may be more rotations
-        updateWinner(t, node);
-        updateWinner(t, newRoot);
+        if (!node.isLeaf()) updateWinner(t, node);
+        //updateWinner(t, newRoot);
     }
 
     public TournamentNode<P> predecessor(TournamentNode<P> node) {

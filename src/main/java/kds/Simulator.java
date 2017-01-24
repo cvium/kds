@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 
 public class Simulator<PointType extends KDSPoint, EventType extends Event<PointType>> {
-    private static final Logger LOGGER = Logger.getLogger( Simulator.class.getName() );
+    private static final Logger LOGGER = Logger.getGlobal();//Logger.getLogger( Simulator.class.getName() );
     boolean visualize = true;
     KDS<PointType, EventType> kds;
     double timestep;
@@ -22,6 +22,14 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
     Level loggerLevel;
     J2DScene scene;
     boolean paused;
+
+    public KDS<PointType, EventType> getKds() {
+        return kds;
+    }
+
+    public void setKds(KDS<PointType, EventType> kds) {
+        this.kds = kds;
+    }
 
     public J2DScene getScene() {
         return scene;
@@ -106,7 +114,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
                     for (EventType e : es) {
                         if (e.isValid()) {
                             event = true;
-                            kds.process(e, e.getFailureTime());
+                            kds.process(e);
                             LOGGER.log(Level.FINER, "EVENT at time t={0}", e.getFailureTime());
                         }
                     }
@@ -114,7 +122,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
             } catch (NullPointerException e) {
                 // do nothing
             }
-            if (auditEveryTimestep || event) {
+            if (auditEveryTimestep) {
                 if (!kds.audit(t)){
                     LOGGER.log(Level.SEVERE, "Auditing failed");
                     ++errors;
@@ -135,6 +143,7 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
             }
             t += timestep;
         }
+        if (!kds.audit(t)) ++errors;
         LOGGER.log(Level.INFO, "End of simulation, {0} errors", errors);
         //System.exit(0);
         return errors;

@@ -17,6 +17,18 @@ import java.util.ArrayList;
 public class Helpers {
     /* The following are some predicates */
 
+    /**
+     * Returns true if the line through a with angle (relative to horizontal axis) also goes through b
+     *
+     * @param a the point which the line goes through
+     * @param b the query point
+     * @param angle the angle between the line through a and the horizontal axis
+     * @return true if a and b are on the same line with angle 'angle'
+     */
+    public static boolean onLine(KDSPoint a, KDSPoint b, double angle) {
+        return Math.abs(Math.tan(angle) * (b.getX() - a.getX()) - b.getY() + a.getY()) < 1e-6;
+    }
+
     public static boolean isCCW(HalfEdge a, HalfEdge b) {
         if (a == null || b == null) {
             return false;
@@ -35,7 +47,7 @@ public class Helpers {
         double edge2 = (c.getX() - b.getX()) * (c.getY() + b.getY());
         double edge3 = (a.getX() - c.getX()) * (a.getY() + c.getY());
 
-        return edge1 + edge2 + edge3 < 1e-10;
+        return Math.abs(edge1 + edge2 + edge3) < 1e-10;
     }
 
     /**
