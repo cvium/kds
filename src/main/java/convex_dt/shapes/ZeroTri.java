@@ -71,38 +71,38 @@ public class ZeroTri implements ConvexShape {
                 third = findIntersection(first, -30, points.get(1), 90);
             } else {
                 Logger.getGlobal().info("Not a valid circle");
-                return null;
+                return circleEnum.INVALID;
             }
         }
-        // now we check the 30 and -30 line, since the logic for 90 cannot be applied to 30 and -30
-        else if (Helpers.onLine(points_sorted_y.get(2), points_sorted_y.get(1), 30)) {
-            // the third points _must_ lie on or to the right of the 90 line through the highest point
-            // and on or to the right of the -30 line through the second highest point
-            if (rightOf(points_sorted_y.get(2), points_sorted_y.get(0), true) || isAbove(points_sorted_y.get(1), points_sorted_y.get(0), -30)) {
-                Logger.getGlobal().info("Not a valid circle");
-                return null;
-            } else {
-                third = points_sorted_y.get(0);
-
-                first = findIntersection(points_sorted_y.get(1), 30, third, -30);
-                second = findIntersection(points_sorted_y.get(2), 30, third, 90);
-            }
-        }
-        // -30 line
-        else if(Helpers.onLine(points_sorted_y.get(0), points_sorted_y.get(1), -30)) {
-            // the third points _must_ lie on or to the right of the 90 line through the lowest point
-            // and on or to the left of the 30 line through the second lowest point
-            if (rightOf(points_sorted_y.get(0), points_sorted_y.get(2), false) || !isAbove(points_sorted_y.get(1), points_sorted_y.get(2), 30)) {
-                Logger.getGlobal().info("Not a valid circle");
-                return null;
-            } else {
-                second = points_sorted_y.get(2);
-
-                first = findIntersection(points_sorted_y.get(1), -30, second, 30);
-                third = findIntersection(points_sorted_y.get(0), -30, second, 90);
-            }
-        }
-        // if none of them are on a common 30, -30 or 90 line, each point must be on an edge in the triangle
+//        // now we check the 30 and -30 line, since the logic for 90 cannot be applied to 30 and -30
+//        else if (Helpers.onLine(points_sorted_y.get(2), points_sorted_y.get(1), 30)) {
+//            // the third points _must_ lie on or to the right of the 90 line through the highest point
+//            // and on or to the right of the -30 line through the second highest point
+//            if (!rightOf(points_sorted_y.get(2), points_sorted_y.get(0)) || isAbove(points_sorted_y.get(1), points_sorted_y.get(0), -30)) {
+//                Logger.getGlobal().info("Not a valid circle");
+//                return circleEnum.INVALID;
+//            } else {
+//                third = points_sorted_y.get(0);
+//
+//                first = findIntersection(points_sorted_y.get(1), 30, third, -30);
+//                second = findIntersection(points_sorted_y.get(2), 30, third, 90);
+//            }
+//        }
+//        // -30 line
+//        else if(Helpers.onLine(points_sorted_y.get(0), points_sorted_y.get(1), -30)) {
+//            // the third points _must_ lie on or to the right of the 90 line through the lowest point
+//            // and on or to the left of the 30 line through the second lowest point
+//            if (rightOf(points_sorted_y.get(0), points_sorted_y.get(2)) || !isAbove(points_sorted_y.get(1), points_sorted_y.get(2), 30)) {
+//                Logger.getGlobal().info("Not a valid circle");
+//                return circleEnum.INVALID;
+//            } else {
+//                second = points_sorted_y.get(2);
+//
+//                first = findIntersection(points_sorted_y.get(1), -30, second, 30);
+//                third = findIntersection(points_sorted_y.get(0), -30, second, 90);
+//            }
+//        }
+        // if none of them are on a common 90 line, each point must be on an edge in the triangle
         else {
             // we start by grabbing the point with highest x coordinate, it must necessarily lie on the 90 line.
             // Call this point A.
@@ -116,15 +116,22 @@ public class ZeroTri implements ConvexShape {
             // Point B _must_ lie on or below the -30 line through A
             if (isAbove(point_a, point_b, -30)) {
                 Logger.getGlobal().info("Not a valid circle");
-                return null;
+                return circleEnum.INVALID;
             }
 
             // here comes point C
             KDSPoint point_c = points_sorted_y.get(1);
-            // point C, _must_ lie on or above the -30 line through B and on or above the 30 line through B
-            if (!isAbove(point_b, point_c, -30) || !isAbove(point_b, point_c, 30)) {
+            // two cases for the validity of the triangle. For both cases, C must lie on or above the -30 line through B
+
+            // if B lies below the 30 line through A, then C must lie above the 30 line through A
+            if (isBelow(point_b, point_c, -30) || (isBelow(point_a, point_b, 30) && isBelow(point_a, point_c, 30))) {
                 Logger.getGlobal().info("Not a valid circle");
-                return null;
+                return circleEnum.INVALID;
+            }
+            // otherwise, C must lie on or above the 30 line through B
+            else if (isBelow(point_b, point_c, -30) || isBelow(point_b, point_c, 30)) {
+                Logger.getGlobal().info("Not a valid circle");
+                return circleEnum.INVALID;
             }
 
             // now to find where these fuckers intersect
@@ -159,8 +166,8 @@ public class ZeroTri implements ConvexShape {
     private KDSPoint findIntersection(KDSPoint a, double a_angle, KDSPoint b, double b_angle) {
         assert a_angle != b_angle;
 
-        double x = (Math.tan(a_angle) * a.getX() - Math.tan(b_angle) * b.getX() + b.getY() - a.getY()) / (Math.tan(a_angle) - Math.tan(b_angle));
-        double y = Math.tan(a_angle) * (x - a.getX()) + a.getY();
+        double x = (Math.tan(Math.toRadians(a_angle)) * a.getX() - Math.tan(Math.toRadians(b_angle)) * b.getX() + b.getY() - a.getY()) / (Math.tan(Math.toRadians(a_angle)) - Math.tan(Math.toRadians(b_angle)));
+        double y = Math.tan(Math.toRadians(a_angle)) * (x - a.getX()) + a.getY();
 
         return new KDSPoint(new double[]{x}, new double[]{y});
     }
@@ -173,7 +180,7 @@ public class ZeroTri implements ConvexShape {
      * @return
      */
     private boolean isAbove(KDSPoint a, KDSPoint b, double angle) {
-        double y = Math.tan(angle) * (b.getX() - a.getX()) + a.getY();
+        double y = Math.tan(Math.toRadians(angle)) * (b.getX() - a.getX()) + a.getY();
 
         return b.getY() - y > 1e-6;
     }
@@ -186,7 +193,7 @@ public class ZeroTri implements ConvexShape {
      * @return
      */
     private boolean isBelow(KDSPoint a, KDSPoint b, double angle) {
-        double y = Math.tan(angle) * (b.getX() - a.getX()) + a.getY();
+        double y = Math.tan(Math.toRadians(angle)) * (b.getX() - a.getX()) + a.getY();
 
         return y - b.getY() > 1e-6;
     }
@@ -197,14 +204,20 @@ public class ZeroTri implements ConvexShape {
      *
      * @param a
      * @param b query point
-     * @param isTop whether a is the top or bottom corner on the 90 line
      * @return
      */
-    private boolean rightOf(KDSPoint a, KDSPoint b, boolean isTop) {
-        double x = a.getX();
-        double y = isTop ? a.getY() - 5 : a.getY() + 5;
+    private boolean rightOf(KDSPoint a, KDSPoint b) {
+        return a.getX() < b.getX();
+    }
 
-        return !Helpers.isCCW(a, new KDSPoint(new double[]{x}, new double[]{y}), b);
+    /**
+     *
+     * @param a
+     * @param b query point
+     * @return
+     */
+    private boolean leftOf(KDSPoint a, KDSPoint b) {
+        return b.getX() < a.getX();
     }
     /**
      * Returns true if b is to the right of the line through a with 'angle' relative to horizontal axis
@@ -218,17 +231,17 @@ public class ZeroTri implements ConvexShape {
         // find another point on the line through 'a' with angle 'angle' that lies to the left of the vertical line
         // through a ie. smaller x coordinate
         double x = a.getX() - 5;
-        double y = Math.tan(angle) * (x - a.getX()) + a.getY();
+        double y = Math.tan(Math.toRadians(angle)) * (x - a.getX()) + a.getY();
 
         return !Helpers.isCCW(a, new KDSPoint(new double[]{x}, new double[]{y}), b);
     }
 
     private double getYCoordinate(KDSPoint p, double x, double angle) {
-        return Math.tan(angle) * (x - p.getX()) + p.getY();
+        return Math.tan(Math.toRadians(angle)) * (x - p.getX()) + p.getY();
     }
 
     private double getXCoordinate(KDSPoint p, double y, double angle) {
-        return (y - Math.tan(angle) * p.getX() - p.getY()) / Math.tan(angle);
+        return (y - Math.tan(Math.toRadians(angle)) * p.getX() - p.getY()) / Math.tan(Math.toRadians(angle));
     }
     /**
      * Predicate test to determine where point a lies wrt. to the infinite circle with b and c on the boundary.
@@ -267,8 +280,12 @@ public class ZeroTri implements ConvexShape {
             c_point = new KDSPoint(new double[]{c.getX()+5}, new double[]{getYCoordinate(c, c.getX()+5, c_angle)});
         }
 
-        // the three cases for INSIDE
-        if (Helpers.isCCW(b, b_point, a) || !Helpers.isCCW(c, c_point, a)) {
+        // the three cases for INSIDE, although the first case is split up
+        if (b_angle == 90 && c_angle == -30 && !rightOf(b, a) && isAbove(c, a, -30)) {
+            return infCircleEnum.INSIDE;
+        } else if (c_angle == 90 && b_angle == 30 && !rightOf(c, a) && isBelow(b, a, 30)) {
+            return infCircleEnum.INSIDE;
+        } else if (b_angle != 90 && c_angle != 90 && isAbove(b, a, -30) && isBelow(c, a, 30)) {
             return infCircleEnum.INSIDE;
         } else if ((Helpers.onLine(b, b_point, a) || Helpers.onLine(c, c_point, a)) &&
                 !Helpers.isCCW(b, c, a)) {
@@ -341,6 +358,6 @@ public class ZeroTri implements ConvexShape {
 
 
         Logger.getGlobal().warning("ZERO TRI INF CIRCLE TEST FAILED!!!!!!");
-        return null;
+        return infCircleEnum.INVALID;
     }
 }

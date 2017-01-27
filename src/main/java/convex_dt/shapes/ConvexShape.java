@@ -27,9 +27,9 @@ public interface ConvexShape {
      */
     infCircleEnum inInfCircle(KDSPoint a, KDSPoint b, KDSPoint c);
     enum infCircleEnum {
-        INSIDE, OUTSIDE, BEFORE, AFTER
+        INSIDE, OUTSIDE, BEFORE, AFTER, INVALID
     }
     enum circleEnum {
-        INSIDE, OUTSIDE, ONBEFORE, ONAFTER, ON
+        INSIDE, OUTSIDE, ONBEFORE, ONAFTER, ON, INVALID
     }
 }

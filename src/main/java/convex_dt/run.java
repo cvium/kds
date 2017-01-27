@@ -94,12 +94,34 @@ public class run {
             points.add(new KDSPoint(new double[]{-1.3},new double[]{0.81}));
             points.add(new KDSPoint(new double[]{-1.2},new double[]{0.8}));
             points.add(new KDSPoint(new double[]{-1.4},new double[]{1.1}));
+        } else if (false) {
+            points.add(new KDSPoint(new double[]{-0.5}, new double[]{1}));
+            points.add(new KDSPoint(new double[]{0}, new double[]{0}));
+            points.add(new KDSPoint(new double[]{1}, new double[]{0.5}));
+            points.add(new KDSPoint(new double[]{2.5}, new double[]{0.6}));
+            points.add(new KDSPoint(new double[]{3.3}, new double[]{1.5}));
+            points.add(new KDSPoint(new double[]{3.5}, new double[]{0.5}));
+        } else if (false) {
+            points.add(new KDSPoint(new double[]{-1.52810713958079},new double[]{0.5994890031981841}));
+            points.add(new KDSPoint(new double[]{-1.4243496072720094},new double[]{-1.8114321647757916}));
+            points.add(new KDSPoint(new double[]{-0.9716044306671936},new double[]{1.2682545307670918}));
+            points.add(new KDSPoint(new double[]{-0.015880417438958627},new double[]{-1.3245869993391128}));
+            points.add(new KDSPoint(new double[]{0.6931028872548239},new double[]{0.5246477008872006}));
+            points.add(new KDSPoint(new double[]{1.8201338309094202},new double[]{-1.3872748859983375}));
+        } else if (true) {
+            points.add(new KDSPoint(new double[]{-1.8365272560101267},new double[]{-0.32908740830003547}));
+            points.add(new KDSPoint(new double[]{-0.9551393549029075},new double[]{-1.364082498677389}));
+            points.add(new KDSPoint(new double[]{-0.7963689174734117},new double[]{1.187417269677896}));
+            points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
+            points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.5488161074338551}));
+            points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.9949561630768602}));
+
         }
 
         else{
             Random rand = new Random();
 
-            for (int i = 0; i < 10; ++i) {
+            for (int i = 0; i < 6; ++i) {
                 double[] coeffsX = new double[1];
                 double[] coeffsY = new double[1];
                 for (int j = 0; j < 1; ++j) {
