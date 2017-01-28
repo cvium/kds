@@ -21,7 +21,10 @@ public class DistanceFunction<P extends Primitive> implements TournamentTreeWinn
     }
 
     @Override
-    public P findWinner(P first, P second) {
+    public P findWinner(double t, P first, P second) {
+        p.updatePosition(t);
+        first.updatePosition(t);
+        second.updatePosition(t);
         double firstDistance = p.getDistance(first);
         double secondDistance = p.getDistance(second);
         if (Math.abs(firstDistance - secondDistance) < 1e-10) System.out.println("FUCK");
@@ -31,6 +34,7 @@ public class DistanceFunction<P extends Primitive> implements TournamentTreeWinn
     @Override
     public double computeValue(double t, Primitive primitive) {
         p.updatePosition(t);
+        primitive.updatePosition(t);
         return p.getDistance(primitive);
     }
 }

@@ -58,7 +58,7 @@ public class TournamentEvent<P extends Primitive> extends kds.Event<P> {
         double[] p2_coeffs = getDistCoeffs(winnerFunction.getP().getCoeffsX(), winnerFunction.getP().getCoeffsY(),
                 bCoeffsX, bCoeffsY);
 
-        double[] coeffs = Polynomial.subtract(p2_coeffs, p1_coeffs);
+        double[] coeffs = Polynomial.subtract(p1_coeffs, p2_coeffs);
 
         try {
             double failureTime = Polynomial.findFirstRoot(coeffs, t, this.inFailedEvent);

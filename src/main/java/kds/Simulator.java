@@ -114,8 +114,8 @@ public class Simulator<PointType extends KDSPoint, EventType extends Event<Point
                     for (EventType e : es) {
                         if (e.isValid()) {
                             event = true;
-                            kds.process(e);
                             LOGGER.log(Level.FINER, "EVENT at time t={0}", e.getFailureTime());
+                            kds.process(e);
                         }
                     }
                 }
