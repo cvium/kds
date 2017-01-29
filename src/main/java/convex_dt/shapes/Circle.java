@@ -1,5 +1,6 @@
 package convex_dt.shapes;
 
+import ProGAL.geom2d.viewer.J2DScene;
 import kds.KDSPoint;
 
 import static utils.Helpers.leftOf;
@@ -10,6 +11,24 @@ import static java.util.Collections.sort;
  * Created by cvium on 11-12-2016.
  */
 public class Circle implements ConvexShape {
+    private J2DScene scene;
+
+    @Override
+    public J2DScene getScene() {
+        return scene;
+    }
+
+    @Override
+    public void setScene(J2DScene scene) {
+        this.scene = scene;
+    }
+
+    public Circle() {}
+
+    public Circle(J2DScene scene) {
+        this.scene = scene;
+    }
+
     @Override
     public circleEnum inCircle(KDSPoint a, KDSPoint b, KDSPoint c, KDSPoint d) {
         double ad_x = a.getX(0) - d.getX(0);

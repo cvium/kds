@@ -1,11 +1,14 @@
 package convex_dt.shapes;
 
+import ProGAL.geom2d.viewer.J2DScene;
 import kds.KDSPoint;
 
 /**
  * Created by cvium on 03-12-2016.
  */
 public interface ConvexShape {
+    void setScene(J2DScene scene);
+    J2DScene getScene();
     /**
      * Predicate to test whether point d lies in the smallest circle containing a, b and c on its boundary.
      *

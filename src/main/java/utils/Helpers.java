@@ -1,7 +1,12 @@
 package utils;
 
 import ProGAL.dataStructures.Pair;
+import ProGAL.dataStructures.Set;
+import ProGAL.dataStructures.SortToolPoint2dAroundOrigo;
+import ProGAL.dataStructures.SorterQuick;
+import ProGAL.geom2d.Point;
 import dcel.HalfEdge;
+import kds.KDS;
 import kds.KDSPoint;
 
 import java.io.IOException;
@@ -10,11 +15,47 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Logger;
 
 /**
  * Created by cvium on 03-12-2016.
  */
 public class Helpers {
+    /**
+     * A rather inefficient helper to sort the list of points in ccw order, but I have no time to do it right.
+     * It should only be used with 3 or so points.
+     *
+     * @param points list of points to be sorted in ccw order around centroid
+     * @return list of points sorted in ccw order around their centroid
+     */
+    public static ArrayList<KDSPoint> sortCCW(ArrayList<KDSPoint> points) {
+        Set<Point> pts = new Set<>();
+
+        for (KDSPoint p : points) {
+            pts.insert(p.getPoint());
+        }
+        SorterQuick sorter = new SorterQuick();
+        sorter.Sort(pts, new SortToolPoint2dAroundOrigo());
+
+        ArrayList<KDSPoint> sorted = new ArrayList<>();
+
+        for (Point p : pts) {
+            for (KDSPoint kds_p : points) {
+                if (kds_p.getPoint() == p) sorted.add(kds_p);
+            }
+        }
+
+        if (!isCCW(sorted.get(0), sorted.get(1), sorted.get(2))) {
+            Collections.reverse(sorted);
+        }
+
+        if (!isCCW(sorted.get(0), sorted.get(1), sorted.get(2))) {
+            throw new RuntimeException();
+        }
+
+        return sorted;
+    }
     /* The following are some predicates */
 
     /**
@@ -61,11 +102,12 @@ public class Helpers {
         assert edge.getDestination() == point;
 
         HalfEdge prev = point.getIncidentEdge();
-        HalfEdge next = point.getIncidentEdge().getPrev().getTwin();
+        HalfEdge next = point.getIncidentEdge().getPrev();
         if (next == null) {
             System.out.println("twin.next is null! Assuming the incident edge is unconnected.");
             return new Pair<>(prev, prev);
         }
+        next = next.getTwin();
 
         HalfEdge ccw = prev, cw = prev;
 
@@ -185,7 +227,7 @@ public class Helpers {
     }
 
     public static HalfEdge rPrev(HalfEdge e) {
-        if (e.getTwin().getPrev() == null) return null;
+        if (e.getTwin() != null && e.getTwin().getPrev() == null) return null;
         return e.getTwin().getPrev().getTwin();
     }
 

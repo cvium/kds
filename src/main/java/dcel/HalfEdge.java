@@ -14,8 +14,8 @@ public class HalfEdge implements Iterable<HalfEdge> {
     private KDSPoint origin;
     private KDSPoint destination;
     private Face face;
-    private HalfEdge prev;
-    private HalfEdge next;
+    private HalfEdge prev = null;
+    private HalfEdge next = null;
     private HalfEdge twin;
     private boolean isBridge;
     private LineSegment lineSegment;

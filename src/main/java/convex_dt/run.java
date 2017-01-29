@@ -21,7 +21,6 @@ import static utils.Helpers.pointsToFile;
 public class run {
     public static void main(String[] args) throws Exception {
         ArrayList<KDSPoint> points = new ArrayList<>();
-        ConvexShape circle = new ZeroTri();
 
         if (false) {
             points.add(new KDSPoint(new double[]{0}, new double[]{0}));
@@ -108,6 +107,15 @@ public class run {
             points.add(new KDSPoint(new double[]{-0.015880417438958627},new double[]{-1.3245869993391128}));
             points.add(new KDSPoint(new double[]{0.6931028872548239},new double[]{0.5246477008872006}));
             points.add(new KDSPoint(new double[]{1.8201338309094202},new double[]{-1.3872748859983375}));
+        } else if (false) {
+            points.add(new KDSPoint(new double[]{-0.9551393549029075},new double[]{-1.364082498677389}));
+            points.add(new KDSPoint(new double[]{-0.7963689174734117},new double[]{1.187417269677896}));
+            points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
+            points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.9949561630768602}));
+        } else if (false) {
+            points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
+            points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.5488161074338551}));
+            points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.9949561630768602}));
         } else if (true) {
             points.add(new KDSPoint(new double[]{-1.8365272560101267},new double[]{-0.32908740830003547}));
             points.add(new KDSPoint(new double[]{-0.9551393549029075},new double[]{-1.364082498677389}));
@@ -115,7 +123,13 @@ public class run {
             points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
             points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.5488161074338551}));
             points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.9949561630768602}));
-
+        } else if (true) {
+            points.add(new KDSPoint(new double[]{-1.8365272560101267},new double[]{-0.32908740830003547}));
+            points.add(new KDSPoint(new double[]{-0.9551393549029075},new double[]{-1.364082498677389}));
+            points.add(new KDSPoint(new double[]{-0.7963689174734117},new double[]{1.187417269677896}));
+            points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
+            points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.7488161074338551}));
+            points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.264082498677389}));
         }
 
         else{
@@ -143,6 +157,8 @@ public class run {
         scene.centerCamera();
         scene.autoZoom();
         scene.repaint();
+
+        ConvexShape circle = new ZeroTri(scene);
 
         ConvexDT dt = new ConvexDT(points, circle, scene);
 

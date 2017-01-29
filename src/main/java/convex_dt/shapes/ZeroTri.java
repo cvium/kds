@@ -1,8 +1,13 @@
 package convex_dt.shapes;
 
+import ProGAL.geom2d.Line;
+import ProGAL.geom2d.LineSegment;
+import ProGAL.geom2d.Point;
+import ProGAL.geom2d.viewer.J2DScene;
 import kds.KDSPoint;
 import utils.Helpers;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +17,23 @@ import java.util.logging.Logger;
  * Created by cvium on 15-12-2016.
  */
 public class ZeroTri implements ConvexShape {
+    private J2DScene scene;
+
+    public J2DScene getScene() {
+        return scene;
+    }
+
+    @Override
+    public void setScene(J2DScene scene) {
+        this.scene = scene;
+    }
+
+    public ZeroTri() {}
+
+    public ZeroTri(J2DScene scene) {
+        this.scene = scene;
+    }
+
     /**
      * Predicate to test whether point d lies in the smallest circle containing a, b and c on its boundary.
      *
@@ -37,13 +59,10 @@ public class ZeroTri implements ConvexShape {
         points_sorted_y.add(a);
         points_sorted_y.add(b);
         points_sorted_y.add(c);
-        points_sorted_y.sort(new Comparator<KDSPoint>() {
-            @Override
-            public int compare(KDSPoint o1, KDSPoint o2) {
-                if (o1.getY() < o2.getY()) return -1;
+        points_sorted_y.sort((o1, o2) -> {
+            if (o1.getY() < o2.getY()) return -1;
 
-                return Math.abs(o1.getY() - o2.getY()) < 1e-6 ? 0 : 1;
-            }
+            return Math.abs(o1.getY() - o2.getY()) < 1e-6 ? 0 : 1;
         });
 
         // are they all on the vertical line?
@@ -74,34 +93,6 @@ public class ZeroTri implements ConvexShape {
                 return circleEnum.INVALID;
             }
         }
-//        // now we check the 30 and -30 line, since the logic for 90 cannot be applied to 30 and -30
-//        else if (Helpers.onLine(points_sorted_y.get(2), points_sorted_y.get(1), 30)) {
-//            // the third points _must_ lie on or to the right of the 90 line through the highest point
-//            // and on or to the right of the -30 line through the second highest point
-//            if (!rightOf(points_sorted_y.get(2), points_sorted_y.get(0)) || isAbove(points_sorted_y.get(1), points_sorted_y.get(0), -30)) {
-//                Logger.getGlobal().info("Not a valid circle");
-//                return circleEnum.INVALID;
-//            } else {
-//                third = points_sorted_y.get(0);
-//
-//                first = findIntersection(points_sorted_y.get(1), 30, third, -30);
-//                second = findIntersection(points_sorted_y.get(2), 30, third, 90);
-//            }
-//        }
-//        // -30 line
-//        else if(Helpers.onLine(points_sorted_y.get(0), points_sorted_y.get(1), -30)) {
-//            // the third points _must_ lie on or to the right of the 90 line through the lowest point
-//            // and on or to the left of the 30 line through the second lowest point
-//            if (rightOf(points_sorted_y.get(0), points_sorted_y.get(2)) || !isAbove(points_sorted_y.get(1), points_sorted_y.get(2), 30)) {
-//                Logger.getGlobal().info("Not a valid circle");
-//                return circleEnum.INVALID;
-//            } else {
-//                second = points_sorted_y.get(2);
-//
-//                first = findIntersection(points_sorted_y.get(1), -30, second, 30);
-//                third = findIntersection(points_sorted_y.get(0), -30, second, 90);
-//            }
-//        }
         // if none of them are on a common 90 line, each point must be on an edge in the triangle
         else {
             // we start by grabbing the point with highest x coordinate, it must necessarily lie on the 90 line.
@@ -140,20 +131,52 @@ public class ZeroTri implements ConvexShape {
             third = findIntersection(point_b, -30, point_a, 90);
         }
 
+        LineSegment l1 = new LineSegment(first.getPoint(), second.getPoint());
+        LineSegment l2 = new LineSegment(first.getPoint(), third.getPoint());
+        LineSegment l3 = new LineSegment(second.getPoint(), third.getPoint());
+        scene.addShape(l1, Color.BLACK);
+        scene.addShape(l2, Color.BLACK);
+        scene.addShape(l3, Color.BLACK);
+        scene.repaint();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {}
+        scene.removeShape(l1);
+        scene.removeShape(l2);
+        scene.removeShape(l3);
+        scene.repaint();
+
         if (inTriangle(first, second, third, d)) return circleEnum.INSIDE;
         else if (Helpers.onLine(first, d, 30) || Helpers.onLine(first, d, -30) || Helpers.onLine(second, d, 90))
             return circleEnum.ON;
         else return circleEnum.OUTSIDE;
     }
-    
-    public boolean inTriangle(KDSPoint a, KDSPoint b, KDSPoint c, KDSPoint d) {
-        double A = 1/2 * (-b.getY() * c.getX() + a.getY() * (-b.getX() + c.getX()) + a.getX() * (b.getY() - c.getY()) + b.getX() * c.getY());
-        double sign = A < 0 ? -1 : 1;
-        double s = (a.getY() * c.getX() - a.getX() * c.getY() + (c.getY() - a.getY()) * d.getX() + (a.getX() - c.getX()) * d.getY()) * sign;
-        double t = (a.getX() * b.getY() - a.getY() * b.getX() + (a.getY() - b.getY()) * d.getX() + (b.getX() - a.getX()) * d.getY()) * sign;
 
-        return s > 0 && t > 0 && (s + t) < 2 * A * sign;
+    private boolean inTriangle(KDSPoint a, KDSPoint b, KDSPoint c, KDSPoint d) {
+        // d must be above the -30 degree line through a
+        if (!isAbove(a, d, -30)) {
+            return false;
+        }
+        // d must be below the 30 degree line through a
+        if (!isBelow(a, d, 30)) {
+            return false;
+        }
+        // d must be to the left of the 90 degree line through b/c
+        if (!leftOf(b, d)) {
+            return false;
+        }
+
+        return true;
     }
+    
+//    public boolean inTriangle(KDSPoint a, KDSPoint b, KDSPoint c, KDSPoint d) {
+//        double A = 1/2 * (-b.getY() * c.getX() + a.getY() * (-b.getX() + c.getX()) + a.getX() * (b.getY() - c.getY()) + b.getX() * c.getY());
+//        double sign = A < 0 ? -1 : 1;
+//        double s = (a.getY() * c.getX() - a.getX() * c.getY() + (c.getY() - a.getY()) * d.getX() + (a.getX() - c.getX()) * d.getY()) * sign;
+//        double t = (a.getX() * b.getY() - a.getY() * b.getX() + (a.getY() - b.getY()) * d.getX() + (b.getX() - a.getX()) * d.getY()) * sign;
+//
+//        return s > 0 && t > 0 && (s + t) < 2 * A * sign;
+//    }
 
     /**
      *
@@ -257,6 +280,7 @@ public class ZeroTri implements ConvexShape {
         // and point c on the left edge, since the infinite circle must touch b->c from the right
 
         double b_angle, c_angle;
+        Line line_b, line_c;
         KDSPoint b_point, c_point;
 
         // the first two cases pertain to when at least one of b and c is on the vertical line
@@ -264,6 +288,8 @@ public class ZeroTri implements ConvexShape {
                 || (b.getX() == c.getX() && b.getY() >= c.getY())) {
             b_angle = 90;
             c_angle = -30;
+            line_b = new Line(b.getPoint(), new Point(b.getX(), b.getY()-5));
+            line_c = new Line(c.getPoint(), new Point(c.getX()-5, getYCoordinate(c, c.getX()-5, -30)));
             b_point = new KDSPoint(new double[]{b.getX()}, new double[]{b.getY() + 5});
             c_point = new KDSPoint(new double[]{c.getX()-5}, new double[]{getYCoordinate(c, c.getX()-5, c_angle)});
         } else if ((c.getX() > b.getX() && !isBelow(c, b, 30.0))
@@ -272,14 +298,27 @@ public class ZeroTri implements ConvexShape {
             c_angle = 90;
             b_point = new KDSPoint(new double[]{b.getX()-5}, new double[]{getYCoordinate(b, b.getX()-5, b_angle)});
             c_point = new KDSPoint(new double[]{c.getX()}, new double[]{c.getY() - 5});
+            line_c = new Line(c.getPoint(), new Point(c.getX(), c.getY()-5));
+            line_b = new Line(b.getPoint(), new Point(b.getX()-5, getYCoordinate(b, b.getX()-5, 30)));
         } else {
             // neither of them can be on the vertical line. b is always on -30 and c on 30 then.
             b_angle = -30;
             c_angle = 30;
             b_point = new KDSPoint(new double[]{b.getX()+5}, new double[]{getYCoordinate(b, b.getX()+5, b_angle)});
             c_point = new KDSPoint(new double[]{c.getX()+5}, new double[]{getYCoordinate(c, c.getX()+5, c_angle)});
+            line_b = new Line(b.getPoint(), new Point(b.getX()-5, getYCoordinate(b, b.getX()-5, -30)));
+            line_c = new Line(c.getPoint(), new Point(c.getX()-5, getYCoordinate(c, c.getX()-5, 30)));
         }
 
+        scene.addShape(line_b, Color.RED);
+        scene.addShape(line_c, Color.RED);
+        scene.repaint();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {}
+        scene.removeShape(line_b);
+        scene.removeShape(line_c);
+        scene.repaint();
         // the three cases for INSIDE, although the first case is split up
         if (b_angle == 90 && c_angle == -30 && !rightOf(b, a) && isAbove(c, a, -30)) {
             return infCircleEnum.INSIDE;
@@ -306,56 +345,6 @@ public class ZeroTri implements ConvexShape {
         // AFTER
         if (Helpers.onLine(b, c, a) && a.getDistance(b) > c.getDistance(b) && a.getDistance(c) < a.getDistance(b))
             return infCircleEnum.BEFORE;
-
-
-//        if (b.getY() >= c.getY()) {
-//            // b.x == c.x is the same as them being on the 90 line
-//            if (Helpers.onLine(b, c, -30.0) || b.getX() <= c.getX()) {
-//                b_angle = 30;
-//                c_angle = 90;
-//            } else {
-//                // in this case they are either on the same 30 line or not, doesn't really matter
-//                b_angle = 90;
-//                c_angle = -30;
-//            }
-//        } else {
-//
-//        }
-//
-//        if (Helpers.onLine(b, c, 30.0)) {
-//            if (b.getY() > c.getY()) {
-//                // b must be on 90 line and c on the -30 line
-//                b_angle = 90;
-//                c_angle = -30;
-//            } else {
-//                // b must be in the leftmost corner and c on the 30 line
-//                b_angle = 30;
-//                c_angle = 30;
-//            }
-//        } else if (Helpers.onLine(b, c, -30.0)) {
-//            if (b.getY() > c.getY()) {
-//                // b must be on 30 line and c on 90 line
-//                b_angle = 30;
-//                c_angle = 90;
-//            } else {
-//                // b must be in lower right corner (90 line) and c on -30 line
-//                b_angle = -30;
-//                c_angle = -30;
-//            }
-//        } else if (Helpers.onLine(b, c, 90.0)) {
-//            if (b.getY() < c.getY()) {
-//                // b must be on -30 line and c on 30 line
-//                b_angle = -30;
-//                c_angle = 30;
-//            } else {
-//                // they must both be on 90 line, but which corner?
-//                b_angle = 30;
-//                c_angle = 90;
-//            }
-//        } else {
-//
-//        }
-
 
         Logger.getGlobal().warning("ZERO TRI INF CIRCLE TEST FAILED!!!!!!");
         return infCircleEnum.INVALID;

@@ -1,10 +1,13 @@
 package convex_dt;
 
+import ProGAL.dataStructures.SortToolPoint2dAroundOrigo;
 import ProGAL.geom2d.viewer.J2DScene;
 import convex_dt.shapes.ConvexShape;
 import dcel.DCEL;
 import dcel.HalfEdge;
 import kds.KDSPoint;
+import utils.Helpers;
+
 import static utils.Helpers.*; // not very nice, but it's to avoid having to write Helpers.<func> everywhere
 import static convex_dt.shapes.ConvexShape.*;
 import static java.lang.Thread.sleep;
@@ -12,6 +15,7 @@ import static java.util.Collections.sort;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by cvium on 29-11-2016.
@@ -55,32 +59,74 @@ public class ConvexDT {
                 return e1;
             return e1.getTwin();
         } else if (points.size() == 3) {
-            // sort them, is it really needed though?
-            sort(points);
-            KDSPoint a = points.get(0);
-            KDSPoint b = points.get(1);
-            KDSPoint c = points.get(2);
+            // sort them in ccw order
+            ArrayList<KDSPoint> sorted = Helpers.sortCCW(points);
+            KDSPoint a = sorted.get(0);
+            KDSPoint b = sorted.get(1);
+            KDSPoint c = sorted.get(2);
 
-            HalfEdge e1 = dcel.createEdge(a, b);
-            HalfEdge e2 = dcel.createEdge(b, c);
-            // connect a -> b with b -> c and a <- b with b <- c
-            e1.setNext(e2);
-            e1.setFace(dcel.createFace(e1));
-            e1.getTwin().setPrev(e2.getTwin());
-            e1.getTwin().setFace(dcel.createFace(e1.getTwin()));
+            HalfEdge last = null;
 
-            e2.setPrev(e1);
-            e2.setFace(e1.getFace());
-            e2.getTwin().setNext(e1.getTwin());
-            e2.getTwin().setFace(e1.getTwin().getFace());
-
-
-            // don't create a triangle if they are collinear
-            if (leftOf(a, b, c) || rightOf(a, b, c)) {
-                // connect and create a triangle
-                System.out.println("Creating triangle!");
-                connect(e2, e1);
+            if (shape.inInfCircle(c, a, b) != infCircleEnum.INSIDE || shape.inInfCircle(c, a, b) != infCircleEnum.INSIDE) {
+                last = dcel.createEdge(a, b);
+                last.setFace(dcel.createFace(last));
             }
+
+            // EVER HEARD OF DRY CODE????? ME NEITHER
+            if (shape.inInfCircle(a, b, c) != infCircleEnum.INSIDE || shape.inInfCircle(a, c, b) != infCircleEnum.INSIDE) {
+                HalfEdge current = dcel.createEdge(b, c);
+                if (last != null) {
+                    last.setNext(current);
+                    last.getTwin().setPrev(current.getTwin());
+                    last.getTwin().setFace(dcel.createFace(last.getTwin()));
+
+                    current.setPrev(last);
+                    current.setFace(last.getFace());
+                    current.getTwin().setNext(last.getTwin());
+                    current.getTwin().setFace(last.getTwin().getFace());
+                }
+                last = current;
+            }
+
+            if (shape.inInfCircle(b, c, a) != infCircleEnum.INSIDE || shape.inInfCircle(b, a, c) != infCircleEnum.INSIDE) {
+                // last should NEVER be null but intellij is a bitch and I hate warnings
+                HalfEdge current = dcel.createEdge(c, a);
+                if (last != null && last.getPrev() != null) {
+                    connect(last, last.getPrev());
+                }
+                else if (last != null) {
+
+                    last.setNext(current);
+                    last.getTwin().setPrev(current.getTwin());
+                    last.getTwin().setFace(dcel.createFace(last.getTwin()));
+
+                    current.setPrev(last);
+                    current.setFace(last.getFace());
+                    current.getTwin().setNext(last.getTwin());
+                    current.getTwin().setFace(last.getTwin().getFace());
+                }
+            }
+
+//            HalfEdge e1 = dcel.createEdge(a, b);
+//            HalfEdge e2 = dcel.createEdge(b, c);
+//            // connect a -> b with b -> c and a <- b with b <- c
+//            e1.setNext(e2);
+//            e1.setFace(dcel.createFace(e1));
+//            e1.getTwin().setPrev(e2.getTwin());
+//            e1.getTwin().setFace(dcel.createFace(e1.getTwin()));
+//
+//            e2.setPrev(e1);
+//            e2.setFace(e1.getFace());
+//            e2.getTwin().setNext(e1.getTwin());
+//            e2.getTwin().setFace(e1.getTwin().getFace());
+
+
+//            // don't create a triangle if they are collinear
+//            if (leftOf(a, b, c) || rightOf(a, b, c)) {
+//                // connect and create a triangle
+//                System.out.println("Creating triangle!");
+//                connect(e2, e1);
+//            }
             // find the lowest point (y-coordinate only)
             KDSPoint lowestPoint;
             if (a.getY() < b.getY()) lowestPoint = a;
@@ -89,7 +135,7 @@ public class ConvexDT {
 
             // find the ccw edge incident to lowest point
             HalfEdge candidateEdge = lowestPoint.getIncidentEdge();
-            if (!isCCW(candidateEdge.getPrev().getOrigin(), candidateEdge.getOrigin(), candidateEdge.getDestination()))
+            if (candidateEdge.getPrev() != null && !isCCW(candidateEdge.getPrev().getOrigin(), candidateEdge.getOrigin(), candidateEdge.getDestination()))
                 candidateEdge = candidateEdge.getTwin().getNext();
             return candidateEdge;
         } else {
@@ -456,7 +502,8 @@ public class ConvexDT {
                 if (lleft.getOrigin() == base.getDestination()) lower = base.getTwin();
                 else lower = lleft;
             } else {
-                lower = rNext(lright);
+                if (rNext(lright) == null) lower = lright;
+                else lower = rNext(lright);
             }
 
             // merge step
