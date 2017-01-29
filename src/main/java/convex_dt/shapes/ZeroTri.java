@@ -140,7 +140,7 @@ public class ZeroTri implements ConvexShape {
         scene.addShape(l3, Color.BLACK);
         scene.repaint();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException ex) {}
         scene.removeShape(l1);
         scene.removeShape(l2);
@@ -195,7 +195,6 @@ public class ZeroTri implements ConvexShape {
 
         double b_angle, c_angle;
         Line line_b, line_c;
-        KDSPoint b_point, c_point;
 
         // the first two cases pertain to when at least one of b and c is on the vertical line
         if ((b.getX() > c.getX() && !isAbove(b, c, -30.0))
@@ -204,22 +203,16 @@ public class ZeroTri implements ConvexShape {
             c_angle = -30;
             line_b = new Line(b.getPoint(), new Point(b.getX(), b.getY()-5));
             line_c = new Line(c.getPoint(), new Point(c.getX()-5, getYCoordinate(c, c.getX()-5, -30)));
-            b_point = new KDSPoint(new double[]{b.getX()}, new double[]{b.getY() + 5});
-            c_point = new KDSPoint(new double[]{c.getX()-5}, new double[]{getYCoordinate(c, c.getX()-5, c_angle)});
         } else if ((c.getX() > b.getX() && !isBelow(c, b, 30.0))
                 || (c.getY() <= b.getY())) {
             b_angle = 30;
             c_angle = 90;
-            b_point = new KDSPoint(new double[]{b.getX()-5}, new double[]{getYCoordinate(b, b.getX()-5, b_angle)});
-            c_point = new KDSPoint(new double[]{c.getX()}, new double[]{c.getY() - 5});
             line_c = new Line(c.getPoint(), new Point(c.getX(), c.getY()-5));
             line_b = new Line(b.getPoint(), new Point(b.getX()-5, getYCoordinate(b, b.getX()-5, 30)));
         } else {
             // neither of them can be on the vertical line. b is always on -30 and c on 30 then.
             b_angle = -30;
             c_angle = 30;
-            b_point = new KDSPoint(new double[]{b.getX()+5}, new double[]{getYCoordinate(b, b.getX()+5, b_angle)});
-            c_point = new KDSPoint(new double[]{c.getX()+5}, new double[]{getYCoordinate(c, c.getX()+5, c_angle)});
             line_b = new Line(b.getPoint(), new Point(b.getX()-5, getYCoordinate(b, b.getX()-5, -30)));
             line_c = new Line(c.getPoint(), new Point(c.getX()-5, getYCoordinate(c, c.getX()-5, 30)));
         }
@@ -228,22 +221,28 @@ public class ZeroTri implements ConvexShape {
         scene.addShape(line_c, Color.RED);
         scene.repaint();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException ex) {}
         scene.removeShape(line_b);
         scene.removeShape(line_c);
         scene.repaint();
         // the three cases for INSIDE, although the first case is split up
+        // case 1: a lies strictly interior to the infinite circle.
         if (b_angle == 90 && c_angle == -30 && !rightOf(b, a) && isAbove(c, a, -30)) {
             return infCircleEnum.INSIDE;
         } else if (c_angle == 90 && b_angle == 30 && !rightOf(c, a) && isBelow(b, a, 30)) {
             return infCircleEnum.INSIDE;
         } else if (b_angle != 90 && c_angle != 90 && isAbove(b, a, -30) && isBelow(c, a, 30)) {
             return infCircleEnum.INSIDE;
-        } else if ((Helpers.onLine(b, b_point, a) || Helpers.onLine(c, c_point, a)) &&
-                !Helpers.isCCW(b, c, a)) {
+        }
+        // case 2: a lies on the boundary of the infinite circle to the right of line bc.
+        else if ((Helpers.onLine(b, a, b_angle) || Helpers.onLine(c, a, c_angle)) &&
+                Helpers.rightOf(b, c, a)) {
             return infCircleEnum.INSIDE;
-        } else if ((b_angle == 90 || c_angle == 90) && Math.abs(b.getDistance(a) + a.getDistance(c) - b.getDistance(c)) <= 1e-6) {
+        }
+        // case 3: segment bc lies on the boundary of the infinite circle and a lies in bc’s interior.
+        else if ((Helpers.onLine(b, c, 30) || Helpers.onLine(b, c, -30)) &&
+                Math.abs(b.getDistance(a) + a.getDistance(c) - b.getDistance(c)) <= 1e-6) {
             return infCircleEnum.INSIDE;
         }
 

@@ -204,7 +204,7 @@ public class DCEL {
         e.getTwin().undraw(scene);
         scene.repaint();
         System.out.println("INFO: Deleted an edge.");
-        try {sleep(1000);} catch (InterruptedException ex) {}
+        try {sleep(100);} catch (InterruptedException ex) {}
     }
 
     private void updateIncidentEdges(HalfEdge e) {
