@@ -1,9 +1,9 @@
 package convex_dt;
 
 import ProGAL.geom2d.viewer.J2DScene;
-import convex_dt.shapes.Circle;
 import convex_dt.shapes.ConvexShape;
-import convex_dt.shapes.ZeroTri;
+import convex_dt.shapes.PieShape;
+import convex_dt.shapes.ZeroTriShape;
 import dcel.HalfEdge;
 import kds.KDSPoint;
 
@@ -116,20 +116,27 @@ public class run {
             points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
             points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.5488161074338551}));
             points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.9949561630768602}));
-        } else if (true) {
+        } else if (false) {
             points.add(new KDSPoint(new double[]{-1.8365272560101267},new double[]{-0.32908740830003547}));
             points.add(new KDSPoint(new double[]{-0.9551393549029075},new double[]{-1.364082498677389}));
             points.add(new KDSPoint(new double[]{-0.7963689174734117},new double[]{1.187417269677896}));
             points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
             points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.5488161074338551}));
             points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.9949561630768602}));
-        } else if (true) {
+        } else if (false) {
             points.add(new KDSPoint(new double[]{-1.8365272560101267},new double[]{-0.32908740830003547}));
             points.add(new KDSPoint(new double[]{-0.9551393549029075},new double[]{-1.364082498677389}));
             points.add(new KDSPoint(new double[]{-0.7963689174734117},new double[]{1.187417269677896}));
             points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
             points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.7488161074338551}));
             points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.264082498677389}));
+        } else if (true) {
+            points.add(new KDSPoint(new double[]{-1.5711771738100766},new double[]{0.907797243988401}));
+            points.add(new KDSPoint(new double[]{-1.261333506414657},new double[]{1.0819080661940195}));
+            points.add(new KDSPoint(new double[]{-1.1201581125906133},new double[]{1.8558805734943924}));
+            points.add(new KDSPoint(new double[]{-0.3582093861698308},new double[]{-0.3566367654055109}));
+            points.add(new KDSPoint(new double[]{0.9891769815506724},new double[]{0.20142336346151435}));
+            points.add(new KDSPoint(new double[]{1.640129330375537},new double[]{-1.1097117806627548}));
         }
 
         else{
@@ -158,7 +165,7 @@ public class run {
         scene.autoZoom();
         scene.repaint();
 
-        ConvexShape circle = new ZeroTri(scene);
+        ConvexShape circle = new PieShape(scene);
 
         ConvexDT dt = new ConvexDT(points, circle, scene);
 

@@ -10,7 +10,7 @@ import static java.util.Collections.sort;
 /**
  * Created by cvium on 11-12-2016.
  */
-public class Circle implements ConvexShape {
+public class CircleShape implements ConvexShape {
     private J2DScene scene;
 
     @Override
@@ -23,9 +23,9 @@ public class Circle implements ConvexShape {
         this.scene = scene;
     }
 
-    public Circle() {}
+    public CircleShape() {}
 
-    public Circle(J2DScene scene) {
+    public CircleShape(J2DScene scene) {
         this.scene = scene;
     }
 

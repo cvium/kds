@@ -4,6 +4,7 @@ import ProGAL.dataStructures.Pair;
 import ProGAL.dataStructures.Set;
 import ProGAL.dataStructures.SortToolPoint2dAroundOrigo;
 import ProGAL.dataStructures.SorterQuick;
+import ProGAL.geom2d.Line;
 import ProGAL.geom2d.Point;
 import dcel.HalfEdge;
 import kds.KDS;
@@ -100,7 +101,18 @@ public class Helpers {
         double x = a.getX() - 5;
         double y = Math.tan(Math.toRadians(angle)) * (x - a.getX()) + a.getY();
 
-        return !Helpers.isCCW(a, new KDSPoint(new double[]{x}, new double[]{y}), b);
+        if (0 > angle && angle < -90) {
+            return !Helpers.isCCW(a, new KDSPoint(new double[]{x}, new double[]{y}), b);
+        } else {
+            return Helpers.isCCW(a, new KDSPoint(new double[]{x}, new double[]{y}), b);
+        }
+
+
+    }
+
+    public static Line getLine(KDSPoint p, double angle) {
+        double y = getYCoordinate(p, p.getX() + 5, angle);
+        return new Line(p.getPoint(), new Point(p.getX()+5, y));
     }
 
     public static double getYCoordinate(KDSPoint p, double x, double angle) {

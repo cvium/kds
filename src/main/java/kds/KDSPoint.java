@@ -88,6 +88,17 @@ public class KDSPoint implements Primitive {
 
     }
 
+    public KDSPoint(Point point) {
+        this.x = point.x();
+        this.y = point.y();
+        this.coeffsX = new double[]{point.x()};
+        this.coeffsX = new double[]{point.y()};
+        this.events = new ArrayList<>();
+        this.p = point;
+        this.c = new Circle(point, 0.01);
+        lastUpdated = 0;
+    }
+
     public double[] getCoeffsX() {
         return coeffsX;
     }

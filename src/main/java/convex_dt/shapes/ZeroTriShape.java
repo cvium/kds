@@ -17,7 +17,7 @@ import static utils.Helpers.*;
 /**
  * Created by cvium on 15-12-2016.
  */
-public class ZeroTri implements ConvexShape {
+public class ZeroTriShape implements ConvexShape {
     private J2DScene scene;
 
     public J2DScene getScene() {
@@ -29,9 +29,9 @@ public class ZeroTri implements ConvexShape {
         this.scene = scene;
     }
 
-    public ZeroTri() {}
+    public ZeroTriShape() {}
 
-    public ZeroTri(J2DScene scene) {
+    public ZeroTriShape(J2DScene scene) {
         this.scene = scene;
     }
 
