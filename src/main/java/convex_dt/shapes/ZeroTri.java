@@ -10,8 +10,9 @@ import utils.Helpers;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.logging.Logger;
+
+import static utils.Helpers.*;
 
 /**
  * Created by cvium on 15-12-2016.
@@ -178,94 +179,7 @@ public class ZeroTri implements ConvexShape {
 //        return s > 0 && t > 0 && (s + t) < 2 * A * sign;
 //    }
 
-    /**
-     *
-     * @param a
-     * @param a_angle the angle the line through a has with horizontal line
-     * @param b
-     * @param b_angle the angle the line through a has with horizontal line
-     * @return
-     */
-    private KDSPoint findIntersection(KDSPoint a, double a_angle, KDSPoint b, double b_angle) {
-        assert a_angle != b_angle;
 
-        double x = (Math.tan(Math.toRadians(a_angle)) * a.getX() - Math.tan(Math.toRadians(b_angle)) * b.getX() + b.getY() - a.getY()) / (Math.tan(Math.toRadians(a_angle)) - Math.tan(Math.toRadians(b_angle)));
-        double y = Math.tan(Math.toRadians(a_angle)) * (x - a.getX()) + a.getY();
-
-        return new KDSPoint(new double[]{x}, new double[]{y});
-    }
-
-    /**
-     *
-     * @param a
-     * @param b query point
-     * @param angle
-     * @return
-     */
-    private boolean isAbove(KDSPoint a, KDSPoint b, double angle) {
-        double y = Math.tan(Math.toRadians(angle)) * (b.getX() - a.getX()) + a.getY();
-
-        return b.getY() - y > 1e-6;
-    }
-
-    /**
-     *
-     * @param a
-     * @param b query point
-     * @param angle
-     * @return
-     */
-    private boolean isBelow(KDSPoint a, KDSPoint b, double angle) {
-        double y = Math.tan(Math.toRadians(angle)) * (b.getX() - a.getX()) + a.getY();
-
-        return y - b.getY() > 1e-6;
-    }
-
-    /**
-     * Specialized stupid function to determine if a point lies to the left or to the right of the directed half-line
-     * through a with angle 90
-     *
-     * @param a
-     * @param b query point
-     * @return
-     */
-    private boolean rightOf(KDSPoint a, KDSPoint b) {
-        return a.getX() < b.getX();
-    }
-
-    /**
-     *
-     * @param a
-     * @param b query point
-     * @return
-     */
-    private boolean leftOf(KDSPoint a, KDSPoint b) {
-        return b.getX() < a.getX();
-    }
-    /**
-     * Returns true if b is to the right of the line through a with 'angle' relative to horizontal axis
-     *
-     * @param a
-     * @param b
-     * @param angle
-     * @return
-     */
-    private boolean rightOf(KDSPoint a, KDSPoint b, double angle) {
-        // find another point on the line through 'a' with angle 'angle' that lies to the left of the vertical line
-        // through a ie. smaller x coordinate
-        double x = a.getX() - 5;
-        double y = Math.tan(Math.toRadians(angle)) * (x - a.getX()) + a.getY();
-
-        return !Helpers.isCCW(a, new KDSPoint(new double[]{x}, new double[]{y}), b);
-    }
-
-    private double getYCoordinate(KDSPoint p, double x, double angle) {
-        return Math.tan(Math.toRadians(angle)) * (x - p.getX()) + p.getY();
-    }
-
-    private double getXCoordinate(KDSPoint p, double y, double angle) {
-        return (y - Math.tan(Math.toRadians(angle)) * p.getX() - p.getY()) / Math.tan(Math.toRadians(angle));
-    }
     /**
      * Predicate test to determine where point a lies wrt. to the infinite circle with b and c on the boundary.
      *
