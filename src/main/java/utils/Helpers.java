@@ -110,6 +110,42 @@ public class Helpers {
 
     }
 
+    /**
+     *
+     * @param a first point
+     * @param b second point
+     * @param c query point
+     * @return
+     */
+    public static boolean after(KDSPoint a, KDSPoint b, KDSPoint c) {
+        Line line = new Line(a.getPoint(), b.getPoint());
+        Point projection = project(a, b, c);
+
+        return projection.distance(a.getPoint()) >  projection.distance(b.getPoint());
+    }
+
+    /**
+     *
+     * @param a
+     * @param b
+     * @param c query point
+     * @return
+     */
+    public static boolean before(KDSPoint a, KDSPoint b, KDSPoint c) {
+        Line line = new Line(a.getPoint(), b.getPoint());
+        Point projection = project(a, b, c); //Point projection = line.projectPoint(c.getPoint());
+
+        return projection.distance(a.getPoint()) <  projection.distance(b.getPoint());
+    }
+
+    public static Point project(KDSPoint a, KDSPoint b, KDSPoint c) {
+        double CF = ((b.getX()-a.getX())*(c.getX()-a.getX())+(b.getY()-a.getY())*(c.getY()-a.getY()))/(Math.pow(b.getX()-a.getX(), 2)+Math.pow(b.getY()-a.getY(), 2));
+        double x=a.getX()+(b.getX()-a.getX())*CF;
+        double y=a.getY()+(b.getY()-a.getY())*CF;
+
+        return new Point(x, y);
+    }
+
     public static Line getLine(KDSPoint p, double angle) {
         double y = getYCoordinate(p, p.getX() + 5, angle);
         return new Line(p.getPoint(), new Point(p.getX()+5, y));
@@ -151,7 +187,8 @@ public class Helpers {
             Collections.reverse(sorted);
         }
 
-        if (!isCCW(sorted.get(0), sorted.get(1), sorted.get(2))) {
+        if (!isCCW(sorted.get(0), sorted.get(1), sorted.get(2)) ||
+                Point.area(sorted.get(0).getPoint(), sorted.get(1).getPoint(), sorted.get(2).getPoint()) <= 0) {
             throw new RuntimeException();
         }
 

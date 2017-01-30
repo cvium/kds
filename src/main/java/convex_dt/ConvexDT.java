@@ -28,6 +28,7 @@ public class ConvexDT {
     private ArrayList<KDSPoint> points;
     private J2DScene scene;
     private DCEL dcel;
+    private ArrayList<infCircleEnum> illegalValues;
 
     public ConvexDT() {
     }
@@ -37,6 +38,9 @@ public class ConvexDT {
         this.shape = shape;
         this.scene = scene;
         this.dcel = new DCEL(scene, points);
+        illegalValues = new ArrayList<>();
+        illegalValues.add(infCircleEnum.INSIDE);
+        illegalValues.add(infCircleEnum.INVALID);
     }
 
     public DCEL getDcel() {
@@ -67,18 +71,18 @@ public class ConvexDT {
 
             HalfEdge last = null;
 
-            if (shape.inInfCircle(c, a, b) != infCircleEnum.INSIDE || shape.inInfCircle(c, a, b) != infCircleEnum.INSIDE) {
+            if (!illegalValues.contains(shape.inInfCircle(c, a, b)) || !illegalValues.contains(shape.inInfCircle(c, a, b))) {
                 last = dcel.createEdge(a, b);
                 last.setFace(dcel.createFace(last));
+                last.getTwin().setFace(last.getFace());
             }
 
             // EVER HEARD OF DRY CODE????? ME NEITHER
-            if (shape.inInfCircle(a, b, c) != infCircleEnum.INSIDE || shape.inInfCircle(a, c, b) != infCircleEnum.INSIDE) {
+            if (!illegalValues.contains(shape.inInfCircle(a, b, c)) || !illegalValues.contains(shape.inInfCircle(a, c, b))) {
                 HalfEdge current = dcel.createEdge(b, c);
                 if (last != null) {
                     last.setNext(current);
                     last.getTwin().setPrev(current.getTwin());
-                    last.getTwin().setFace(dcel.createFace(last.getTwin()));
 
                     current.setPrev(last);
                     current.setFace(last.getFace());
@@ -88,22 +92,30 @@ public class ConvexDT {
                 last = current;
             }
 
-            if (shape.inInfCircle(b, c, a) != infCircleEnum.INSIDE || shape.inInfCircle(b, a, c) != infCircleEnum.INSIDE) {
+            if (!illegalValues.contains(shape.inInfCircle(b, c, a)) || !illegalValues.contains(shape.inInfCircle(b, a, c))) {
                 // last should NEVER be null but intellij is a bitch and I hate warnings
-                HalfEdge current = dcel.createEdge(c, a);
                 if (last != null && last.getPrev() != null) {
                     connect(last, last.getPrev());
                 }
                 else if (last != null) {
+                    HalfEdge current = dcel.createEdge(c, a);
+                    if (last.getDestination() == c) {
+                        last.setNext(current);
+                        last.getTwin().setPrev(current.getTwin());
 
-                    last.setNext(current);
-                    last.getTwin().setPrev(current.getTwin());
-                    last.getTwin().setFace(dcel.createFace(last.getTwin()));
+                        current.setPrev(last);
+                        current.setFace(last.getFace());
+                        current.getTwin().setNext(last.getTwin());
+                        current.getTwin().setFace(last.getTwin().getFace());
+                    } else {
+                        current.setNext(last);
+                        current.setFace(last.getFace());
+                        current.getTwin().setPrev(last.getTwin());
+                        current.getTwin().setFace(last.getTwin().getFace());
 
-                    current.setPrev(last);
-                    current.setFace(last.getFace());
-                    current.getTwin().setNext(last.getTwin());
-                    current.getTwin().setFace(last.getTwin().getFace());
+                        last.setPrev(current);
+                        last.getTwin().setNext(current.getTwin());
+                    }
                 }
             }
 
@@ -128,6 +140,8 @@ public class ConvexDT {
 //                connect(e2, e1);
 //            }
             // find the lowest point (y-coordinate only)
+            dcel.draw(scene);
+            try{Thread.sleep(5000);}catch (Exception ex){}
             KDSPoint lowestPoint;
             if (a.getY() < b.getY()) lowestPoint = a;
             else lowestPoint = b;
@@ -135,6 +149,7 @@ public class ConvexDT {
 
             // find the ccw edge incident to lowest point
             HalfEdge candidateEdge = lowestPoint.getIncidentEdge();
+            if (candidateEdge == null) throw new RuntimeException();
             if (candidateEdge.getPrev() != null && !isCCW(candidateEdge.getPrev().getOrigin(), candidateEdge.getOrigin(), candidateEdge.getDestination()))
                 candidateEdge = candidateEdge.getTwin().getNext();
             return candidateEdge;
@@ -155,13 +170,16 @@ public class ConvexDT {
             }
             while (true) {
                 right.draw(scene, 0, Color.BLACK);
+                left.draw(scene, 0, Color.BLACK);
                 try{Thread.sleep(100);}catch (Exception ex){}
                 if (shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
                     // see below
+                    System.out.println("right");
                     if (rPrev(right) == null) right = right.getTwin();
                     else right = rPrev(right);
                 } else if (shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
                     // see below
+                    System.out.println("left");
                     if (rPrev(left) == null) left = left.getTwin();
                     else left = rPrev(left);
                 } else {
@@ -180,17 +198,19 @@ public class ConvexDT {
             }
             while (true) {
                 right.draw(scene, 0, Color.ORANGE);
+                left.draw(scene, 0, Color.ORANGE);
+                try{Thread.sleep(100);}catch (Exception ex){}
                 try {sleep(100);} catch (InterruptedException e) {}
                 // if rNext.org is inside the inf circle with left.org and right.org on boundary, then it's a better candidate
-                if ((rNext(left) != null && shape.inInfCircle(rNext(left).getOrigin(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) ||
-                        shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                if ((rNext(left) != null && illegalValues.contains(shape.inInfCircle(rNext(left).getOrigin(), left.getOrigin(), right.getOrigin())))
+                        && illegalValues.contains(shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()))) {
                     // sort of a hack to make sure we get the right edge in the case where the left side is invalid
                     // as lower support. We assume that its twin is ok.
                     System.out.println("left");
                     if (rNext(left) == null) left = left.getTwin();
                     else left = rNext(left);
-                } else if ((rNext(right) != null && shape.inInfCircle(rNext(right).getOrigin(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) ||
-                        shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
+                } else if ((rNext(right) != null && illegalValues.contains(shape.inInfCircle(rNext(right).getOrigin(), left.getOrigin(), right.getOrigin())))
+                        || illegalValues.contains(shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()))) {
                     // see above
                     System.out.println("right");
                     if (rNext(right) == null) right = right.getTwin();
@@ -522,7 +542,7 @@ public class ConvexDT {
                 if (isValid(rcand)) System.out.println("rcand valid!");
                 else System.out.println("rcand invalid!");
                 rcand.draw(scene, 0, Color.CYAN);
-                sleep(100);
+                sleep(5000);
                 if (isValid(lcand) && isValid(rcand)) {
                     System.out.println("1");
                     switch (shape.inCircle(base.getOrigin(), base.getDestination(), lcand.getDestination(), rcand.getDestination())) {

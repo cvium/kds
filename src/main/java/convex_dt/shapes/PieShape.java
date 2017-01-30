@@ -147,7 +147,7 @@ public class PieShape implements ConvexShape {
         scene.addShape(circle, Color.BLACK);
         scene.repaint();
         try {
-            Thread.sleep(5000);
+            Thread.sleep(100);
         } catch (InterruptedException ex) {}
         scene.removeShape(l1);
         scene.removeShape(l2);
@@ -190,22 +190,28 @@ public class PieShape implements ConvexShape {
         if (!isBelow(b, c, 60) && b.getX() >= c.getX() && !isAbove(b, c, -30.0)) {
             b_angle = 60;
             c_angle = -30;
-            line_b = new Line(b.getPoint(), new Point(b.getX()+5, getYCoordinate(b, b.getX()+5, b_angle)));
-            line_c = new Line(c.getPoint(), new Point(c.getX()-5, getYCoordinate(c, c.getX()-5, c_angle)));
         }
         // case 2: c is on the "vertical" line (and possibly b)
         else if (!isAbove(c, b, -60) && c.getX() >= b.getX() && !isBelow(c, b, 30)) {
             b_angle = 30;
             c_angle = -60;
-            line_b = new Line(b.getPoint(), new Point(b.getX()-5, getYCoordinate(b, b.getX()-5, b_angle)));
-            line_c = new Line(c.getPoint(), new Point(c.getX()+5, getYCoordinate(c, c.getX()+5, c_angle)));
-        } else {
+        } else if (b.getY() < c.getY()){
             // neither of them can be on the vertical line. b is always on -30 and c on 30 then.
             b_angle = -30;
             c_angle = 30;
-            line_b = new Line(b.getPoint(), new Point(b.getX()-5, getYCoordinate(b, b.getX()-5, b_angle)));
-            line_c = new Line(c.getPoint(), new Point(c.getX()-5, getYCoordinate(c, c.getX()-5, c_angle)));
+        } else {
+            c_angle = 30;
+            b_angle = -30;
+            // have to swap them
+            KDSPoint tmp = b;
+            b = c;
+            c = tmp;
+
+//            Logger.getGlobal().warning("INVALID INF PIE");
+//            return infCircleEnum.INVALID;
         }
+        line_b = new Line(b.getPoint(), new Point(b.getX()+5, getYCoordinate(b, b.getX()+5, b_angle)));
+        line_c = new Line(c.getPoint(), new Point(c.getX()-5, getYCoordinate(c, c.getX()-5, c_angle)));
 
         scene.addShape(line_b, Color.RED);
         scene.addShape(line_c, Color.RED);
@@ -223,7 +229,7 @@ public class PieShape implements ConvexShape {
             return infCircleEnum.INSIDE;
         } else if (c_angle == -60 && isBelow(b, a, b_angle) && (isBelow(c, a, c_angle) || Helpers.onLine(c, a, c_angle) && c.getX() >= a.getX())) {
             return infCircleEnum.INSIDE;
-        } else if (isAbove(b, a, b_angle) && isBelow(c, a, c_angle)) {
+        } else if ((b_angle != 60 && c_angle != -60) && isAbove(b, a, b_angle) && isBelow(c, a, c_angle)) {
             return infCircleEnum.INSIDE;
         }
         // case 2: a lies on the boundary of the infinite circle to the right of line bc.
@@ -238,17 +244,17 @@ public class PieShape implements ConvexShape {
         }
 
         // OUTSIDE: if a is not to the right of line bc, and is not inside.
-        if (Helpers.isCCW(b, c, a)) {
+        if (Helpers.leftOf(b, c, a)) {
             return infCircleEnum.OUTSIDE;
         }
 
         // BEFORE: if a lies to the right of bc, is not inside, and its projection onto bc is before b
-        if (Helpers.onLine(a, b, c) && a.getDistance(c) > b.getDistance(c) && a.getDistance(b) < a.getDistance(c))
+        if (Helpers.rightOf(b, c, a) && before(b, c, a))
             return infCircleEnum.BEFORE;
 
         // AFTER: if a lies to the right of bc, is not inside, and its projection onto bc is after c
-        if (Helpers.onLine(b, c, a) && a.getDistance(b) > c.getDistance(b) && a.getDistance(c) < a.getDistance(b))
-            return infCircleEnum.BEFORE;
+        if (Helpers.rightOf(b, c, a) && after(b, c, a))
+            return infCircleEnum.AFTER;
 
         Logger.getGlobal().warning("PIE INF CIRCLE TEST FAILED!!!!!!");
         return infCircleEnum.INVALID;

@@ -130,19 +130,33 @@ public class run {
             points.add(new KDSPoint(new double[]{-0.13105032287961338},new double[]{-0.008975683003056734}));
             points.add(new KDSPoint(new double[]{0.7205190050776924},new double[]{-0.7488161074338551}));
             points.add(new KDSPoint(new double[]{0.7912464403296111},new double[]{-1.264082498677389}));
-        } else if (true) {
+        } else if (false) {
             points.add(new KDSPoint(new double[]{-1.5711771738100766},new double[]{0.907797243988401}));
             points.add(new KDSPoint(new double[]{-1.261333506414657},new double[]{1.0819080661940195}));
             points.add(new KDSPoint(new double[]{-1.1201581125906133},new double[]{1.8558805734943924}));
             points.add(new KDSPoint(new double[]{-0.3582093861698308},new double[]{-0.3566367654055109}));
             points.add(new KDSPoint(new double[]{0.9891769815506724},new double[]{0.20142336346151435}));
             points.add(new KDSPoint(new double[]{1.640129330375537},new double[]{-1.1097117806627548}));
+        } else if (false) {
+            points.add(new KDSPoint(new double[]{-1.4967258058406334},new double[]{-0.48006109680774856}));
+            points.add(new KDSPoint(new double[]{-0.38942659523686274},new double[]{-0.07652673566196722}));
+            points.add(new KDSPoint(new double[]{0.05809981741310555},new double[]{-1.9525261630852593}));
+            points.add(new KDSPoint(new double[]{1.2769804878252633},new double[]{0.10780571804033912}));
+            points.add(new KDSPoint(new double[]{1.413363682993329},new double[]{-1.498918100553464}));
+            points.add(new KDSPoint(new double[]{1.7485472199546614},new double[]{-0.9006378901043264}));
+
+        } else if (true) {
+            points.add(new KDSPoint(new double[]{1.5279150010373113},new double[]{0.1998488094646622}));
+            points.add(new KDSPoint(new double[]{1.593594590368593},new double[]{-1.320766348583168}));
+            points.add(new KDSPoint(new double[]{1.5969757062078913},new double[]{-0.5331873245177161}));
+            points.add(new KDSPoint(new double[]{1.9181717788050934},new double[]{-0.49074183899975665}));
+            points.add(new KDSPoint(new double[]{1.9950799115144728},new double[]{-1.618873128157169}));
         }
 
         else{
             Random rand = new Random();
 
-            for (int i = 0; i < 6; ++i) {
+            for (int i = 0; i < 20; ++i) {
                 double[] coeffsX = new double[1];
                 double[] coeffsY = new double[1];
                 for (int j = 0; j < 1; ++j) {
