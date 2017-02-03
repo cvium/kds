@@ -294,8 +294,8 @@ public class Helpers {
     }
 
     public static boolean lowerThan(HalfEdge a, HalfEdge b) {
-        KDSPoint al = a.getOrigin().getPoint(0).y() < a.getDestination().getPoint(0).y() ? a.getOrigin() : a.getDestination();
-        KDSPoint bl = b.getOrigin().getPoint(0).y() < b.getDestination().getPoint(0).y() ? b.getOrigin() : b.getDestination();
+        KDSPoint al = a.getOrigin().getPoint().y() < a.getDestination().getPoint().y() ? a.getOrigin() : a.getDestination();
+        KDSPoint bl = b.getOrigin().getPoint().y() < b.getDestination().getPoint().y() ? b.getOrigin() : b.getDestination();
 
         return al.getY() < bl.getY();
     }

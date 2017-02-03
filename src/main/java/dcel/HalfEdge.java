@@ -181,4 +181,8 @@ public class HalfEdge implements Iterable<HalfEdge> {
             } catch (IllegalStateException e) {}
         }
     }
+
+    public double getLength() {
+        return origin.getDistance(destination);
+    }
 }

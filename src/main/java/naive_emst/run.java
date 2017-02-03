@@ -1,31 +1,64 @@
 package naive_emst;
 
+import ProGAL.geom2d.viewer.J2DScene;
+import convex_dt.ConvexDT;
+import convex_dt.shapes.CircleShape;
+import convex_dt.shapes.ConvexShape;
+import dcel.HalfEdge;
 import kds.KDSPoint;
 import kds.Simulator;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
+
+import static java.util.Collections.sort;
+import static utils.Helpers.pointsToFile;
 
 /**
  * Created by cvium on 28-11-2016.
  */
 public class run {
     public static void main(String[] args) throws Exception {
-        final int numPoints = 50;
-        final int degree = 2;
-        final int endtime = 10;
-        final int NUMRUNS = 1;
-        final double STARTTIME = 0.1;
-        final double TIMESTEP = 0.1;
-        final Level loggerLevel = Level.FINE;
-        int failedRuns = 0;
-        for (int i = 0; i < NUMRUNS; ++i) {
-//            SortedList kds = new SortedList(STARTTIME, numPoints, degree);
-//            Simulator<KDSPoint, SortedEvent> sim = new Simulator<>(kds, STARTTIME, TIMESTEP, endtime, loggerLevel);
-//            if (sim.run(true, true) != 0) {
-//                ++failedRuns;
-//            }
+        ArrayList<KDSPoint> points = new ArrayList<>();
+        Random rand = new Random();
+
+        for (int i = 0; i < 20; ++i) {
+            double[] coeffsX = new double[1];
+            double[] coeffsY = new double[1];
+            for (int j = 0; j < 1; ++j) {
+                coeffsX[j] = -2 + (2 + 2) * rand.nextDouble();//
+                coeffsY[j] = -2 + (2 + 2) * rand.nextDouble();
+            }
+            KDSPoint p = new KDSPoint(coeffsX, coeffsY);
+            p.setIdx(i);
+            points.add(p);
         }
-        System.out.println("Failed runs: " + failedRuns);
-        System.exit(0);
+
+        //pointsToFile(points);
+        sort(points);
+
+        J2DScene scene = J2DScene.createJ2DSceneInFrame();
+        for (KDSPoint p : points) {
+            p.draw(scene, 0);
+        }
+        scene.centerCamera();
+        scene.autoZoom();
+        scene.repaint();
+
+        NaiveEMST emst = new NaiveEMST(points);
+        emst.compute(0);
+
+        //ConvexDT dt = new ConvexDT(points, new CircleShape(), scene);
+        //dt.delaunay(points);
+
+        for (KDSPoint p : points) {
+            p.draw(scene, 0);
+        }
+        for (HalfEdge e : emst.getEdges()) {
+            e.draw(scene, 0, Color.CYAN);
+        }
+        System.out.println("DONE. If there are any CYAN colored edges, something is wrong!");
     }
 }

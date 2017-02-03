@@ -22,6 +22,15 @@ import static utils.Helpers.*;
  */
 public class PieShape implements ConvexShape {
     private J2DScene scene;
+    private double t;
+
+    public double getTime() {
+        return t;
+    }
+
+    public void setTime(double t) {
+        this.t = t;
+    }
 
     @Override
     public J2DScene getScene() {
@@ -217,7 +226,7 @@ public class PieShape implements ConvexShape {
         scene.addShape(line_c, Color.RED);
         scene.repaint();
         try {
-            Thread.sleep(100);
+            Thread.sleep(5000);
         } catch (InterruptedException ex) {}
         scene.removeShape(line_b);
         scene.removeShape(line_c);

@@ -35,4 +35,7 @@ public interface ConvexShape {
     enum circleEnum {
         INSIDE, OUTSIDE, ONBEFORE, ONAFTER, ON, INVALID
     }
+
+    void setTime(double t);
+    double getTime();
 }

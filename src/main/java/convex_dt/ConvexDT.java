@@ -29,6 +29,16 @@ public class ConvexDT {
     private J2DScene scene;
     private DCEL dcel;
     private ArrayList<infCircleEnum> illegalValues;
+    private double t = 0;
+
+    public double getTime() {
+        return t;
+    }
+
+    public void setTime(double t) {
+        this.t = t;
+        shape.setTime(t);
+    }
 
     public ConvexDT() {
     }
@@ -38,6 +48,7 @@ public class ConvexDT {
         this.shape = shape;
         this.scene = scene;
         this.dcel = new DCEL(scene, points);
+        if (scene == null) this.dcel.setVisualize(false);
         illegalValues = new ArrayList<>();
         illegalValues.add(infCircleEnum.INSIDE);
         illegalValues.add(infCircleEnum.INVALID);
@@ -50,6 +61,9 @@ public class ConvexDT {
     public void setScene(J2DScene scene) {
         this.scene = scene;
     }
+    public J2DScene getScene() {
+        return scene;
+    }
 
     public HalfEdge computeSmallDelaunay(ArrayList<KDSPoint> points) throws Exception {
         if (points.size() == 2) {
@@ -59,7 +73,7 @@ public class ConvexDT {
             KDSPoint b = points.get(1);
             HalfEdge e1 = dcel.createEdge(a, b);
             e1.setFace(dcel.createFace(e1));
-            if (e1.getOrigin().getPoint(0).y() < e1.getDestination().getPoint(0).y())
+            if (e1.getOrigin().getPoint(t).y() < e1.getDestination().getPoint(t).y())
                 return e1;
             return e1.getTwin();
         } else if (points.size() == 3) {
@@ -140,8 +154,8 @@ public class ConvexDT {
 //                connect(e2, e1);
 //            }
             // find the lowest point (y-coordinate only)
-            dcel.draw(scene);
-            try{Thread.sleep(5000);}catch (Exception ex){}
+////            dcel.draw(scene);
+            try{Thread.sleep(0);}catch (Exception ex){}
             KDSPoint lowestPoint;
             if (a.getY() < b.getY()) lowestPoint = a;
             else lowestPoint = b;
@@ -169,9 +183,9 @@ public class ConvexDT {
                 right = rNext(right);
             }
             while (true) {
-                right.draw(scene, 0, Color.BLACK);
-                left.draw(scene, 0, Color.BLACK);
-                try{Thread.sleep(100);}catch (Exception ex){}
+////                right.draw(scene, 0, Color.BLACK);
+////                left.draw(scene, 0, Color.BLACK);
+                try{Thread.sleep(0);}catch (Exception ex){}
                 if (shape.inInfCircle(right.getDestination(), left.getOrigin(), right.getOrigin()) == infCircleEnum.INSIDE) {
                     // see below
                     System.out.println("right");
@@ -197,10 +211,10 @@ public class ConvexDT {
                 left = rNext(left);
             }
             while (true) {
-                right.draw(scene, 0, Color.ORANGE);
-                left.draw(scene, 0, Color.ORANGE);
-                try{Thread.sleep(100);}catch (Exception ex){}
-                try {sleep(100);} catch (InterruptedException e) {}
+////                right.draw(scene, 0, Color.ORANGE);
+////                left.draw(scene, 0, Color.ORANGE);
+                try{Thread.sleep(0);}catch (Exception ex){}
+                try {sleep(0);} catch (InterruptedException e) {}
                 // if rNext.org is inside the inf circle with left.org and right.org on boundary, then it's a better candidate
                 if ((rNext(left) != null && illegalValues.contains(shape.inInfCircle(rNext(left).getOrigin(), left.getOrigin(), right.getOrigin())))
                         && illegalValues.contains(shape.inInfCircle(left.getDestination(), left.getOrigin(), right.getOrigin()))) {
@@ -325,8 +339,8 @@ public class ConvexDT {
         HalfEdge current = null, top = null, t = null;
         boolean foundLcand = false;
         lcand = rPrev(base);
-        lcand.draw(scene, 0, Color.ORANGE);
-        sleep(100);
+////        lcand.draw(scene, 0, Color.ORANGE);
+        sleep(0);
         assert lcand != null;
         assert base != null;
 
@@ -336,13 +350,13 @@ public class ConvexDT {
                 delete(oPrev(lcand));
                 if (produceONext(lcand) == null) break;
                 lcand = produceONext(lcand);
-                lcand.draw(scene, 0, Color.ORANGE);
-                sleep(100);
+//                lcand.draw(scene, 0, Color.ORANGE);
+                sleep(0);
             }
             if (isValid(lcand)) delete(oPrev(lcand));
             else lcand = oPrev(lcand);
-            lcand.draw(scene, 0, Color.ORANGE);
-            sleep(100);
+//            lcand.draw(scene, 0, Color.ORANGE);
+            sleep(0);
         }
 
         if (isValid(lcand)) {
@@ -390,10 +404,10 @@ public class ConvexDT {
                         foundLcand = true;
                         break;
                 }
-                lcand.draw(scene, 0, Color.ORANGE);
-                sleep(100);
-                current.draw(scene, 0, Color.YELLOW);
-                sleep(100);
+//                lcand.draw(scene, 0, Color.ORANGE);
+                sleep(0);
+//                current.draw(scene, 0, Color.YELLOW);
+                sleep(0);
                 System.out.println("Am I stuck in lcand?");
             }
         } else {
@@ -434,9 +448,9 @@ public class ConvexDT {
 
         if (isValid(rcand)) {
             current = oPrev(rcand);
-            rcand.draw(scene, 0, Color.green);
-            current.draw(scene, 0, Color.BLUE);
-            sleep(100);
+//            rcand.draw(scene, 0, Color.green);
+//            current.draw(scene, 0, Color.BLUE);
+            sleep(0);
             top = rcand;
             while (true) {
                 assert rcand != null;
@@ -501,6 +515,12 @@ public class ConvexDT {
     }
 
     public HalfEdge delaunay(ArrayList<KDSPoint> points) throws Exception {
+        // kind of a hack to get updated positions without changing too much code
+        for (KDSPoint p : points) {
+            p.updatePosition(this.t);
+        }
+        Collections.sort(points);
+
         if (points.size() < 4) return computeSmallDelaunay(points);
         else {
             int split = (int) Math.floor(points.size() / 2);
@@ -509,13 +529,13 @@ public class ConvexDT {
             ArrayList<KDSPoint> right = new ArrayList<>(points.subList(split, points.size()));
 
             HalfEdge lleft = delaunay(left);
-            lleft.draw(scene, 0, Color.PINK);
+//            lleft.draw(scene, 0, Color.PINK);
             HalfEdge lright = delaunay(right);
-            lright.draw(scene, 0, Color.PINK);
-            //sleep(10000);
+//            lright.draw(scene, 0, Color.PINK);
+            //sleep(0);
             base = findLowerSupport(lleft, lright);
-            base.draw(scene, 0, Color.black);
-            //sleep(1000);
+//            base.draw(scene, 0, Color.black);
+            //sleep(0);
             boolean leftLower = lowerThan(lleft.getOrigin(), lright.getOrigin());
             HalfEdge lower;
             if (leftLower) {
@@ -529,28 +549,28 @@ public class ConvexDT {
             // merge step
             while (true) {
                 boolean circleValid = true;
-                base.draw(scene, 0, Color.BLACK);
-                sleep(100);
+//                base.draw(scene, 0, Color.BLACK);
+                sleep(0);
                 lcand = computeLcand();
                 rcand = computeRcand();
                 //System.out.println(lcand.getTwin() == rcand || lcand == rcand);
 
                 if (isValid(lcand)) System.out.println("lcand valid!");
                 else System.out.println("lcand invalid!");
-                lcand.draw(scene, 0, Color.MAGENTA);
-                sleep(100);
+//                lcand.draw(scene, 0, Color.MAGENTA);
+                sleep(0);
                 if (isValid(rcand)) System.out.println("rcand valid!");
                 else System.out.println("rcand invalid!");
-                rcand.draw(scene, 0, Color.CYAN);
-                sleep(5000);
+//                rcand.draw(scene, 0, Color.CYAN);
+                sleep(0);
                 if (isValid(lcand) && isValid(rcand)) {
                     System.out.println("1");
                     switch (shape.inCircle(base.getOrigin(), base.getDestination(), lcand.getDestination(), rcand.getDestination())) {
                         case INSIDE:
                             System.out.println("rcand.dest INSIDE");
                             base = connectRight();
-                            base.draw(scene, 0, Color.BLACK);
-                            sleep(100);
+//                            base.draw(scene, 0, Color.BLACK);
+                            sleep(0);
                             break;
                         case ON:
                         case ONBEFORE:
@@ -558,12 +578,12 @@ public class ConvexDT {
                             System.out.println("rcand.dest ON/ONBEFORE/ONAFTER");
                             if (rightOf(lcand.getOrigin(), lcand.getDestination(), rcand.getDestination())) {
                                 base = connectRight();
-                                base.draw(scene, 0, Color.BLACK);
-                                sleep(100);
+//                                base.draw(scene, 0, Color.BLACK);
+                                sleep(0);
                             } else {
                                 base = connectLeft();
-                                base.draw(scene, 0, Color.BLACK);
-                                sleep(100);
+//                                base.draw(scene, 0, Color.BLACK);
+                                sleep(0);
                             }
                             break;
                         case INVALID:
@@ -573,8 +593,8 @@ public class ConvexDT {
                         default:
                             System.out.println("rcand.dest OUTSIDE");
                             base = connectLeft();
-                            base.draw(scene, 0, Color.BLACK);
-                            sleep(100);
+//                            base.draw(scene, 0, Color.BLACK);
+                            sleep(0);
                             break;
                     }
                 }
@@ -586,7 +606,7 @@ public class ConvexDT {
                     System.out.println("3");
                     base = connectRight();
                 }
-                else if (shape.inInfCircle(rcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.AFTER) {
+                else if (shape.inInfCircle(lcand.getDestination(), base.getOrigin(), base.getDestination()) == infCircleEnum.BEFORE) {
                     System.out.println("4");
                     while (shape.inInfCircle(lcand.getDestination(), lcand.getOrigin(), rcand.getDestination()) == infCircleEnum.INSIDE) {
                         lcand = rPrev(lcand);

@@ -12,6 +12,15 @@ import static java.util.Collections.sort;
  */
 public class CircleShape implements ConvexShape {
     private J2DScene scene;
+    private double t;
+
+    public double getTime() {
+        return t;
+    }
+
+    public void setTime(double t) {
+        this.t = t;
+    }
 
     @Override
     public J2DScene getScene() {

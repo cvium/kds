@@ -19,6 +19,15 @@ import static utils.Helpers.*;
  */
 public class ZeroTriShape implements ConvexShape {
     private J2DScene scene;
+    private double t;
+
+    public double getTime() {
+        return t;
+    }
+
+    public void setTime(double t) {
+        this.t = t;
+    }
 
     public J2DScene getScene() {
         return scene;

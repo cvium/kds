@@ -1,6 +1,7 @@
 package convex_dt;
 
 import ProGAL.geom2d.viewer.J2DScene;
+import convex_dt.shapes.CircleShape;
 import convex_dt.shapes.ConvexShape;
 import convex_dt.shapes.PieShape;
 import convex_dt.shapes.ZeroTriShape;
@@ -145,7 +146,7 @@ public class run {
             points.add(new KDSPoint(new double[]{1.413363682993329},new double[]{-1.498918100553464}));
             points.add(new KDSPoint(new double[]{1.7485472199546614},new double[]{-0.9006378901043264}));
 
-        } else if (true) {
+        } else if (false) {
             points.add(new KDSPoint(new double[]{1.5279150010373113},new double[]{0.1998488094646622}));
             points.add(new KDSPoint(new double[]{1.593594590368593},new double[]{-1.320766348583168}));
             points.add(new KDSPoint(new double[]{1.5969757062078913},new double[]{-0.5331873245177161}));
@@ -179,7 +180,7 @@ public class run {
         scene.autoZoom();
         scene.repaint();
 
-        ConvexShape circle = new PieShape(scene);
+        ConvexShape circle = new CircleShape(scene);
 
         ConvexDT dt = new ConvexDT(points, circle, scene);
 

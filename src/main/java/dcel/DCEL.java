@@ -18,12 +18,22 @@ public class DCEL {
     private ArrayList<HalfEdge> edges;
     private ArrayList<KDSPoint> vertices;
     private J2DScene scene;
+    private boolean visualize;
 
     public DCEL(J2DScene scene, ArrayList<KDSPoint> vertices) {
         faces = new ArrayList<>();
         edges = new ArrayList<>();
         this.vertices = vertices;
         this.scene = scene;
+        this.visualize = false;
+    }
+
+    public boolean isVisualizing() {
+        return visualize;
+    }
+
+    public void setVisualize(boolean visualize) {
+        this.visualize = visualize;
     }
 
     public ArrayList<Face> getFaces() {
@@ -74,7 +84,7 @@ public class DCEL {
         c.setTwin(c_twin);
         c_twin.setTwin(c);
         edges.add(c);
-        edges.add(c_twin);
+        //edges.add(c_twin);
 
         // Handling a
 
@@ -200,11 +210,13 @@ public class DCEL {
         edges.remove(e);
         edges.remove(e.getTwin());
 
-        e.undraw(scene);
-        e.getTwin().undraw(scene);
-        scene.repaint();
+        if (visualize) {
+            e.undraw(scene);
+            e.getTwin().undraw(scene);
+            scene.repaint();
+        }
         System.out.println("INFO: Deleted an edge.");
-        try {sleep(100);} catch (InterruptedException ex) {}
+        try {sleep(0);} catch (InterruptedException ex) {}
     }
 
     private void updateIncidentEdges(HalfEdge e) {
@@ -241,7 +253,7 @@ public class DCEL {
             if (e.getDestination().getIncidentEdge() == null)
                 e.getDestination().setIncidentEdge(twin);
             //twin.setFace(createFace(e));
-            edges.add(twin);
+            //edges.add(twin);
             e.setTwin(twin);
             twin.setTwin(e);
         }
